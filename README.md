@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Google-Cloud-x-MLB-Hackathon
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Table of Contents
 
-## Available Scripts
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
+- [Technologies Used](#Technologies-Used)
+- [How to Run the Project](#how-to-run-the-project)
+- [Team Members](#team-members)
 
-In the project directory, you can run:
+## Project Overview  
 
-### `npm start`
+This project is designed to give sports fans a personalized experience by allowing them to follow their favorite teams, players, or leagues. The system delivers audio, video, and text-based digests of the latest sports highlights and expert commentary on a regular schedule. It also supports multilingual users with options for English, Spanish, and Japanese, ensuring a wider reach for sports enthusiasts globally.  
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Key Features 
 
-### `npm test`
+- **Personalized Selections**: Fans can select teams, players, or leagues to follow.  
+- **Content Delivery**: Digest updates delivered via audio, video, or text formats.  
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Technologies Used  
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Frontend**: React, TypeScript, TailwindCSS  
+- **Backend**: Node.js, Express  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## How to Run the Project  
 
-### `npm run eject`
+1. Clone the repository:  
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+   git clone https://github.com/wuqiujie/Google-Cloud-x-MLB-Hackathon.git  
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 2. Install Dependencies
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Make sure you have Node.js and npm installed. Then, install dependencies:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   ```
+npm install
+   ```
 
-## Learn More
+ ### 3.Run the Application 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Start the application locally: 
+    ```
+    npm start
+    ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Team Members
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* [Jiayuan Huang](https://github.com/oliverh32)
+* [Hangzheng Lin](https://github.com/LinHangzheng)
+* [Kristin Wu](https://github.com/wuqiujie)
