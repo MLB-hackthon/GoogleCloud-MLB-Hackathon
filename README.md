@@ -1,4 +1,4 @@
-# Google-Cloud-x-MLB-Hackathon
+# Google Cloud x MLB Hackathon
 
 ## Table of Contents
 
