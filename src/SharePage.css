@@ -44,6 +44,7 @@ body {
   
   .team-logo {
     width: 60px;
+    border-radius: 12px;
   }
   
   .left-section {
