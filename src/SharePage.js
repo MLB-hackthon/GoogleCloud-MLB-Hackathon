@@ -1,12 +1,64 @@
-// Import necessary React and CSS modules
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./SharePage.css";
+import Chatbot from "./Chatbot";
 
 function SharePage() {
+const galleryImages = [
+    "/test/photo1.jpg",
+    "/test/photo2.jpg",
+    "/test/photo3.jpg",
+    "/test/photo4.jpg",
+    "/test/photo5.jpg",
+  ];
+
+  const extendedImages = [
+    galleryImages[galleryImages.length - 1], 
+    ...galleryImages,
+    galleryImages[0], 
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(1); 
+  const [isTransitioning, setIsTransitioning] = useState(false); 
+
+  const handleNext = () => {
+    if (!isTransitioning) {
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (!isTransitioning) {
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+    }
+  };
+
+
+  useEffect(() => {
+    const interval = setInterval(handleNext, 5000); 
+    return () => clearInterval(interval); 
+  }, []);
+
+  useEffect(() => {
+    if (currentIndex === 0) {
+      setTimeout(() => {
+        setIsTransitioning(false); 
+        setCurrentIndex(galleryImages.length); 
+      }, 300); 
+    } else if (currentIndex === extendedImages.length - 1) {
+      setTimeout(() => {
+        setIsTransitioning(false); 
+        setCurrentIndex(1); 
+      }, 300); 
+    } else {
+      setIsTransitioning(true); 
+    }
+  }, [currentIndex, extendedImages.length, galleryImages.length]);
+
+
   return (
     <div className="mlb-showcase">
       {/* Left top corner text */}
-        <div className ="top-left-logo">
+        <div className ="logo">
             <img 
                 src="/test/logo.png"
                 alt="Team logo"
@@ -17,6 +69,15 @@ function SharePage() {
         <div className="top-left-text">
             <h2>MLB Star of the Week</h2>
             <p>Highlighting the best moments in MLB</p>
+            {/* <p>
+            There were six balls hit 120 mph or harder during the 2024 season. 
+            Cruz had four of them, and those were the four hardest-hit balls of the year. 
+            The very hardest was a dramatic clutch hit -- a game-tying double with two outs 
+            in the ninth inning off a 100.3 mph cutter from Giants closer Camilo Doval. 
+            Cruz's 121.5 mph double was the fifth-hardest batted ball in the Statcast era (since 2015), 
+            and by far the hardest-hit ball off a 100-plus mph pitch. 
+            The previous hardest was a 115.4 mph single by Giancarlo Stanton off Shintaro Fujinami in 2023.
+            </p> */}
         </div>
 
       {/* Main player section */}
@@ -33,9 +94,9 @@ function SharePage() {
 
 
       {/* Left bottom corner video */}
-      <div className="bottom-left-video">
+      <div className="highlight-video">
         <video controls>
-          <source src="/path-to-video.mp4" type="video/mp4" />
+          <source src="/test/video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
@@ -43,21 +104,40 @@ function SharePage() {
       {/* Right top corner image */}
       <div className="top-right-image">
         <img
-          src="/path-to-additional-image.png" // Replace with the URL of the additional image
+          src="/test/additional-image.png" 
           alt="Additional Content"
         />
       </div>
 
       {/* Right bottom corner audio and chatbot */}
-      <div className="bottom-right-audio-chatbot">
+      <div className="audio">
         <audio controls>
           <source src="/path-to-audio.mp3" type="audio/mpeg" />
           Your browser does not support the audio tag.
         </audio>
-        <div className="chatbot">
-          <p>Chat with our MLB Bot!</p>
-          <textarea placeholder="Type your message here..." />
-          <button>Send</button>
+        </div>
+        
+     <Chatbot />
+
+      <div className="photo-gallery">
+        <div className="arrow left" onClick={handlePrev}>
+          &#9664;
+        </div>
+        <div
+          className="gallery-container"
+          style={{
+            transform: `translateX(-${currentIndex * 33.33}%)`,
+            transition: isTransitioning ? "transform 0.3s ease-in-out" : "none",
+          }}
+        >
+         {extendedImages.map((src, index) => (
+            <div className="gallery-item" key={index}>
+              <img src={src} alt={`Gallery ${index + 1}`} />
+            </div>
+          ))}
+        </div>
+        <div className="arrow right" onClick={handleNext}>
+          &#9654;
         </div>
       </div>
     </div>
