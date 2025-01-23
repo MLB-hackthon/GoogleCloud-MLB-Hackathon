@@ -56,88 +56,59 @@ const galleryImages = [
 
 
   return (
-    <div className="mlb-showcase">
-      {/* Left top corner text */}
-        <div className ="logo">
+    <div className="background">
+      <div className="content">
+        <div className="team-logo-wrapper">
             <img 
                 src="/test/logo.png"
                 alt="Team logo"
-                className="team-logo-image"
-            />
-        </div>
-        
-        <div className="top-left-text">
-            <h2>MLB Star of the Week</h2>
-            <p>Highlighting the best moments in MLB</p>
-            {/* <p>
-            There were six balls hit 120 mph or harder during the 2024 season. 
-            Cruz had four of them, and those were the four hardest-hit balls of the year. 
-            The very hardest was a dramatic clutch hit -- a game-tying double with two outs 
-            in the ninth inning off a 100.3 mph cutter from Giants closer Camilo Doval. 
-            Cruz's 121.5 mph double was the fifth-hardest batted ball in the Statcast era (since 2015), 
-            and by far the hardest-hit ball off a 100-plus mph pitch. 
-            The previous hardest was a 115.4 mph single by Giancarlo Stanton off Shintaro Fujinami in 2023.
-            </p> */}
+                className="team-logo"
+            />  
         </div>
 
-      {/* Main player section */}
-      <div className="main-player">
-        <h1 className="player-title">Player Name</h1>
-        <div className="player-image">
-            <img
+        <div className="left-section">
+          <h1>ROKI SASAKI</h1>
+          <p>
+            There were six balls hit 120 mph or harder during the 2024 season.
+            Cruz had four of them, and those were the four hardest-hit balls of
+            the year. The very hardest was a dramatic clutch hit -- a game-tying
+            double with two outs in the ninth inning off a 100.3 mph cutter from
+            Giants closer Camilo Doval. Cruz's 121.5 mph double was the
+            fifth-hardest batted ball in the Statcast era (since 2015), and by
+            far the hardest-hit ball off a 100-plus mph pitch. The previous
+            hardest was a 115.4 mph single by Giancarlo Stanton off Shintaro
+            Fujinami in 2023.
+          </p>
+        </div>
+        <div className="center-section">
+        <img
                 src="/test/Image.png"
                 alt="MLB Player"
-            className="player-image"
+            className="pitcher-image"
             />
         </div>
-       </div>
 
-
-      {/* Left bottom corner video */}
-      <div className="highlight-video">
-        <video controls>
-          <source src="/test/video.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-
-      {/* Right top corner image */}
-      <div className="top-right-image">
-        <img
-          src="/test/additional-image.png" 
-          alt="Additional Content"
-        />
-      </div>
-
-      {/* Right bottom corner audio and chatbot */}
-      <div className="audio">
-        <audio controls>
-          <source src="/path-to-audio.mp3" type="audio/mpeg" />
-          Your browser does not support the audio tag.
-        </audio>
-        </div>
-        
-     <Chatbot />
-
-      <div className="photo-gallery">
-        <div className="arrow left" onClick={handlePrev}>
-          &#9664;
-        </div>
-        <div
-          className="gallery-container"
-          style={{
-            transform: `translateX(-${currentIndex * 33.33}%)`,
-            transition: isTransitioning ? "transform 0.3s ease-in-out" : "none",
-          }}
-        >
-         {extendedImages.map((src, index) => (
-            <div className="gallery-item" key={index}>
-              <img src={src} alt={`Gallery ${index + 1}`} />
+        <div className="right-section">
+          <div className="stats">
+            <h3>Batting</h3>
+            <div className="stat-row">
+              <span>xwOBA</span>
+              <div className="stat-bar red" style={{ width: "62%" }}></div>
             </div>
-          ))}
+            <div className="stat-row">
+              <span>xBA</span>
+              <div className="stat-bar blue" style={{ width: "27%" }}></div>
+            </div>
+          </div>
         </div>
-        <div className="arrow right" onClick={handleNext}>
-          &#9654;
+
+        <div className="chat-button">
+          <img 
+                src="/test/chat.png"
+                alt="Chat Icon"
+                className="chat-icon"
+            />  
+          <span>Chat with Us</span>
         </div>
       </div>
     </div>
