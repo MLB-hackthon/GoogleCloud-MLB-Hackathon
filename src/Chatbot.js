@@ -1,83 +1,69 @@
-import React, { useState } from "react";
-import "./Chatbot.css";
+import React, { useState, useRef, useEffect } from 'react';
+import './Chatbot.css';
 
-const Chatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState({ x: 50, y: 50 });
-  const [dragging, setDragging] = useState(false);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
+function Chatbot({ onClose }) {
+  const [messages, setMessages] = useState([
+    { text: "Hello! How can I help you today?", isBot: true }
+  ]);
+  const [inputText, setInputText] = useState('');
+  const messagesEndRef = useRef(null);
 
-  const toggleChatbot = () => setIsOpen(!isOpen);
-
-  const handleMouseDown = (e) => {
-    setDragging(true);
-    setOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    });
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleMouseMove = (e) => {
-    if (dragging) {
-      setPosition({
-        x: e.clientX - offset.x,
-        y: e.clientY - offset.y,
-      });
-    }
-  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
-  const handleMouseUp = () => setDragging(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
 
-  const handleSendMessage = () => {
-    if (input.trim()) {
-      setMessages([...messages, { user: true, text: input }]);
-      setInput("");
-      // Add bot response logic here
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          { user: false, text: "I'm here to help!" },
-        ]);
-      }, 1000);
-    }
+    // Add user message
+    setMessages(prev => [...prev, { text: inputText, isBot: false }]);
+    setInputText('');
+
+    // Simulate bot response
+    setTimeout(() => {
+      setMessages(prev => [...prev, { 
+        text: "Thanks for your message. Our team will get back to you soon.", 
+        isBot: true 
+      }]);
+    }, 1000);
   };
 
   return (
-    <div
-      className="chatbot-icon"
-      style={{ left: position.x, top: position.y }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
-      <div className="icon" onClick={toggleChatbot}>
-        🤖
+    <div className="chatbot-container">
+      <div className="chatbot-header">
+        <h3>Chat with Us</h3>
+        <button className="close-button" onClick={onClose}>×</button>
       </div>
-      {isOpen && (
-        <div className="chatbot-window">
-          <div className="chatbot-header">MLB Chatbot</div>
-          <div className="chatbot-body">
-            {messages.map((msg, index) => (
-              <p
-                key={index}
-                className={msg.user ? "chat-user" : "chat-bot"}
-              >
-                {msg.text}
-              </p>
-            ))}
+
+      <div className="messages-container">
+        {messages.map((message, index) => (
+          <div 
+            key={index} 
+            className={`message ${message.isBot ? 'bot' : 'user'}`}
+          >
+            {message.text}
           </div>
-          <textarea
-            placeholder="Type your message here..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button onClick={handleSendMessage}>Send</button>
-        </div>
-      )}
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+
+      <form onSubmit={handleSubmit} className="input-container">
+        <input
+          type="text"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Type your message..."
+          className="message-input"
+        />
+        <button type="submit" className="send-button">Send</button>
+      </form>
     </div>
   );
-};
+}
 
 export default Chatbot;

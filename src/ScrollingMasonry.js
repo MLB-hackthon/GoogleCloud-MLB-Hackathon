@@ -101,7 +101,7 @@ export default function ScrollingMasonry() {
               className="flex flex-col items-center bg-gray-100 rounded-lg mb-4 overflow-hidden cursor-pointer"
               style={{ 
                 transition: 'all 0.5s ease-in-out',
-                maxHeight: '320px',  // 改为 320px
+                maxHeight: '320px',  
                 height: 'auto',
                 width: '100%'
               }}
@@ -120,7 +120,7 @@ export default function ScrollingMasonry() {
                     src={item.image_url}
                     alt={item.title}
                     className="w-full h-full object-cover"
-                    style={{ maxHeight: '320px' }}  // 改为 320px
+                    style={{ maxHeight: '320px' }} 
                   />
                 )}
                 {hoveredDomain === item.domain && (
@@ -146,7 +146,7 @@ export default function ScrollingMasonry() {
               className="flex flex-col items-center bg-gray-100 rounded-lg mb-4 overflow-hidden cursor-pointer"
               style={{ 
                 transition: 'all 0.5s ease-in-out',
-                maxHeight: '320px',  // 改为 320px
+                maxHeight: '320px',  
                 height: 'auto',
                 width: '100%'
               }}
@@ -159,7 +159,7 @@ export default function ScrollingMasonry() {
                   src={item.image_url}
                   alt={item.title}
                   className="w-full h-full object-cover"
-                  style={{ maxHeight: '320px' }}  // 改为 320px
+                  style={{ maxHeight: '320px' }} 
                 />
                 {hoveredDomain === item.domain && (
                   <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">

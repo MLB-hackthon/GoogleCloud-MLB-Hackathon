@@ -1,60 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import "./SharePage.css";
 import Chatbot from "./Chatbot";
 import ScrollingMasonry from "./ScrollingMasonry";
 
 function SharePage() {
-const galleryImages = [
-    "/test/photo1.jpg",
-    "/test/photo2.jpg",
-    "/test/photo3.jpg",
-    "/test/photo4.jpg",
-    "/test/photo5.jpg",
-  ];
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
-  const extendedImages = [
-    galleryImages[galleryImages.length - 1], 
-    ...galleryImages,
-    galleryImages[0], 
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(1); 
-  const [isTransitioning, setIsTransitioning] = useState(false); 
-
-  const handleNext = () => {
-    if (!isTransitioning) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-    }
+  const toggleChatbot = () => {
+    setIsChatbotOpen(!isChatbotOpen);
   };
-
-  const handlePrev = () => {
-    if (!isTransitioning) {
-      setCurrentIndex((prevIndex) => prevIndex - 1);
-    }
-  };
-
-
-  useEffect(() => {
-    const interval = setInterval(handleNext, 5000); 
-    return () => clearInterval(interval); 
-  }, []);
-
-  useEffect(() => {
-    if (currentIndex === 0) {
-      setTimeout(() => {
-        setIsTransitioning(false); 
-        setCurrentIndex(galleryImages.length); 
-      }, 300); 
-    } else if (currentIndex === extendedImages.length - 1) {
-      setTimeout(() => {
-        setIsTransitioning(false); 
-        setCurrentIndex(1); 
-      }, 300); 
-    } else {
-      setIsTransitioning(true); 
-    }
-  }, [currentIndex, extendedImages.length, galleryImages.length]);
-
 
   return (
     <div className="background">
@@ -81,14 +35,14 @@ const galleryImages = [
             Fujinami in 2023.
           </p>
 
-          <div className="chat-button">
-          <img 
+          <div className="chat-button" onClick={toggleChatbot}>
+            <img 
                 src="/test/chat.png"
                 alt="Chat Icon"
                 className="chat-icon"
             />  
-          <span>Chat with Us</span>
-        </div>
+            <span>Chat with Us</span>
+          </div>
         
         </div>
 
@@ -105,6 +59,8 @@ const galleryImages = [
         </div>
 
       </div>
+
+      {isChatbotOpen && <Chatbot onClose={() => setIsChatbotOpen(false)} />}
     </div>
   );
 }
