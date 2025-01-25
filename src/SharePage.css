@@ -1,4 +1,3 @@
-/* App.css */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -20,14 +19,13 @@ body {
     align-items: center;
     width: 90%;
     height: 80%;
-    max-width: 1400px;
     background-color: white;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
-    overflow: visible; 
-  }
+    overflow: visible;
+}
   
   h1 {
     position: absolute;
@@ -38,8 +36,8 @@ body {
   
   .team-logo-wrapper {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 10px;
+    left: 20px;
   }
   
   .team-logo {
@@ -49,7 +47,7 @@ body {
   
   .left-section {
     flex: 1;
-    max-width: 40%;
+    max-width: 30%;
     padding: 20px;
   }
   
@@ -61,62 +59,42 @@ body {
   
   .center-section {
     flex: 1;
+    max-width: 30%;
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    height: 100%; 
+    height: 100%;
     overflow: visible;
     position: relative;
+    pointer-events: none;
   }
   
   .pitcher-image {
-    width: 100%;
-    max-width: 500px;
-    object-fit: contain;
-    position: relative;
-    transition: transform 0.3s ease-in-out; 
-    bottom: 0; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 1;
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+    pointer-events: auto;
   }
   
-  .center-section:hover .pitcher-image {
-    transform: scale(1.5); 
+  .pitcher-image:hover {
+    transform: translate(-50%, -50%) scale(1.2);
   }
   
   .right-section {
     flex: 1;
-    max-width: 30%;
-    padding: 20px;
-  }
-  
-  .stats h3 {
-    margin-bottom: 10px;
-    font-size: 18px;
-  }
-  
-  .stat-row {
+    max-width: 40%;
+    height: 100%;
+    padding: 0;
+    overflow: hidden;
+    margin-right: -20px;
+    position: relative;
     display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  
-  .stat-row span {
-    width: 80px;
-    font-size: 14px;
-  }
-  
-  .stat-bar {
-    height: 8px;
-    border-radius: 4px;
-    margin-left: 10px;
-    flex-grow: 1;
-  }
-  
-  .stat-bar.red {
-    background-color: #e74c3c;
-  }
-  
-  .stat-bar.blue {
-    background-color: #3498db;
+    flex-direction: column;
   }
   
   .chat-button {

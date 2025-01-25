@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./SharePage.css";
 import Chatbot from "./Chatbot";
+import ScrollingMasonry from "./ScrollingMasonry";
 
 function SharePage() {
 const galleryImages = [
@@ -57,8 +58,7 @@ const galleryImages = [
 
   return (
     <div className="background">
-      <div className="content">
-        <div className="team-logo-wrapper">
+      <div className="team-logo-wrapper">
             <img 
                 src="/test/logo.png"
                 alt="Team logo"
@@ -66,6 +66,7 @@ const galleryImages = [
             />  
         </div>
 
+      <div className="content">
         <div className="left-section">
           <h1>ROKI SASAKI</h1>
           <p>
@@ -79,30 +80,8 @@ const galleryImages = [
             hardest was a 115.4 mph single by Giancarlo Stanton off Shintaro
             Fujinami in 2023.
           </p>
-        </div>
-        <div className="center-section">
-        <img
-                src="/test/Image.png"
-                alt="MLB Player"
-            className="pitcher-image"
-            />
-        </div>
 
-        <div className="right-section">
-          <div className="stats">
-            <h3>Batting</h3>
-            <div className="stat-row">
-              <span>xwOBA</span>
-              <div className="stat-bar red" style={{ width: "62%" }}></div>
-            </div>
-            <div className="stat-row">
-              <span>xBA</span>
-              <div className="stat-bar blue" style={{ width: "27%" }}></div>
-            </div>
-          </div>
-        </div>
-
-        <div className="chat-button">
+          <div className="chat-button">
           <img 
                 src="/test/chat.png"
                 alt="Chat Icon"
@@ -110,6 +89,21 @@ const galleryImages = [
             />  
           <span>Chat with Us</span>
         </div>
+        
+        </div>
+
+        <div className="center-section">
+        <img
+                src="/test/image2.png"
+                alt="MLB Player"
+            className="pitcher-image"
+            />
+        </div>
+
+        <div className="right-section">
+          <ScrollingMasonry />
+        </div>
+
       </div>
     </div>
   );
