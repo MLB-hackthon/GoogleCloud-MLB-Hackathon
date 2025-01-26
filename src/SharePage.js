@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import "./SharePage.css";
 import Chatbot from "./Chatbot";
 import ScrollingMasonry from "./ScrollingMasonry";
+import UserInfo from "./components/UserInfo";
 
 function SharePage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
@@ -13,12 +14,12 @@ function SharePage() {
   return (
     <div className="background">
       <div className="team-logo-wrapper">
-            <img 
-                src="/test/logo.png"
-                alt="Team logo"
-                className="team-logo"
-            />  
-        </div>
+        <img 
+          src="/test/logo.png"
+          alt="Team logo"
+          className="team-logo"
+        />  
+      </div>
 
       <div className="content">
         <div className="left-section">
@@ -47,11 +48,7 @@ function SharePage() {
         </div>
 
         <div className="center-section">
-        <img
-                src="/test/image2.png"
-                alt="MLB Player"
-            className="pitcher-image"
-            />
+          <UserInfo />
         </div>
 
         <div className="right-section">
