@@ -71,15 +71,7 @@ export default function ScrollingMasonry() {
   const rightColumn = duplicatedData.filter((_, index) => index % 2 === 1);
 
   const handleClick = (url) => {
-    window.open(url, '_blank');  // 在新标签页打开链接
-  };
-
-  const getBlockHeight = (item) => {
-    // 根据不同的来源返回不同的高度
-    if (item.isGetty) {
-      return '320px';  // Getty Images 保持 320px
-    }
-    return 'min(320px, auto)';  // 其他来源最大 320px
+    window.open(url, '_blank');  
   };
 
   return (
@@ -101,7 +93,7 @@ export default function ScrollingMasonry() {
               className="flex flex-col items-center bg-gray-100 rounded-lg mb-4 overflow-hidden cursor-pointer"
               style={{ 
                 transition: 'all 0.5s ease-in-out',
-                maxHeight: '320px',  
+                maxHeight: '400px',  
                 height: 'auto',
                 width: '100%'
               }}
@@ -120,7 +112,7 @@ export default function ScrollingMasonry() {
                     src={item.image_url}
                     alt={item.title}
                     className="w-full h-full object-cover"
-                    style={{ maxHeight: '320px' }} 
+                    style={{ maxHeight: '400px' }} 
                   />
                 )}
                 {hoveredDomain === item.domain && (
@@ -146,7 +138,7 @@ export default function ScrollingMasonry() {
               className="flex flex-col items-center bg-gray-100 rounded-lg mb-4 overflow-hidden cursor-pointer"
               style={{ 
                 transition: 'all 0.5s ease-in-out',
-                maxHeight: '320px',  
+                maxHeight: '400px',  
                 height: 'auto',
                 width: '100%'
               }}
@@ -159,7 +151,7 @@ export default function ScrollingMasonry() {
                   src={item.image_url}
                   alt={item.title}
                   className="w-full h-full object-cover"
-                  style={{ maxHeight: '320px' }} 
+                  style={{ maxHeight: '400px' }} 
                 />
                 {hoveredDomain === item.domain && (
                   <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
