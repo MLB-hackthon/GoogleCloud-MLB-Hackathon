@@ -1,0 +1,202 @@
+{
+  "kind": "youtube#searchListResponse",
+  "etag": "rSW_95WmD0OgC-jqc91uJoCuWss",
+  "nextPageToken": "CAoQAA",
+  "regionCode": "US",
+  "pageInfo": {
+    "totalResults": 39902,
+    "resultsPerPage": 10
+  },
+  "items": [
+    {
+      "kind": "youtube#searchResult",
+      "etag": "LKRICy7-s2C_wbclM18TfmFMndA",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "nDepT9na_W4"
+      },
+      "snippet": {
+        "publishedAt": "2025-01-23T20:55:01Z",
+        "channelId": "UCgJHFZPJpuyVyG_skyD0F6w",
+        "title": "Will Tanner Scott or Roki Sasaki on the Dodgers hurt the Padres more?",
+        "description": "Two big signings for the team up north. Roki Sasaki is getting a lot of the attention but let's not forget how Tanner Scott consistently ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/nDepT9na_W4/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/nDepT9na_W4/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/nDepT9na_W4/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "Talking Friars",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-01-23T20:55:01Z"
+      },
+      "duration_seconds": 490,
+      "duration_str": "PT8M10S",
+      "published_at": "2025-01-23T20:55:01Z",
+      "embed_code": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/nDepT9na_W4\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "T9nx7kXU_8ZRysYw8petaBdbArI",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "VevhbXcloAI"
+      },
+      "snippet": {
+        "publishedAt": "2025-01-23T04:14:20Z",
+        "channelId": "UCfuLgGklAStGpD1Yg5LYVQA",
+        "title": "New Dodgers Pitcher Roki Sasaki discusses what he is looking forward to as Dodger, Living in LA",
+        "description": "Dodgers Pitcher Roki Sasaki discusses what he is looking forward to now that he is a Dodgers, places he wants to go to, foods he ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/VevhbXcloAI/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/VevhbXcloAI/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/VevhbXcloAI/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "The Dodgers Bleed Los Podcast Network",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-01-23T04:14:20Z"
+      },
+      "duration_seconds": 286,
+      "duration_str": "PT4M46S",
+      "published_at": "2025-01-23T04:14:20Z",
+      "embed_code": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/VevhbXcloAI\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "o_ZIXMpHfG-DEgwRR2c3GtSXZks",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "5wC_430eJuw"
+      },
+      "snippet": {
+        "publishedAt": "2025-01-23T02:44:18Z",
+        "channelId": "UC5QlsHYmV5KywLfZHeTSMOQ",
+        "title": "Shohei Ohtani Informed Dodgers Brass They Landed Roki Sasaki Before It Was Made Official",
+        "description": "shoheiohtani #dodgers Shohei Ohtani Informed Dodgers Brass They Landed Roki Sasaki Before It Was Made Official Unlike the ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/5wC_430eJuw/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/5wC_430eJuw/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/5wC_430eJuw/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "USA News Network ",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-01-23T02:44:18Z"
+      },
+      "duration_seconds": 131,
+      "duration_str": "PT2M11S",
+      "published_at": "2025-01-23T02:44:18Z",
+      "embed_code": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/5wC_430eJuw\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "dpJj4kKh-tKXiI4Bte8A_suLURs",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "nsb9kHoDv34"
+      },
+      "snippet": {
+        "publishedAt": "2025-01-22T13:44:16Z",
+        "channelId": "UC4XKgyIQuluHSU8FCHVq3Xw",
+        "title": "Sasaki Signs with Dodgers - Baseball Together Podcast Highlights",
+        "description": "The LA Dodgers signed rookie pitcher Roki Sasaki, adding to the juggernaut's already stellar starting rotation. Brig and Brad talk ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/nsb9kHoDv34/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/nsb9kHoDv34/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/nsb9kHoDv34/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "Baseball Together",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-01-22T13:44:16Z"
+      },
+      "duration_seconds": 217,
+      "duration_str": "PT3M37S",
+      "published_at": "2025-01-22T13:44:16Z",
+      "embed_code": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/nsb9kHoDv34\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "CtabFykCwz1BGAKlrobUTZCdn9I",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "IsjaC-fbqAA"
+      },
+      "snippet": {
+        "publishedAt": "2025-01-22T08:26:38Z",
+        "channelId": "UCrzdvsafvcpPKVOjNfFiIfg",
+        "title": "LeBron James Welcomes Dodgers&#39; Roki Sasaki at Lakers Game!",
+        "description": "Catch the electrifying moment as NBA legend LeBron James and MLB rising star Roki Sasaki are spotted together at a thrilling ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/IsjaC-fbqAA/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/IsjaC-fbqAA/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/IsjaC-fbqAA/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "Insight 360 News USA",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-01-22T08:26:38Z"
+      },
+      "duration_seconds": 71,
+      "duration_str": "PT1M11S",
+      "published_at": "2025-01-22T08:26:38Z",
+      "embed_code": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/IsjaC-fbqAA\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+    }
+  ]
+}
