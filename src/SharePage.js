@@ -2,11 +2,8 @@ import React, { useState } from "react";
 import "./SharePage.css";
 import Chatbot from "./Chatbot";
 import ScrollingMasonry from "./ScrollingMasonry";
-<<<<<<< HEAD
 import youtubeData from './data/youtube_search_results.json';
-=======
 import UserInfo from "./components/UserInfo";
->>>>>>> hangzhengl
 
 function SharePage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
