@@ -64,26 +64,35 @@ const GoogleCallback = () => {
 };
 
 // Main App component
+// function App() {
+//   return (
+//     <UserProvider>
+//       <Router>
+//         <Routes>
+//           <Route path="/login" element={<Login />} />
+//           <Route path="/callback" element={<GoogleCallback />} />
+//           <Route
+//             path="/share"
+//             element={
+//               <ProtectedRoute>
+//                 <StartPage  />
+//                 <SharePage />
+//               </ProtectedRoute>
+//             }
+//           />
+//           <Route path="/" element={<Navigate to="/login" />} />
+//         </Routes>
+//       </Router>
+//     </UserProvider>
+//   );
+// }
+
 function App() {
   return (
-    <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/callback" element={<GoogleCallback />} />
-          <Route
-            path="/share"
-            element={
-              <ProtectedRoute>
-                <StartPage  />
-                <SharePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/" element={<Navigate to="/login" />} />
-        </Routes>
-      </Router>
-    </UserProvider>
+    <div className="app">
+      <StartPage  />
+      <SharePage />
+    </div>
   );
 }
 

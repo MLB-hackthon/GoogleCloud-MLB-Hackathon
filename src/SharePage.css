@@ -61,13 +61,13 @@ body {
   flex-direction: column;
 }
 
-.team-logo-wrapper {
+.content .team-logo-wrapper {
   position: absolute;
   top: 1%;
   left: 1%;
 }
 
-.team-logo {
+.content .team-logo {
   width: 50px;
   border-radius: 12px;
 }
