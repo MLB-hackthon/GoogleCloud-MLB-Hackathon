@@ -14,7 +14,7 @@ const deploySuffix = config.get('DEPLOY_SUFFIX');
 
 // Configure CORS with additional headers
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:8080',
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],

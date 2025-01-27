@@ -15,8 +15,9 @@ RUN npm run build
 FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
 
-EXPOSE 3000
-CMD ["npm", "start"] 
+# Only expose port 8080 (Cloud Run requirement)
+EXPOSE 8080
+
+# Only one CMD instruction
+CMD ["nginx", "-g", "daemon off;"] 
