@@ -25,7 +25,6 @@ steps:
     - 'GOOGLE_CLIENT_ID=${_GOOGLE_CLIENT_ID},NODE_ENV=production'
 
 substitutions:
-  _REGION: us-central1
   _GOOGLE_CLIENT_ID: '218661372917-r65cdbmtlha18e38dgkmq6baq1au3ahh.apps.googleusercontent.com'
 
 images:
