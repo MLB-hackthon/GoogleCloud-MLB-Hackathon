@@ -56,3 +56,22 @@ Start the application locally:
 * [Jiayuan Huang](https://github.com/oliverh32)
 * [Hangzheng Lin](https://github.com/LinHangzheng)
 * [Kristin Wu](https://github.com/wuqiujie)
+
+## Setup
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit .env with your configuration values
+
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+4. The application will automatically load the correct configuration based on NODE_ENV:
+   - Development: `NODE_ENV=development` (default)
+   - Production: `NODE_ENV=production`
+   - Testing: `NODE_ENV=testing`

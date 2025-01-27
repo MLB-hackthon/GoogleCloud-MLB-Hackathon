@@ -2,9 +2,15 @@ const express = require('express');
 const { OAuth2Client } = require('google-auth-library');
 const cors = require('cors');
 const db = require('./db');
+const config = require('../src/utils/config');
 
 const app = express();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// Use configuration values
+const region = config.get('REGION');
+const projectId = config.get('PROJECT_ID');
+const deploySuffix = config.get('DEPLOY_SUFFIX');
 
 // Configure CORS with additional headers
 app.use(cors({
