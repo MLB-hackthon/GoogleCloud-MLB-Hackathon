@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import masonryData from './data/masonry-data.json';
+import Masonry from 'react-masonry-css';
 
 // 创建一个函数来检查脚本是否已加载
 const isGettyScriptLoaded = () => {
@@ -10,9 +11,16 @@ const data = masonryData;
 
 export default function ScrollingMasonry() {
   const [isPaused, setIsPaused] = useState(false);
-  const [hoveredDomain, setHoveredDomain] = useState('');
+  const [hoveredDomain, setHoveredDomain] = useState(null);
   const containerRef = useRef(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [imageAspectRatios, setImageAspectRatios] = useState({});
+
+  const breakpointColumnsObj = {
+    default: 2,  // 默认两列
+    1100: 2,    // 屏幕宽度 <= 1100px 时保持两列
+    700: 1      // 屏幕宽度 <= 700px 时变成一列
+  };
 
   useEffect(() => {
     // 只在脚本未加载时加载脚本
@@ -70,6 +78,28 @@ export default function ScrollingMasonry() {
   const leftColumn = duplicatedData.filter((_, index) => index % 2 === 0);
   const rightColumn = duplicatedData.filter((_, index) => index % 2 === 1);
 
+  // 检查图片方向
+  const checkImageOrientation = (imageUrl, index) => {
+    const img = new Image();
+    img.onload = () => {
+      setImageAspectRatios(prev => ({
+        ...prev,
+        [index]: img.width > 1.5 *img.height
+      }));
+    };
+    img.src = imageUrl;
+  };
+
+  // 初始化时检查所有图片
+  useEffect(() => {
+    leftColumn.forEach((item, index) => {
+      checkImageOrientation(item.image_url, index);
+    });
+    rightColumn.forEach((item, index) => {
+      checkImageOrientation(item.image_url, index);
+    });
+  }, []);
+
   const handleClick = (url) => {
     window.open(url, '_blank');  
   };
@@ -81,27 +111,32 @@ export default function ScrollingMasonry() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => {
         setIsPaused(false);
-        setHoveredDomain('');
+        setHoveredDomain(null);
       }}
     >
-      <div className="flex gap-0">
-        {/* 左列 */}
-        <div className="flex-1 px-1">
-          {leftColumn.map((item, index) => (
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className="flex w-full gap-0.5"
+        columnClassName="flex flex-col gap-0.5 [&:nth-child(2)]:mt-4"
+      >
+        {leftColumn.map((item, index) => {
+          const isWide = imageAspectRatios[index];
+          return (
             <div
               key={`left-${item.id}-${index}`}
-              className="flex flex-col items-center bg-gray-100 rounded-lg mb-4 overflow-hidden cursor-pointer"
+              className="w-full bg-white rounded-lg overflow-hidden shadow-sm"
               style={{ 
-                transition: 'all 0.5s ease-in-out',
-                maxHeight: '400px',  
-                height: 'auto',
-                width: '100%'
+                aspectRatio: isWide ? '4/3' : '3/4'
               }}
-              onClick={() => handleClick(item.url)}
               onMouseEnter={() => setHoveredDomain(item.domain)}
-              onMouseLeave={() => setHoveredDomain('')}
+              onMouseLeave={() => setHoveredDomain(null)}
             >
-              <div className="flex-grow w-full relative" style={{ maxHeight: '85%' }}>
+              <div 
+                className="flex-grow w-full relative" 
+                style={{ 
+                  height: isWide ? '75%' : '85%'
+                }}
+              >
                 {item.isGetty ? (
                   <div 
                     dangerouslySetInnerHTML={{ __html: item.gettyHtml }}
@@ -112,7 +147,6 @@ export default function ScrollingMasonry() {
                     src={item.image_url}
                     alt={item.title}
                     className="w-full h-full object-cover"
-                    style={{ maxHeight: '400px' }} 
                   />
                 )}
                 {hoveredDomain === item.domain && (
@@ -121,37 +155,41 @@ export default function ScrollingMasonry() {
                   </div>
                 )}
               </div>
-              <div className="w-full bg-gray-800 flex items-center p-3" style={{ minHeight: '15%' }}>
-                <p className="text-left font-medium text-white text-base leading-tight line-clamp-2">
+              <div 
+                className="w-full bg-gray-800 flex items-center p-2"
+                style={{ 
+                  height: isWide ? '25%' : '15%' // 宽图片时文字占20%
+                }}
+              >
+                <p className="text-left font-medium text-white text-sm leading-tight line-clamp-2">
                   {item.title}
                 </p>
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* 右列 */}
-        <div className="flex-1 px-1">
-          {rightColumn.map((item, index) => (
+          );
+        })}
+        {rightColumn.map((item, index) => {
+          const isWide = imageAspectRatios[index];
+          return (
             <div
               key={`right-${item.id}-${index}`}
-              className="flex flex-col items-center bg-gray-100 rounded-lg mb-4 overflow-hidden cursor-pointer"
+              className="w-full bg-white rounded-lg overflow-hidden shadow-sm"
               style={{ 
-                transition: 'all 0.5s ease-in-out',
-                maxHeight: '400px',  
-                height: 'auto',
-                width: '100%'
+                aspectRatio: isWide ? '4/3' : '3/4'
               }}
-              onClick={() => handleClick(item.url)}
               onMouseEnter={() => setHoveredDomain(item.domain)}
-              onMouseLeave={() => setHoveredDomain('')}
+              onMouseLeave={() => setHoveredDomain(null)}
             >
-              <div className="flex-grow w-full relative" style={{ maxHeight: '85%' }}>
+              <div 
+                className="flex-grow w-full relative" 
+                style={{ 
+                  height: isWide ? '75%' : '85%' // 宽图片时图片占80%
+                }}
+              >
                 <img
                   src={item.image_url}
                   alt={item.title}
                   className="w-full h-full object-cover"
-                  style={{ maxHeight: '400px' }} 
                 />
                 {hoveredDomain === item.domain && (
                   <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
@@ -159,15 +197,20 @@ export default function ScrollingMasonry() {
                   </div>
                 )}
               </div>
-              <div className="w-full bg-gray-800 flex items-center p-3" style={{ minHeight: '15%' }}>
-                <p className="text-left font-medium text-white text-base leading-tight line-clamp-2">
+              <div 
+                className="w-full bg-gray-800 flex items-center p-2"
+                style={{ 
+                  height: isWide ? '25%' : '15%' 
+                }}
+              >
+                <p className="text-left font-medium text-white text-sm leading-tight line-clamp-2">
                   {item.title}
                 </p>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+          );
+        })}
+      </Masonry>
     </div>
   );
 }

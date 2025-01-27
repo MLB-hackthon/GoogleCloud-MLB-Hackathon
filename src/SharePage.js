@@ -3,7 +3,6 @@ import "./SharePage.css";
 import Chatbot from "./Chatbot";
 import ScrollingMasonry from "./ScrollingMasonry";
 import youtubeData from './data/youtube_search_results.json';
-import UserInfo from "./components/UserInfo";
 
 function SharePage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
@@ -59,7 +58,11 @@ function SharePage() {
         </div>
 
         <div className="center-section">
-          <UserInfo />
+          <img
+            src="/test/image2.png"
+            alt="MLB Player"
+            className="pitcher-image"
+          />
         </div>
 
         <div className="right-section">

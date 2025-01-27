@@ -5,6 +5,7 @@ import { UserProvider, useUser } from './context/UserContext';
 import Login from './components/Login';
 import SharePage from "./SharePage";
 import "./SharePage.css";
+import StartPage from "./StartPage";
 import './App.css';
 
 // Protected Route component
@@ -74,6 +75,7 @@ function App() {
             path="/share"
             element={
               <ProtectedRoute>
+                <StartPage  />
                 <SharePage />
               </ProtectedRoute>
             }
