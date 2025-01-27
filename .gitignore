@@ -1,0 +1,12 @@
+# Node dependencies
+node_modules/
+node_modules/*
+
+# Existing entries...
+.env
+.env.local
+.env.*.local
+
+# But allow example and template files
+!.env.example
+!config/environment.yaml 
