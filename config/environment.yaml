@@ -1,0 +1,17 @@
+# Development environment
+development:
+  DEPLOY_SUFFIX: dev
+  REGION: us-central1
+  PROJECT_ID: mlb-hackathon-2024
+
+# Production environment
+production:
+  DEPLOY_SUFFIX: prod
+  REGION: us-central1
+  PROJECT_ID: mlb-hackathon-2024
+
+# Testing environment
+testing:
+  DEPLOY_SUFFIX: test
+  REGION: us-central1
+  PROJECT_ID: mlb-hackathon-2024 
