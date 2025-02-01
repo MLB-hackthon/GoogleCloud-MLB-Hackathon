@@ -7,6 +7,7 @@ import SharePage from "./SharePage";
 import "./SharePage.css";
 import StartPage from "./StartPage";
 import './App.css';
+import UserInfo from './components/UserInfo';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -75,18 +76,17 @@ function App() {
             path="/share"
             element={
               <ProtectedRoute>
-                {/* <StartPage  /> */}
                 <SharePage />
               </ProtectedRoute>
             }
           />
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
+        <UserInfo />
       </Router>
     </UserProvider>
   );
 }
-
 
 // Export App as the default export
 export default App;

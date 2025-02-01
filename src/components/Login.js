@@ -1,4 +1,4 @@
-import React, { useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import './Login.css';
@@ -10,51 +10,46 @@ function Login() {
 
   useEffect(() => {
     const loadGoogleScript = () => {
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      
-      script.onload = () => {
-        if (window.google && window.google.accounts) {
-          window.google.accounts.id.initialize({
-            client_id: CLIENT_ID,
-            callback: handleGoogleLogin,
-            auto_select: false,
-            cancel_on_tap_outside: true,
-            scope: 'email profile',
-            ux_mode: 'popup',
-          });
+      if (window.google) {
+        initializeGoogleSignIn();
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = initializeGoogleSignIn;
+        document.body.appendChild(script);
+      }
+    };
 
-          window.google.accounts.id.renderButton(
-            document.getElementById('google-login-button'),
-            { 
-              theme: 'outline', 
-              size: 'large',
-              width: 250,
-              text: 'continue_with',
-              shape: 'rectangular',
-              type: 'standard',
-            }
-          );
+    const initializeGoogleSignIn = () => {
+      window.google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: handleGoogleLogin,
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+
+      window.google.accounts.id.renderButton(
+        document.getElementById('google-login-button'),
+        { 
+          theme: 'outline', 
+          size: 'large',
+          width: 250,
+          text: 'continue_with',
+          shape: 'rectangular',
+          type: 'standard'
         }
-      };
-
-      document.body.appendChild(script);
+      );
     };
 
     loadGoogleScript();
-
-    return () => {
-      const scriptTag = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
-      if (scriptTag) {
-        scriptTag.remove();
-      }
-    };
   }, []);
 
   const handleGoogleLogin = async (response) => {
     try {
+      console.log('Google response:', response);
+      
       if (!response.credential) {
         console.error('No credential received');
         return;
@@ -66,34 +61,14 @@ function Login() {
       const userInfo = {
         email: decoded.email,
         name: decoded.name,
-        picture: decoded.picture
+        picture: decoded.picture,
+        token: response.credential
       };
 
+      console.log('Setting user info:', userInfo);
       updateUser(userInfo);
       navigate('/share');
 
-      /* Uncomment when backend is ready
-      const result = await fetch('http://localhost:3001/api/auth/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          token: response.credential,
-          userInfo: userInfo
-        }),
-      });
-
-      const data = await result.json();
-      console.log('Server response:', data);
-      
-      if (data.success) {
-        updateUser(userInfo);
-        navigate('/share');
-      }
-      */
     } catch (error) {
       console.error('Login failed:', error);
     }
