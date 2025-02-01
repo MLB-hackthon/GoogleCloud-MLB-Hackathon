@@ -82,7 +82,7 @@ function SharePage() {
 
         <div className="center-section">
           <img
-            src={process.env.PUBLIC_URL + '/test/image2.png'}
+            src="./test/image.png"
             alt="MLB Player"
             className="pitcher-image"
           />
