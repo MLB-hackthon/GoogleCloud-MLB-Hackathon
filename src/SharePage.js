@@ -6,13 +6,19 @@ import DataCharts from './components/DataCharts';
 import HomeRuns from './components/HomeRuns';
 import youtubeData from './data/youtube_search_results.json';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 function SharePage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('masonry');
+  const navigate = useNavigate();
 
   const toggleChatbot = () => {
     setIsChatbotOpen(!isChatbotOpen);
+  };
+
+  const handleLogoClick = () => {
+    navigate('/');
   };
 
   const description = "If there's been a theme of this baseball offseason ... well, OK, it's the Dodgers signing every member of your extended family. But if there's another theme, it's that starting pitchers have been doing quite well in free agency. In a sport desperate for pitching, the starting pitching market got moving fast, and ended up with a number of veteran arms being well-compensated, usually somewhat more than projections would have expected.Except, that is, for Jack Flaherty, who is the only unsigned member of MLB.com's pre-Hot Stove Top 10 Free Agent Starters list.According to FanGraphs, only three starters remain who are projected for even 2 WAR, which is to say average. Since Flaherty is 29 and unencumbered by a Qualifying Offer, as opposed to Nick Pivetta (32, with an Offer) and Max Scherzer (a living legend, but also turning 41 this summer), it's not a hard case to make that Flaherty is the best free agent starter still available.You could argue, too, that his hometown Dodgers don't get to and win the World Series without him, given how paper-thin their rotation was last fall.And yet: he remains on the market, with little buzz. What's going on - and what might teams hope to get?";
@@ -46,7 +52,8 @@ function SharePage() {
         <img 
           src="/test/logo.png"
           alt="Team logo"
-          className="team-logo"
+          className="team-logo cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={handleLogoClick}
         />  
       </div>
 
