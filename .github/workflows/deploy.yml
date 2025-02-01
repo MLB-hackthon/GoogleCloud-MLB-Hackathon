@@ -19,10 +19,14 @@ jobs:
 
     - name: Install Docker
       run: |
+        # Clean up any existing Docker installations
+        sudo apt-get remove -y docker docker-engine docker.io containerd runc
+        sudo rm -rf /etc/apt/sources.list.d/docker*
+        
         # Update package list
         sudo apt-get update
         
-        # Install packages to allow apt to use a repository over HTTPS
+        # Install prerequisite packages
         sudo apt-get install -y \
           apt-transport-https \
           ca-certificates \
@@ -35,19 +39,18 @@ jobs:
         curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
         sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-        # Set up the Docker repository for Debian
-        echo \
-          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-          stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        # Add Docker repository
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian stable" | \
+          sudo tee /etc/apt/sources.list.d/docker.list
 
-        # Update apt package index
+        # Install Docker
         sudo apt-get update
-
-        # Install Docker Engine
         sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-        # Add runner user to docker group
+        # Configure Docker permissions
+        sudo groupadd docker || true
         sudo usermod -aG docker $USER
+        newgrp docker
 
     - name: Clean up old builds
       run: |
