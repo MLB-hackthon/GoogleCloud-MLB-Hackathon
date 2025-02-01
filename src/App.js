@@ -70,7 +70,7 @@ function App() {
     <UserProvider>
       <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<StartPage />} />
           <Route path="/callback" element={<GoogleCallback />} />
           <Route
             path="/share"

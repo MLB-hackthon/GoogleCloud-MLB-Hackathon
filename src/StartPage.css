@@ -1,0 +1,42 @@
+.google-login-button {
+  margin: 0 auto;
+}
+
+/* 如果需要调整左右两栏的样式 */
+.flex > div {
+  position: relative;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.login-box {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 320px;
+}
+
+.login-box h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.login-box p {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+#google-login-button {
+  margin: 0 auto;
+  min-height: 40px;
+} 
