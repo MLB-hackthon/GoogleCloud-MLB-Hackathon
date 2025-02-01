@@ -40,8 +40,9 @@ jobs:
         sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
         # Add Docker repository
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian stable" | \
-          sudo tee /etc/apt/sources.list.d/docker.list
+        echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian stable main" | \
+          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
         # Clean and update apt
         sudo apt-get clean
