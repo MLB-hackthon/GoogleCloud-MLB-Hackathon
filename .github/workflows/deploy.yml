@@ -17,6 +17,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Clean up old builds
+      run: |
+        # Remove old build artifacts
+        rm -rf build/
+        rm -rf node_modules/
+        
+        # Clean Docker images and containers
+        docker system prune -af
+        
+        # Clean up old Cloud Build artifacts
+        gcloud container images list-tags gcr.io/${{ env.PROJECT_ID }}/mlb-app \
+          --format='get(digest)' --filter='timestamp.datetime < -P30D' | \
+        while read digest; do
+          gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/mlb-app@${digest}" --quiet
+        done || true
+
     - name: Google Auth
       id: auth
       uses: google-github-actions/auth@v2
