@@ -48,6 +48,7 @@ body {
   overflow: visible;
   position: relative;
   pointer-events: none;
+  z-index: 2;
 }
 
 .right-section {
@@ -61,6 +62,7 @@ body {
   flex-direction: column;
   background-color: #f0f0f0;
   border-radius: 8px;
+  z-index: 1;
 }
 
 .team-logo-wrapper {
@@ -174,10 +176,13 @@ h1 {
   transform-origin: center center;
   transition: transform 0.3s ease;
   pointer-events: auto;
+  will-change: transform;
+  isolation: isolate;
 }
 
 .pitcher-image:hover {
   transform: translate(-50%, -50%) scale(1.2);
+  z-index: 3;
 }
 
 .tabs-container {
