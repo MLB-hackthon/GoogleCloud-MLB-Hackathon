@@ -59,7 +59,7 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: #f0f0f0;
   border-radius: 8px;
 }
 
@@ -180,29 +180,49 @@ h1 {
   transform: translate(-50%, -50%) scale(1.2);
 }
 
-.tabs {
-  display: flex;
-  gap: 1px;
+.tabs-container {
+  position: relative;
   background-color: #f0f0f0;
   padding: 4px;
   border-radius: 8px 8px 0 0;
 }
 
+.tabs {
+  display: flex;
+  gap: 1px;
+  position: relative;
+  z-index: 1;
+}
+
 .tab {
   flex: 1;
-  padding: 8px 16px;
+  padding: 12px 24px;
   border: none;
   background-color: transparent;
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.3s ease;
+  color: #666;
+  position: relative;
+  transition: color 0.3s ease;
 }
 
 .tab.active {
-  background-color: white;
-  border-radius: 6px;
+  color: #000;
 }
 
-.tab:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.5);
+.tab-indicator {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  width: calc(33.333% - 3px);
+  height: calc(100% - 8px);
+  background-color: white;
+  border-radius: 6px;
+  z-index: 0;
+}
+
+.tab-content {
+  flex: 1;
+  overflow: hidden;
+  background-color: white;
 }

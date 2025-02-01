@@ -5,6 +5,7 @@ import ScrollingMasonry from "./components/ScrollingMasonry";
 import DataCharts from './components/DataCharts';
 import HomeRuns from './components/HomeRuns';
 import youtubeData from './data/youtube_search_results.json';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function SharePage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
@@ -19,6 +20,12 @@ function SharePage() {
   // 从 embed_code 中提取视频 URL
   const embedCode = youtubeData.items[0]?.embed_code || "";
   const videoUrl = embedCode.match(/src="([^"]+)"/)?.[1] || "";
+
+  const tabs = [
+    { id: 'masonry', label: 'News' },
+    { id: 'charts', label: 'Charts' },
+    { id: 'homeruns', label: 'Home Runs' }
+  ];
 
   const renderRightContent = () => {
     switch (activeTab) {
@@ -82,27 +89,42 @@ function SharePage() {
         </div>
 
         <div className="right-section">
-          <div className="tabs">
-            <button
-              className={`tab ${activeTab === 'masonry' ? 'active' : ''}`}
-              onClick={() => setActiveTab('masonry')}
-            >
-              News
-            </button>
-            <button
-              className={`tab ${activeTab === 'charts' ? 'active' : ''}`}
-              onClick={() => setActiveTab('charts')}
-            >
-              Charts
-            </button>
-            <button
-              className={`tab ${activeTab === 'homeruns' ? 'active' : ''}`}
-              onClick={() => setActiveTab('homeruns')}
-            >
-              Home Runs
-            </button>
+          <div className="tabs-container">
+            <div className="tabs">
+              {tabs.map(tab => (
+                <motion.button
+                  key={tab.id}
+                  className={`tab ${activeTab === tab.id ? 'active' : ''}`}
+                  onClick={() => setActiveTab(tab.id)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {tab.label}
+                </motion.button>
+              ))}
+            </div>
+            <motion.div 
+              className="tab-indicator"
+              initial={false}
+              animate={{
+                x: activeTab === 'masonry' ? '0%' : 
+                   activeTab === 'charts' ? '100%' : '200%'
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            />
           </div>
-          {renderRightContent()}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="tab-content"
+            >
+              {renderRightContent()}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
       </div>
