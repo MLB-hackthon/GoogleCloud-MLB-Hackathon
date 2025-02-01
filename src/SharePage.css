@@ -59,6 +59,8 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
+  background-color: white;
+  border-radius: 8px;
 }
 
 .team-logo-wrapper {
@@ -176,4 +178,31 @@ h1 {
 
 .pitcher-image:hover {
   transform: translate(-50%, -50%) scale(1.2);
+}
+
+.tabs {
+  display: flex;
+  gap: 1px;
+  background-color: #f0f0f0;
+  padding: 4px;
+  border-radius: 8px 8px 0 0;
+}
+
+.tab {
+  flex: 1;
+  padding: 8px 16px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tab.active {
+  background-color: white;
+  border-radius: 6px;
+}
+
+.tab:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.5);
 }

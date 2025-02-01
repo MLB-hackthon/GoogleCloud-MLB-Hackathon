@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import "./SharePage.css";
 import Chatbot from "./Chatbot";
-import ScrollingMasonry from "./ScrollingMasonry";
+import ScrollingMasonry from "./components/ScrollingMasonry";
+import DataCharts from './components/DataCharts';
+import HomeRuns from './components/HomeRuns';
 import youtubeData from './data/youtube_search_results.json';
 
 function SharePage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('masonry');
 
   const toggleChatbot = () => {
     setIsChatbotOpen(!isChatbotOpen);
@@ -16,6 +19,19 @@ function SharePage() {
   // 从 embed_code 中提取视频 URL
   const embedCode = youtubeData.items[0]?.embed_code || "";
   const videoUrl = embedCode.match(/src="([^"]+)"/)?.[1] || "";
+
+  const renderRightContent = () => {
+    switch (activeTab) {
+      case 'masonry':
+        return <ScrollingMasonry />;
+      case 'charts':
+        return <DataCharts />;
+      case 'homeruns':
+        return <HomeRuns />;
+      default:
+        return <ScrollingMasonry />;
+    }
+  };
 
   return (
     <div className="background">
@@ -66,7 +82,27 @@ function SharePage() {
         </div>
 
         <div className="right-section">
-          <ScrollingMasonry />
+          <div className="tabs">
+            <button
+              className={`tab ${activeTab === 'masonry' ? 'active' : ''}`}
+              onClick={() => setActiveTab('masonry')}
+            >
+              News
+            </button>
+            <button
+              className={`tab ${activeTab === 'charts' ? 'active' : ''}`}
+              onClick={() => setActiveTab('charts')}
+            >
+              Charts
+            </button>
+            <button
+              className={`tab ${activeTab === 'homeruns' ? 'active' : ''}`}
+              onClick={() => setActiveTab('homeruns')}
+            >
+              Home Runs
+            </button>
+          </div>
+          {renderRightContent()}
         </div>
 
       </div>

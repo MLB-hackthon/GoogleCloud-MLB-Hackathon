@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import masonryData from './data/masonry-data.json';
+import masonryData from '../data/masonry-data.json';
 import Masonry from 'react-masonry-css';
 
 // 创建一个函数来检查脚本是否已加载
@@ -158,7 +158,7 @@ export default function ScrollingMasonry() {
               <div 
                 className="w-full bg-gray-800 flex items-center p-2"
                 style={{ 
-                  height: isWide ? '25%' : '15%' // 宽图片时文字占20%
+                  height: isWide ? '25%' : '15%' 
                 }}
               >
                 <p className="text-left font-medium text-white text-sm leading-tight line-clamp-2">
@@ -183,7 +183,7 @@ export default function ScrollingMasonry() {
               <div 
                 className="flex-grow w-full relative" 
                 style={{ 
-                  height: isWide ? '75%' : '85%' // 宽图片时图片占80%
+                  height: isWide ? '75%' : '85%' 
                 }}
               >
                 <img
