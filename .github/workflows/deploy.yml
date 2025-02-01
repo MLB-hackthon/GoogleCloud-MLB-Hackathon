@@ -17,59 +17,28 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install Docker
-      run: |
-        # Clean up any existing Docker installations
-        sudo apt-get remove -y docker docker.io containerd runc || true
-        sudo rm -rf /etc/apt/sources.list.d/docker*
-        
-        # Update package list
-        sudo apt-get update
-        
-        # Install prerequisite packages
-        sudo apt-get install -y \
-          apt-transport-https \
-          ca-certificates \
-          curl \
-          gnupg \
-          lsb-release
-
-        # Add Docker's official GPG key (non-interactive)
-        sudo install -m 0755 -d /etc/apt/keyrings
-        curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor --batch --yes -o /etc/apt/keyrings/docker.gpg
-        sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
-        # Add Docker repository
-        echo \
-          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian stable main" | \
-          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-        # Clean and update apt
-        sudo apt-get clean
-        sudo apt-get update
-
-        # Install Docker
-        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-        # Configure Docker permissions
-        sudo groupadd docker || true
-        sudo usermod -aG docker $USER
-        newgrp docker
-
     - name: Clean up old builds
       run: |
         # Remove old build artifacts
         rm -rf build/
         rm -rf node_modules/
         
-        # Clean Docker images and containers
-        sudo docker system prune -af
-        
         # Clean up old Cloud Build artifacts
         gcloud container images list-tags gcr.io/${{ env.PROJECT_ID }}/mlb-app \
           --format='get(digest)' --filter='timestamp.datetime < -P30D' | \
         while read digest; do
-          gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/mlb-app@${digest}" --quiet
+          gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/mlb-app@${digest}" --quiet --force-delete-tags
+        done || true
+        
+        # Clean up old Cloud Run revisions
+        gcloud run revisions list \
+          --platform managed \
+          --region ${{ env.REGION }} \
+          --service mlb-app \
+          --format="get(metadata.name)" \
+          --filter="metadata.creationTimestamp < -P30D" | \
+        while read revision; do
+          gcloud run revisions delete $revision --quiet --region ${{ env.REGION }}
         done || true
 
     - name: Google Auth
