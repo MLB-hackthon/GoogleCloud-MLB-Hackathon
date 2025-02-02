@@ -8,6 +8,7 @@ on:
 env:
   PROJECT_ID: mlb-hackathon-448420
   REGION: us-central1
+  VM_IP: 34.56.194.81
 
 jobs:
   deploy:
@@ -53,4 +54,28 @@ jobs:
 
     - name: Submit Cloud Build
       run: |
-        gcloud builds submit --config cloudbuild.yaml --project ${{ env.PROJECT_ID }} 
+        gcloud builds submit --config cloudbuild.yaml --project ${{ env.PROJECT_ID }}
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.VM_SSH_KEY }}
+
+    - name: Add VM to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ env.VM_IP }} >> ~/.ssh/known_hosts
+
+    - name: Deploy FastAPI to VM
+      if: contains(github.event.head_commit.modified, 'backend/')
+      env:
+        VM_USER: ${{ secrets.VM_USER }}
+      run: |
+        ssh $VM_USER@${{ env.VM_IP }} << 'EOF'
+          cd GoogleCloud-MLB-Hackathon/backend
+          git pull origin main
+          docker-compose down
+          docker system prune -af
+          docker-compose up -d
+          echo "FastAPI Deployment completed"
+        EOF 
