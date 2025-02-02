@@ -4,12 +4,15 @@ from typing import List, Optional, Dict, Any
 
 class AIAssistant:
     def __init__(self, api_key: str, model_id: str = "gemini-2.0-flash-exp"):
+        """Initialize the AI Assistant with API credentials and configuration."""
         self.api_key = api_key
         self.model_id = model_id
+        self.client = genai.Client(api_key=self.api_key)
+        self.chat = None
         self.system_instruction = None
-        self.chat_history = []
 
     def load_system_prompt(self, file_path: str, replacements: Dict[str, str] = None) -> None:
+        """Load and process the system prompt from a file."""
         try:
             with open(file_path, "r") as file:
                 self.system_instruction = file.read()
@@ -56,7 +59,11 @@ class AIAssistant:
 
 
     def get_chat_history(self) -> List[Dict[str, Any]]:
-        return self.chat_history
+        """Return the chat history."""
+        if not self.chat:
+            return []
+        return self.chat.history
 
     def get_system_prompt(self) -> str:
+        """Return the system prompt."""
         return self.system_instruction

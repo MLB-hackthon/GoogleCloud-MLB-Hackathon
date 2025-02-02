@@ -4,14 +4,13 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     # Database settings
-    DB_HOST: str = "35.192.90.207"  # Change back to IP
+    DB_HOST: str = "34.55.144.7"  # Change back to IP
     DB_PORT: int = 5432
-    DB_USER: str = "postgres"
+    DB_USER: str = "mlb"
     DB_PASSWORD: str = "mlb"
     DB_NAME: str = "mlb-app"
     
     # Google API settings
-    GOOGLE_CLIENT_ID: str
     GOOGLE_API_KEY: str
     GOOGLE_SEARCH_ENGINE_ID: str
     
