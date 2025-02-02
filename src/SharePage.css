@@ -48,6 +48,7 @@ body {
   overflow: visible;
   position: relative;
   pointer-events: none;
+  z-index: 2;
 }
 
 .right-section {
@@ -59,6 +60,9 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  z-index: 1;
 }
 
 .team-logo-wrapper {
@@ -172,8 +176,58 @@ h1 {
   transform-origin: center center;
   transition: transform 0.3s ease;
   pointer-events: auto;
+  will-change: transform;
+  isolation: isolate;
 }
 
 .pitcher-image:hover {
   transform: translate(-50%, -50%) scale(1.2);
+  z-index: 3;
+}
+
+.tabs-container {
+  position: relative;
+  background-color: #f0f0f0;
+  padding: 4px;
+  border-radius: 8px 8px 0 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 1px;
+  position: relative;
+  z-index: 1;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #666;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.tab.active {
+  color: #000;
+}
+
+.tab-indicator {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  width: calc(33.333% - 3px);
+  height: calc(100% - 8px);
+  background-color: white;
+  border-radius: 6px;
+  z-index: 0;
+}
+
+.tab-content {
+  flex: 1;
+  overflow: hidden;
+  background-color: white;
 }
