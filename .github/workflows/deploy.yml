@@ -24,23 +24,26 @@ jobs:
         rm -rf build/
         rm -rf node_modules/
         
-        # Clean up old Cloud Build artifacts
-        gcloud container images list-tags gcr.io/${{ env.PROJECT_ID }}/mlb-app \
-          --format='get(digest)' --filter='timestamp.datetime < -P30D' | \
-        while read digest; do
-          gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/mlb-app@${digest}" --quiet --force-delete-tags
-        done || true
-        
-        # Clean up old Cloud Run revisions
-        gcloud run revisions list \
-          --platform managed \
-          --region ${{ env.REGION }} \
-          --service mlb-app \
-          --format="get(metadata.name)" \
-          --filter="metadata.creationTimestamp < -P30D" | \
-        while read revision; do
-          gcloud run revisions delete $revision --quiet --region ${{ env.REGION }}
-        done || true
+        # Only try to clean up if we have access
+        if gcloud projects describe ${{ env.PROJECT_ID }} &>/dev/null; then
+          # Clean up old Cloud Build artifacts
+          gcloud container images list-tags gcr.io/${{ env.PROJECT_ID }}/mlb-app \
+            --format='get(digest)' --filter='timestamp.datetime < -P30D' | \
+          while read digest; do
+            gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/mlb-app@${digest}" --quiet --force-delete-tags
+          done || true
+          
+          # Clean up old Cloud Run revisions
+          gcloud run revisions list \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --service mlb-app \
+            --format="get(metadata.name)" \
+            --filter="metadata.creationTimestamp < -P30D" | \
+          while read revision; do
+            gcloud run revisions delete $revision --quiet --region ${{ env.REGION }}
+          done || true
+        fi
 
     - name: Google Auth
       id: auth
@@ -54,7 +57,19 @@ jobs:
 
     - name: Submit Cloud Build
       run: |
-        gcloud builds submit --config cloudbuild.yaml --project ${{ env.PROJECT_ID }}
+        # Submit build without waiting
+        gcloud builds submit --config cloudbuild.yaml --project ${{ env.PROJECT_ID }} --async
+
+        # Wait a moment for build to start
+        sleep 10
+
+        # Get latest build status
+        BUILD_STATUS=$(gcloud builds list --limit=1 --format="get(status)")
+        echo "Latest build status: $BUILD_STATUS"
+
+        # Optional: Print build URL
+        BUILD_ID=$(gcloud builds list --limit=1 --format="get(id)")
+        echo "Build URL: https://console.cloud.google.com/cloud-build/builds/$BUILD_ID?project=${{ env.PROJECT_ID }}"
 
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.7.0
