@@ -65,7 +65,7 @@ jobs:
 
     - name: Deploy FastAPI to VM
       run: |
-        ssh ${{ secrets.VM_USER }}@${{ env.VM_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ env.VM_IP }} '
           cd GoogleCloud-MLB-Hackathon/backend
           
           # Only pull if backend files changed
@@ -82,4 +82,4 @@ jobs:
           docker system prune -af
           docker-compose up -d
           echo "FastAPI Deployment completed"
-        EOF 
+        ' 
