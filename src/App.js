@@ -7,7 +7,6 @@ import "./SharePage.css";
 import StartPage from "./StartPage";
 import './App.css';
 import UserInfo from './components/UserInfo';
-import LanguageSwitcher from './components/LanguageSwitcher';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -83,7 +82,6 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
         <UserInfo />
-        <LanguageSwitcher />
       </Router>
     </UserProvider>
   );

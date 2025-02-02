@@ -14,18 +14,11 @@ const data = masonryData;
 const MOCK_NEWS = {
   "news": [
     {
-      "url": "https://www.news-journalonline.com/story/sports/mlb/2017/05/15/derek-jeters-no-2-retired-by-yankees-plaque-unveiled/21044275007/",
-      "domain": "www.news-journalonline.com",
-      "title": "Derek Jeter's No. 2 retired by Yankees, plaque unveiled",
-      "snippet": "May 15, 2017 ... He is the 22nd player to have his number retired by New York, by far the most among major league teams.",
-      "image_url": "https://www.news-journalonline.com/gcdn/authoring/2017/05/14/NDNJ/ghows-LK-4d4b77d6-5e50-2e35-e053-0100007fe439-fa798152.jpeg"
-    },
-    {
-      "url": "https://www.mlb.com/news/aaron-judge-home-run-record",
-      "domain": "www.mlb.com",
-      "title": "Aaron Judge sets AL home run record",
-      "snippet": "Aaron Judge made history with his 62nd home run of the season, setting a new American League record.",
-      "image_url": "https://img.mlbstatic.com/mlb-images/image/private/t_16x9/t_w1024/mlb/l1qxunceypdq1wcqm3ip"
+      "url": "https://www.mlb.com/news/ranking-the-best-position-groups-for-2025",
+      "domain": "wwwmlb.com",
+      "title": "Ranking the most stacked positions of 2025",
+      "snippet": "He is the 22nd player to have his number retired by New York, by far the most among major league teams.",
+      "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9/t_w2208/mlb/alooqfx5lkof5mmwi9ah"
     },
     {
       "url": "https://www.espn.com/mlb/story/_/id/38679320/shohei-ohtani-dodgers-historic-deal",
@@ -149,16 +142,16 @@ export default function ScrollingMasonry() {
           return;
         }
 
-        const response = await fetch('/api/v1/content/news/derek_jeter', {
+        const response = await fetch('http://34.56.194.81:8000/api/v1/content/news/RokiSasaki?limit=10', {
           method: 'GET',
           headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
+            'accept': 'application/json'
+          }
         });
         
         if (!response.ok) {
+          const errorText = await response.text();
+          console.error('API Error Response:', errorText);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
@@ -166,7 +159,10 @@ export default function ScrollingMasonry() {
         if (!data || !data.news) {
           throw new Error('Invalid data format');
         }
-        setNews(data.news);
+
+        // 随机打乱新闻顺序
+        const shuffledNews = [...data.news].sort(() => Math.random() - 0.5);
+        setNews(shuffledNews);
       } catch (err) {
         console.error('Fetch Error:', err);
         setError(err.message);
@@ -230,7 +226,7 @@ export default function ScrollingMasonry() {
         setHoveredDomain(null);
       }}
     >
-      <Masonry
+      {/* <Masonry
         breakpointCols={breakpointColumnsObj}
         className="flex w-full gap-0.5"
         columnClassName="flex flex-col gap-0.5 [&:nth-child(2)]:mt-4"
@@ -328,7 +324,7 @@ export default function ScrollingMasonry() {
             </div>
           );
         })}
-      </Masonry>
+      </Masonry> */}
       <div className="p-4 overflow-y-auto h-full">
         <div className="grid grid-cols-1 gap-4 auto-rows-max">
           {news && news.length > 0 ? (
@@ -336,7 +332,9 @@ export default function ScrollingMasonry() {
               <NewsCard key={index} news={item} />
             ))
           ) : (
-            <div className="text-center text-gray-500">No news available</div>
+            <div className="flex justify-center items-center h-64 w-full">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+          </div>
           )}
         </div>
       </div>
