@@ -1,8 +1,8 @@
 from typing import Dict
 import os
 from pathlib import Path
-from ..core.ai_assistant import AIAssistant
-from ..core.config import settings
+from app.core.ai_assistant import AIAssistant
+from app.core.config import settings
 
 class ChatService:
     def __init__(self):
@@ -14,7 +14,6 @@ class ChatService:
         if user_id not in self._sessions:
             # Create new session
             assistant = AIAssistant(api_key=settings.GOOGLE_API_KEY)
-            
             # Get absolute path to the prompt file
             current_dir = Path(__file__).parent
             prompt_path = current_dir.parent / "prompts" / "assistant_prompt.txt"
@@ -30,5 +29,4 @@ class ChatService:
             
         return self._sessions[user_id]
 
-# Create a global instance
-chat_service = ChatService()
+        

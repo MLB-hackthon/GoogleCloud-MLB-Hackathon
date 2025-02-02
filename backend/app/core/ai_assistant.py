@@ -1,14 +1,18 @@
+from google import genai
+from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 from typing import List, Optional, Dict, Any
-import requests
 
 class AIAssistant:
     def __init__(self, api_key: str, model_id: str = "gemini-2.0-flash-exp"):
+        """Initialize the AI Assistant with API credentials and configuration."""
         self.api_key = api_key
         self.model_id = model_id
+        self.client = genai.Client(api_key=self.api_key)
+        self.chat = None
         self.system_instruction = None
-        self.chat_history = []
 
     def load_system_prompt(self, file_path: str, replacements: Dict[str, str] = None) -> None:
+        """Load and process the system prompt from a file."""
         try:
             with open(file_path, "r") as file:
                 self.system_instruction = file.read()
@@ -19,19 +23,47 @@ class AIAssistant:
         except FileNotFoundError:
             raise FileNotFoundError(f"System prompt file not found: {file_path}")
 
-    async def send_message(self, message: str):
-        # Store message in chat history
-        self.chat_history.append({"role": "user", "content": message})
-        
-        # For now, just echo back the message
-        response = f"Received message: {message}"
-        self.chat_history.append({"role": "assistant", "content": response})
-        
-        # Yield the response in a format compatible with your chat endpoint
-        yield {"text": response}
+    def initialize_chat(self, enable_google_search: bool = True, temperature: float = 0.5) -> None:
+        """Initialize the chat session with specified configuration."""
+        if not self.system_instruction:
+            raise ValueError("System prompt not loaded. Call load_system_prompt first.")
+
+        if enable_google_search:
+            tools = [GoogleSearch]
+        else:
+            tools = []
+
+        self.chat = self.client.chats.create(
+            model=self.model_id,
+            config=GenerateContentConfig(
+                system_instruction=self.system_instruction,
+                temperature=temperature,
+                tools=tools,
+                response_modalities=["TEXT"],
+            ),
+        )
+
+    def send_message_stream(self, message: str) -> Dict[str, Any]:
+        """Send a message to the AI and return the response with metadata."""
+        if not self.chat:
+            raise RuntimeError("Chat not initialized. Call initialize_chat first.")
+
+        return self.chat.send_message_stream(message)
+
+    def send_message(self, message: str) -> Dict[str, Any]:
+        """Send a message to the AI and return the response with metadata."""
+        if not self.chat:
+            raise RuntimeError("Chat not initialized. Call initialize_chat first.")
+
+        return self.chat.send_message(message)
+
 
     def get_chat_history(self) -> List[Dict[str, Any]]:
-        return self.chat_history
+        """Return the chat history."""
+        if not self.chat:
+            return []
+        return self.chat.history
 
     def get_system_prompt(self) -> str:
+        """Return the system prompt."""
         return self.system_instruction

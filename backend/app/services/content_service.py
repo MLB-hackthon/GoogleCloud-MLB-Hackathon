@@ -1,7 +1,8 @@
 from typing import Dict, List, Optional
 import json
 import requests
-from ..core.config import settings
+from app.core.config import settings
+from app.core.translate_assistant import TranslateAssistant
 import pandas as pd
 import re
 import isodate
@@ -10,6 +11,7 @@ class PlayerContentService:
     def __init__(self):
         self._load_player_images()
         self._load_mlb_hr_data()
+        self.translator = TranslateAssistant(settings.GOOGLE_API_KEY)
     
     def _load_player_images(self):
         """Load player images from JSON file"""
@@ -50,24 +52,25 @@ class PlayerContentService:
             print(f"Error getting player images: {e}")
             return []
 
-    def get_player_news(self, player_name: str, limit: int = 10) -> List[Dict]:
-        """
-        Get news about a player using Google Custom Search
-        Args:
-            player_name: Name of the player
-            limit: Number of results to return (default 10, max 100)
-        """
-        API_KEY = settings.GOOGLE_API_KEY
-        SEARCH_ENGINE_ID = settings.GOOGLE_SEARCH_ENGINE_ID
-        BASE_URL = "https://www.googleapis.com/customsearch/v1"
-        
-        processed_results = []
-        # Calculate number of requests needed (10 results per request)
-        num_requests = (min(limit, 100) + 9) // 10  # Round up division, max 100 results
-        
+    def get_player_news(
+        self,
+        player_name: str,
+        limit: int = 10,
+        target_language: Optional[str] = None,
+        max_chars_title: Optional[int] = None,
+        max_chars_summary: Optional[int] = None
+    ) -> List[Dict]:
+        """Get news about a player with optional translation"""
+        results = []
         try:
+            API_KEY = settings.GOOGLE_API_KEY
+            SEARCH_ENGINE_ID = settings.GOOGLE_SEARCH_ENGINE_ID
+            BASE_URL = "https://www.googleapis.com/customsearch/v1"
+            
+            num_requests = (min(limit, 100) + 9) // 10
+            
             for i in range(num_requests):
-                start_index = (i * 10) + 1  # Google's start index begins at 1
+                start_index = (i * 10) + 1
                 
                 params = {
                     'key': API_KEY,
@@ -90,18 +93,38 @@ class PlayerContentService:
                                     .get('metatags', [{}])[0]
                                     .get('og:image'))
                     }
-                    if all(result.values()):
-                        processed_results.append(result)
+                    
+                    # Translate if target language is specified
+                    if target_language:
+                        # Translate title
+                        if result['title']:
+                            translated = self.translator.translate(
+                                result['title'],
+                                target_language,
+                                'news_title',
+                                max_chars_title
+                            )
+                            result['title'] = translated['translatedText']
                         
-                    # Stop if we've reached the requested number of results
-                    if len(processed_results) >= limit:
-                        break
+                        # Translate snippet
+                        if result['snippet']:
+                            translated = self.translator.translate(
+                                result['snippet'],
+                                target_language,
+                                'news_summary',
+                                max_chars_summary
+                            )
+                            result['snippet'] = translated['translatedText']
+                    
+                    if all(result.values()):
+                        results.append(result)
+                        if len(results) >= limit:
+                            break
                 
-                # Stop pagination if we've reached the requested number of results
-                if len(processed_results) >= limit:
+                if len(results) >= limit:
                     break
             
-            return processed_results[:limit]
+            return results[:limit]
             
         except Exception as e:
             print(f"Error getting player news: {e}")
@@ -110,24 +133,27 @@ class PlayerContentService:
     def get_player_videos(
         self,
         player_name: str,
-        max_results: int = 10,
+        limit: int = 10,
         min_duration: int = 60,
-        max_duration: int = 350
+        max_duration: int = 350,
+        target_language: Optional[str] = None,
+        max_chars_title: Optional[int] = None,
+        max_chars_description: Optional[int] = None
     ) -> List[Dict]:
-        """Get YouTube videos about a player"""
-        API_KEY = settings.GOOGLE_API_KEY
-        BASE_URL = "https://www.googleapis.com/youtube/v3/search"
-        
-        params = {
-            'part': 'snippet',
-            'q': f"{player_name} mlb highlights",
-            'maxResults': max_results,
-            'key': API_KEY,
-            'type': 'video',
-            'order': 'date'
-        }
-        
+        """Get YouTube videos about a player with optional translation"""
         try:
+            API_KEY = settings.GOOGLE_API_KEY
+            BASE_URL = "https://www.googleapis.com/youtube/v3/search"
+            
+            params = {
+                'part': 'snippet',
+                'q': f"{player_name} mlb highlights",
+                'maxResults': limit,
+                'key': API_KEY,
+                'type': 'video',
+                'order': 'date'
+            }
+            
             response = requests.get(BASE_URL, params=params)
             response.raise_for_status()
             data = response.json()
@@ -146,7 +172,7 @@ class PlayerContentService:
             videos_response.raise_for_status()
             videos_data = videos_response.json()
             
-            # Process and filter videos
+            # Process and filter videos with translation if needed
             processed_videos = []
             for item in data.get('items', []):
                 video_id = item['id']['videoId']
@@ -160,14 +186,38 @@ class PlayerContentService:
                     duration_seconds = int(isodate.parse_duration(duration_str).total_seconds())
                     
                     if min_duration <= duration_seconds <= max_duration:
-                        processed_videos.append({
+                        video_info = {
                             'video_id': video_id,
                             'title': item['snippet']['title'],
                             'description': item['snippet']['description'],
                             'thumbnail': item['snippet']['thumbnails']['high']['url'],
                             'duration_seconds': duration_seconds,
                             'embed_code': f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{video_id}" frameborder="0" allowfullscreen></iframe>'
-                        })
+                        }
+                        
+                        # Translate if target language is specified
+                        if target_language:
+                            # Translate title
+                            if video_info['title']:
+                                translated = self.translator.translate(
+                                    video_info['title'],
+                                    target_language,
+                                    'news_title',
+                                    max_chars_title
+                                )
+                                video_info['title'] = translated['translatedText']
+                            
+                            # Translate description
+                            if video_info['description']:
+                                translated = self.translator.translate(
+                                    video_info['description'],
+                                    target_language,
+                                    'news_summary',
+                                    max_chars_description
+                                )
+                                video_info['description'] = translated['translatedText']
+                        
+                        processed_videos.append(video_info)
             
             return processed_videos
             
@@ -175,24 +225,25 @@ class PlayerContentService:
             print(f"Error getting player videos: {e}")
             return []
 
-    def search_news(self, query: str, limit: int = 10) -> List[Dict]:
-        """
-        Get news using Google Custom Search with custom query
-        Args:
-            query: Search query string
-            limit: Number of results to return (default 10, max 100)
-        """
-        API_KEY = settings.GOOGLE_API_KEY
-        SEARCH_ENGINE_ID = settings.GOOGLE_SEARCH_ENGINE_ID
-        BASE_URL = "https://www.googleapis.com/customsearch/v1"
-        
-        processed_results = []
-        # Calculate number of requests needed (10 results per request)
-        num_requests = (min(limit, 100) + 9) // 10  # Round up division, max 100 results
-        
+    def search_news(
+        self,
+        query: str,
+        limit: int = 10,
+        target_language: Optional[str] = None,
+        max_chars_title: Optional[int] = None,
+        max_chars_summary: Optional[int] = None
+    ) -> List[Dict]:
+        """Search news with optional translation"""
+        results = []
         try:
+            API_KEY = settings.GOOGLE_API_KEY
+            SEARCH_ENGINE_ID = settings.GOOGLE_SEARCH_ENGINE_ID
+            BASE_URL = "https://www.googleapis.com/customsearch/v1"
+            
+            num_requests = (min(limit, 100) + 9) // 10
+            
             for i in range(num_requests):
-                start_index = (i * 10) + 1  # Google's start index begins at 1
+                start_index = (i * 10) + 1
                 
                 params = {
                     'key': API_KEY,
@@ -215,24 +266,50 @@ class PlayerContentService:
                                     .get('metatags', [{}])[0]
                                     .get('og:image'))
                     }
-                    if all(result.values()):
-                        processed_results.append(result)
+                    
+                    # Translate if target language is specified
+                    if target_language:
+                        # Translate title
+                        if result['title']:
+                            translated = self.translator.translate(
+                                result['title'],
+                                target_language,
+                                'news_title',
+                                max_chars_title
+                            )
+                            result['title'] = translated['translatedText']
                         
-                    # Stop if we've reached the requested number of results
-                    if len(processed_results) >= limit:
-                        break
+                        # Translate snippet
+                        if result['snippet']:
+                            translated = self.translator.translate(
+                                result['snippet'],
+                                target_language,
+                                'news_summary',
+                                max_chars_summary
+                            )
+                            result['snippet'] = translated['translatedText']
+                    
+                    if all(result.values()):
+                        results.append(result)
+                        if len(results) >= limit:
+                            break
                 
-                # Stop pagination if we've reached the requested number of results
-                if len(processed_results) >= limit:
+                if len(results) >= limit:
                     break
             
-            return processed_results[:limit]
+            return results[:limit]
             
         except Exception as e:
             print(f"Error searching news: {e}")
             return []
 
-    def get_player_hr_videos(self, player_name: str) -> List[Dict]:
+    def get_player_hr_videos(
+        self, 
+        player_name: str, 
+        target_language: Optional[str] = None, 
+        max_chars_title: Optional[int] = None, 
+        max_chars_description: Optional[int] = None
+    ) -> List[Dict]:
         """
         Get home run videos for a specific player
         Args:
@@ -254,6 +331,15 @@ class PlayerContentService:
                         'hit_distance': row['HitDistance'],
                         'season': row['season']
                     }
+
+                    if target_language:
+                        hr_info['title'] = self.translator.translate(
+                            hr_info['title'],
+                            target_language,
+                            'news_title',
+                            max_chars_title
+                        )['translatedText']
+
                     player_hrs.append(hr_info)
             return player_hrs
             
@@ -264,17 +350,23 @@ class PlayerContentService:
     def search_videos(
         self,
         query: str,
-        max_results: int = 10,
+        limit: int = 10,
         min_duration: int = 60,
-        max_duration: int = 1200
+        max_duration: int = 1200,
+        target_language: Optional[str] = None,
+        max_chars_title: Optional[int] = None,
+        max_chars_description: Optional[int] = None
     ) -> List[Dict]:
         """
         Search videos with custom query using YouTube API
         Args:
             query: Search query string
-            max_results: Maximum number of results to return
+            limit: Maximum number of results to return
             min_duration: Minimum video duration in seconds
             max_duration: Maximum video duration in seconds
+            target_language: Optional target language code for translation
+            max_chars_title: Optional maximum characters for translated title
+            max_chars_description: Optional maximum characters for translated description
         Returns:
             List of video information
         """
@@ -284,7 +376,7 @@ class PlayerContentService:
         params = {
             'part': 'snippet',
             'q': f"{query} mlb",
-            'maxResults': max_results,
+            'maxResults': limit,
             'key': API_KEY,
             'type': 'video',
             'order': 'relevance'
@@ -323,14 +415,38 @@ class PlayerContentService:
                     duration_seconds = int(isodate.parse_duration(duration_str).total_seconds())
                     
                     if min_duration <= duration_seconds <= max_duration:
-                        processed_videos.append({
+                        video_info = {
                             'video_id': video_id,
                             'title': item['snippet']['title'],
                             'description': item['snippet']['description'],
                             'thumbnail': item['snippet']['thumbnails']['high']['url'],
                             'duration_seconds': duration_seconds,
                             'embed_code': f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{video_id}" frameborder="0" allowfullscreen></iframe>'
-                        })
+                        }
+                        
+                        # Translate if target language is specified
+                        if target_language:
+                            # Translate title
+                            if video_info['title']:
+                                translated = self.translator.translate(
+                                    video_info['title'],
+                                    target_language,
+                                    'news_title',
+                                    max_chars_title
+                                )
+                                video_info['title'] = translated['translatedText']
+                            
+                            # Translate description
+                            if video_info['description']:
+                                translated = self.translator.translate(
+                                    video_info['description'],
+                                    target_language,
+                                    'news_summary',
+                                    max_chars_description
+                                )
+                                video_info['description'] = translated['translatedText']
+                        
+                        processed_videos.append(video_info)
             
             return processed_videos
             
