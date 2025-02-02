@@ -3,12 +3,12 @@ body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #0D1321, #001F3F);
+  /* background: linear-gradient(135deg, #0D1321, #001F3F); */
   color: white;
 }
 
 header {
-  background: rgba(13, 19, 33, 0.9);
+  /* background: rgba(13, 19, 33, 0.9); */
   position: fixed;
   top: 1%;
   left: 1%;
@@ -30,13 +30,12 @@ nav {
 .logo {
   display: flex;
   align-items: center;
-  color: white;
   font-size: 1.25rem;
   font-weight: bold;
 }
 
 .title {
-  color: #FFC300;
+  color: white;
   font-size: 24px;
   font-weight: bold;
 }
@@ -46,20 +45,25 @@ nav {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #0F172A;
-  background-size: 20px 20px;
+  /* background-color: #0F172A; */
+  background-image: url('../public/test/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .content {
   display: flex;
   width: 90%;
   height: 85%;
-  /* background-color: white; */
-  background: rgba(0, 31, 63, 0.8);
+  background: rgba(255, 255, 255, 0.15);  /* 浅色透明背景 */
+  backdrop-filter: blur(10px);  /* 磨砂效果 */
+  -webkit-backdrop-filter: blur(10px);  /* Safari 支持 */
   border-radius: 12px;
   padding: 0 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);  /* 浅色阴影 */
   position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.2);  /* 浅色边框增加层次感 */
 }
 
 .left-section {
@@ -169,7 +173,9 @@ nav {
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: #f0f0f0;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 8px;
   z-index: 1;
 }
@@ -189,9 +195,11 @@ nav {
 
 .tabs-container {
   position: relative;
-  background-color: #f0f0f0;
   padding: 4px;
   border-radius: 8px 8px 0 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .tabs {
@@ -223,7 +231,7 @@ nav {
   left: 4px;
   width: calc(50% - 3px);
   height: calc(100% - 8px);
-  background-color: white;
+  /* background-color: white; */
   border-radius: 6px;
   z-index: 0;
   transition: transform 0.3s ease;
@@ -232,7 +240,9 @@ nav {
 .tab-content {
   flex: 1;
   overflow: hidden;
-  background-color: white;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 0 0 8px 8px;
 }
 .LanguageSwitcher {

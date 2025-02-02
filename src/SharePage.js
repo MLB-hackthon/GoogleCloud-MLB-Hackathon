@@ -59,7 +59,7 @@ function SharePage() {
               className="h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity"
               onClick={handleLogoClick}
             />
-            <span className="title">🔥 Your Personalized MLB Highlights 🔥 </span>
+            <span className="title">Your Personalized MLB Highlights</span>
           </div>
         </nav>
       </header>

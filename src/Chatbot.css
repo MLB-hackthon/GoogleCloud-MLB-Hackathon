@@ -52,12 +52,14 @@
   border-radius: 15px;
   margin: 5px 0;
   word-wrap: break-word;
+  color: #000000;
 }
 
 .message.bot {
   background: #f0f0f0;
   align-self: flex-start;
   border-bottom-left-radius: 5px;
+  color: #000000;
 }
 
 .message.user {
@@ -77,10 +79,15 @@
 .message-input {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #000000;
   border-radius: 20px;
   outline: none;
   font-size: 14px;
+  color: #000000 !important;
+}
+
+.message-input::placeholder {
+  color: #666666;
 }
 
 .message-input:focus {

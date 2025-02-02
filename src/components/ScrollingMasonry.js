@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import masonryData from '../data/masonry-data.json';
 import Masonry from 'react-masonry-css';
 import NewsCard from './NewsCard';
+import './ScrollingMasonry.css';
 
 // 创建一个函数来检查脚本是否已加载
 const isGettyScriptLoaded = () => {
@@ -226,29 +227,25 @@ export default function ScrollingMasonry() {
         setHoveredDomain(null);
       }}
     >
-      {/* <Masonry
+      <Masonry
         breakpointCols={breakpointColumnsObj}
-        className="flex w-full gap-0.5"
-        columnClassName="flex flex-col gap-0.5 [&:nth-child(2)]:mt-4"
+        className="flex w-full gap-4 p-4"
+        columnClassName="flex flex-col gap-4 [&:nth-child(2)]:mt-4"
       >
         {leftColumn.map((item, index) => {
           const isWide = imageAspectRatios[index];
           return (
             <div
               key={`left-${item.id}-${index}`}
-              className="w-full bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer transform transition-transform hover:scale-[1.02]"
-              style={{ 
-                aspectRatio: isWide ? '4/3' : '3/4'
-              }}
+              className="newImageCard"
+              style={{ aspectRatio: isWide ? '4/3' : '3/4' }}
               onClick={() => handleNewsClick(item.url)}
               onMouseEnter={() => setHoveredDomain(item.domain)}
               onMouseLeave={() => setHoveredDomain(null)}
             >
               <div 
-                className="flex-grow w-full relative" 
-                style={{ 
-                  height: isWide ? '75%' : '85%'
-                }}
+                className="newImageCard-image"
+                style={{ height: isWide ? '75%' : '85%' }}
               >
                 {item.isGetty ? (
                   <div 
@@ -259,24 +256,19 @@ export default function ScrollingMasonry() {
                   <img
                     src={item.image_url}
                     alt={item.title}
-                    className="w-full h-full object-cover"
                   />
                 )}
                 {hoveredDomain === item.domain && (
-                  <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                  <div className="newImageCard-domain">
                     {item.domain}
                   </div>
                 )}
               </div>
               <div 
-                className="w-full bg-gray-800 flex items-center p-2"
-                style={{ 
-                  height: isWide ? '25%' : '15%' 
-                }}
+                className="newImageCard-title"
+                style={{ height: isWide ? '25%' : '15%' }}
               >
-                <p className="text-left font-medium text-white text-sm leading-tight line-clamp-2">
-                  {item.title}
-                </p>
+                <p>{item.title}</p>
               </div>
             </div>
           );
@@ -295,7 +287,7 @@ export default function ScrollingMasonry() {
               onMouseLeave={() => setHoveredDomain(null)}
             >
               <div 
-                className="flex-grow w-full relative" 
+                className="flex-grow w-full relative rounded-lg overflow-hidden"
                 style={{ 
                   height: isWide ? '75%' : '85%' 
                 }}
@@ -324,8 +316,8 @@ export default function ScrollingMasonry() {
             </div>
           );
         })}
-      </Masonry> */}
-      <div className="p-4 overflow-y-auto h-full">
+      </Masonry> 
+      {/* <div className="p-4 overflow-y-auto h-full">
         <div className="grid grid-cols-1 gap-4 auto-rows-max">
           {news && news.length > 0 ? (
             news.map((item, index) => (
@@ -337,7 +329,7 @@ export default function ScrollingMasonry() {
           </div>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
