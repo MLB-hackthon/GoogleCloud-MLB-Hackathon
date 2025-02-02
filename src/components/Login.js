@@ -48,14 +48,12 @@ function Login() {
 
   const handleCredentialResponse = async (response) => {
     try {
-      console.log('Google response:', response);
-      
       if (!response.credential) {
         console.error('No credential received');
         return;
       }
 
-      // Send token to backend using nip.io domain
+      // Send token to backend
       const backendResponse = await fetch('http://34.56.194.81.nip.io:8000/api/v1/auth/google', {
         method: 'POST',
         headers: {
@@ -69,16 +67,8 @@ function Login() {
       const data = await backendResponse.json();
       console.log('Backend response:', data);
 
-      const decoded = JSON.parse(atob(response.credential.split('.')[1]));
-      const userInfo = {
-        email: decoded.email,
-        name: decoded.name,
-        picture: decoded.picture,
-        token: response.credential
-      };
-
-      console.log('Setting user info:', userInfo);
-      updateUser(userInfo);
+      // Update user context with backend response
+      updateUser(data);
       navigate('/share');
 
     } catch (error) {

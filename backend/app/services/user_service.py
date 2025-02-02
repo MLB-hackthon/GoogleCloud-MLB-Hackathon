@@ -22,7 +22,7 @@ class UserService:
 
     @staticmethod
     def update_user_login(db: Session, user: User):
-        user.last_login = datetime.utcnow()
+        user.last_login = datetime.now()
         db.commit()
         db.refresh(user)
         return user 
