@@ -2,16 +2,19 @@ from fastapi import APIRouter, HTTPException, Header
 from fastapi.responses import StreamingResponse
 from typing import Dict, Optional
 import json
-
-from ...services.chat_service import chat_service
+from fastapi import Depends
+from app.services.chat_service import ChatService
+from app.api.dependencies.dependencies import get_chat_service
 
 router = APIRouter()
 
 @router.post("/send")
 async def send_message(
     message: Dict[str, str],
-    user_id: Optional[str] = Header(None, alias="user_id")
+    user_id: Optional[str] = Header(None, alias="user_id"),
+    chat_service: ChatService = Depends(get_chat_service)
 ):
+
     if not user_id:
         raise HTTPException(status_code=400, detail="User ID is required")
     
@@ -20,13 +23,13 @@ async def send_message(
     
     # Get or create chat session for this user
     assistant = chat_service.get_or_create_session(user_id)
-    
+
     async def generate():
         sources = []
         search_queries = []
         
         try:
-            async for chunk in assistant.send_message(message["message"]):
+            async for chunk in assistant.send_message_stream(message["message"]):
                 if chunk.text:
                     yield f"data: {json.dumps(chunk.text)}\n\n"
                 
@@ -50,6 +53,7 @@ async def send_message(
                 "sources": sources,
                 "search_queries": search_queries
             }
+
             yield f"data: {json.dumps(metadata)}\n\n"
             
         except Exception as e:
@@ -58,7 +62,10 @@ async def send_message(
     return StreamingResponse(generate(), media_type="text/event-stream")
 
 @router.delete("/session")
-async def end_session(user_id: Optional[str] = Header(None, alias="user_id")):
+async def end_session(
+    user_id: Optional[str] = Header(None, alias="user_id"),
+    chat_service: ChatService = Depends(get_chat_service)
+):
     """Optional endpoint to explicitly end a chat session"""
     if not user_id:
         raise HTTPException(status_code=400, detail="User ID is required")

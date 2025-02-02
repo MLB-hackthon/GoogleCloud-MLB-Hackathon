@@ -23,31 +23,39 @@ class AIAssistant:
         except FileNotFoundError:
             raise FileNotFoundError(f"System prompt file not found: {file_path}")
 
-    def initialize_chat(self, temperature: float = 0.5) -> None:
+    def initialize_chat(self, enable_google_search: bool = True, temperature: float = 0.5) -> None:
         """Initialize the chat session with specified configuration."""
         if not self.system_instruction:
             raise ValueError("System prompt not loaded. Call load_system_prompt first.")
 
-        google_search_tool = Tool(
-            google_search=GoogleSearch()
-        )
+        if enable_google_search:
+            tools = [GoogleSearch]
+        else:
+            tools = []
 
         self.chat = self.client.chats.create(
             model=self.model_id,
             config=GenerateContentConfig(
                 system_instruction=self.system_instruction,
                 temperature=temperature,
-                tools=[google_search_tool],
+                tools=tools,
                 response_modalities=["TEXT"],
             ),
         )
+
+    def send_message_stream(self, message: str) -> Dict[str, Any]:
+        """Send a message to the AI and return the response with metadata."""
+        if not self.chat:
+            raise RuntimeError("Chat not initialized. Call initialize_chat first.")
+
+        return self.chat.send_message_stream(message)
 
     def send_message(self, message: str) -> Dict[str, Any]:
         """Send a message to the AI and return the response with metadata."""
         if not self.chat:
             raise RuntimeError("Chat not initialized. Call initialize_chat first.")
 
-        return self.chat.send_message_stream(message)
+        return self.chat.send_message(message)
 
 
     def get_chat_history(self) -> List[Dict[str, Any]]:
