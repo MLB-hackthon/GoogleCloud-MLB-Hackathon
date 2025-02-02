@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'backend/**'  # This will trigger on any changes in backend directory
 
 env:
   PROJECT_ID: mlb-hackathon-448420
@@ -105,11 +107,8 @@ jobs:
         fi
 
     - name: Deploy FastAPI to VM
-      if: contains(github.event.head_commit.modified, 'backend/')
-      env:
-        VM_USER: ${{ secrets.VM_USER }}
       run: |
-        ssh $VM_USER@${{ env.VM_IP }} << 'EOF'
+        ssh ${{ secrets.VM_USER }}@${{ env.VM_IP }} << 'EOF'
           cd GoogleCloud-MLB-Hackathon/backend
           git pull origin main
           docker-compose down
