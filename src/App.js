@@ -2,12 +2,12 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { UserProvider, useUser } from './context/UserContext';
-import Login from './components/Login';
 import SharePage from "./SharePage";
 import "./SharePage.css";
 import StartPage from "./StartPage";
 import './App.css';
 import UserInfo from './components/UserInfo';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -83,6 +83,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
         <UserInfo />
+        <LanguageSwitcher />
       </Router>
     </UserProvider>
   );
