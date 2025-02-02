@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     # Google API settings
     GOOGLE_API_KEY: str
     GOOGLE_SEARCH_ENGINE_ID: str
+    GOOGLE_CLIENT_ID: str
     
     # Default values for testing
     DEFAULT_TEAM: str = "New York Yankees"

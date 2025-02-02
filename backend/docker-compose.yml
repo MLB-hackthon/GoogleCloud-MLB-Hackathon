@@ -14,8 +14,6 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_SEARCH_ENGINE_ID=${GOOGLE_SEARCH_ENGINE_ID}
-      - DEFAULT_TEAM="New York Yankees"
-      - DEFAULT_PLAYER="Aaron Judge"
     volumes:
       - ./app:/app/app
     healthcheck:
