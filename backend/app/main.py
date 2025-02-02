@@ -18,10 +18,11 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:8080",  # Your frontend development server
-        "http://localhost:3000",  # Add any other frontend URLs
-        "http://34.56.194.81:8000",  # Add your VM's IP
-        "*"  # Or allow all origins for testing
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "http://34.56.194.81.nip.io",
+        "http://34.56.194.81.nip.io:8000",
+        "http://34.56.194.81.nip.io:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],

@@ -25,7 +25,7 @@ function Login() {
     const initializeGoogleSignIn = () => {
       window.google.accounts.id.initialize({
         client_id: CLIENT_ID,
-        callback: handleGoogleLogin,
+        callback: handleCredentialResponse,
         auto_select: false,
         cancel_on_tap_outside: true
       });
@@ -46,7 +46,7 @@ function Login() {
     loadGoogleScript();
   }, []);
 
-  const handleGoogleLogin = async (response) => {
+  const handleCredentialResponse = async (response) => {
     try {
       console.log('Google response:', response);
       
@@ -55,9 +55,21 @@ function Login() {
         return;
       }
 
-      const decoded = JSON.parse(atob(response.credential.split('.')[1]));
-      console.log('Decoded user info:', decoded);
+      // Send token to backend using nip.io domain
+      const backendResponse = await fetch('http://34.56.194.81.nip.io:8000/api/v1/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: response.credential
+        })
+      });
 
+      const data = await backendResponse.json();
+      console.log('Backend response:', data);
+
+      const decoded = JSON.parse(atob(response.credential.split('.')[1]));
       const userInfo = {
         email: decoded.email,
         name: decoded.name,
