@@ -123,7 +123,7 @@ jobs:
       run: |
         ssh ${{ secrets.VM_USER }}@${{ env.VM_IP }} '
           cd GoogleCloud-MLB-Hackathon/backend
-          
+          cp /home/hangzheng_17/.env .
           # Only pull if backend files changed
           if [[ "${{ steps.check-changes.outputs.has_changes }}" == "true" ]]; then
             echo "Backend changes detected, pulling latest code..."
