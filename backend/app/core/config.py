@@ -1,14 +1,13 @@
-from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
 class Settings(BaseSettings):
     # Database settings
-    DB_HOST: str = "34.55.144.7"  # Change back to IP
-    DB_PORT: int = 5432
-    DB_USER: str = "mlb"
-    DB_PASSWORD: str = "mlb"
-    DB_NAME: str = "mlb-app"
+    DB_HOST: str 
+    DB_PORT: int
+    DB_USER: str
+    DB_PASSWORD: str
+    DB_NAME: str
     
     # Google API settings
     GOOGLE_API_KEY: str

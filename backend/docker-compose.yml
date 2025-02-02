@@ -6,11 +6,11 @@ services:
     ports:
       - "0.0.0.0:8000:8000"
     environment:
-      - DB_HOST=34.55.144.7
-      - DB_PORT=5432
-      - DB_USER=mlb
-      - DB_PASSWORD=mlb
-      - DB_NAME=mlb-app
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_SEARCH_ENGINE_ID=${GOOGLE_SEARCH_ENGINE_ID}
