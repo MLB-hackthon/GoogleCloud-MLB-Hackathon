@@ -120,10 +120,8 @@ jobs:
         fi
 
     - name: Deploy FastAPI to VM
-      env:
-        VM_USER: ${{ secrets.VM_USER }}
       run: |
-        ssh -o StrictHostKeyChecking=no ${VM_USER}@${{ env.VM_IP }} '
+        ssh ${{ secrets.VM_USER }}@${{ env.VM_IP }} '
           cd GoogleCloud-MLB-Hackathon/backend
           
           # Only pull if backend files changed
