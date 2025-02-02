@@ -1,34 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import './UserInfo.css';
+import defaultAvatar from '../assets/default-avatar';
 
 function UserInfo() {
   const { user, logout } = useUser();
   const navigate = useNavigate();
+  const [imageError, setImageError] = useState(false);
+
+  console.log('UserInfo - Current user:', user); // Debug log
 
   const handleLogout = () => {
+    if (window.google) {
+      window.google.accounts.id.disableAutoSelect();
+    }
     logout();
     navigate('/login');
   };
 
-  console.log('Current user in UserInfo:', user); // Debug log
+  // Don't render anything if no user
+  if (!user) {
+    return null;
+  }
 
-  // Always render the component, with either email or TEST FAILED
   return (
     <div className="user-info">
       <div className="user-profile">
-        {user?.picture && (
+        <div className="user-avatar-container">
           <img 
-            src={user.picture} 
+            src={imageError ? defaultAvatar : user.picture}
             alt={user.name || 'User'} 
             className="user-avatar"
-            onError={(e) => e.target.style.display = 'none'}
+            onError={() => setImageError(true)}
           />
-        )}
-        <span className="user-email">
-          {user?.email || 'TEST FAILED'}
-        </span>
+        </div>
+        <span className="user-name">{user.name || user.email}</span>
       </div>
       <button onClick={handleLogout} className="logout-button">
         Logout

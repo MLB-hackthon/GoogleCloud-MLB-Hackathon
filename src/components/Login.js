@@ -10,90 +10,67 @@ function Login() {
 
   useEffect(() => {
     const loadGoogleScript = () => {
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      
-      script.onload = () => {
-        if (window.google && window.google.accounts) {
-          window.google.accounts.id.initialize({
-            client_id: CLIENT_ID,
-            callback: handleGoogleLogin,
-            auto_select: false,
-            cancel_on_tap_outside: true,
-            scope: 'email profile',
-            ux_mode: 'popup',
-          });
+      if (window.google) {
+        initializeGoogleSignIn();
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = initializeGoogleSignIn;
+        document.body.appendChild(script);
+      }
+    };
 
-          window.google.accounts.id.renderButton(
-            document.getElementById('google-login-button'),
-            { 
-              theme: 'outline', 
-              size: 'large',
-              width: 250,
-              text: 'continue_with',
-              shape: 'rectangular',
-              type: 'standard',
-            }
-          );
+    const initializeGoogleSignIn = () => {
+      window.google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: handleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+
+      window.google.accounts.id.renderButton(
+        document.getElementById('google-login-button'),
+        { 
+          theme: 'outline', 
+          size: 'large',
+          width: 250,
+          text: 'continue_with',
+          shape: 'rectangular',
+          type: 'standard'
         }
-      };
-
-      document.body.appendChild(script);
+      );
     };
 
     loadGoogleScript();
-
-    return () => {
-      const scriptTag = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
-      if (scriptTag) {
-        scriptTag.remove();
-      }
-    };
   }, []);
 
-  const handleGoogleLogin = async (response) => {
+  const handleCredentialResponse = async (response) => {
     try {
       if (!response.credential) {
         console.error('No credential received');
         return;
       }
 
-      const decoded = JSON.parse(atob(response.credential.split('.')[1]));
-      console.log('Decoded user info:', decoded);
-
-      const userInfo = {
-        email: decoded.email,
-        name: decoded.name,
-        picture: decoded.picture
-      };
-
-      updateUser(userInfo);
-      navigate('/share');
-
-      /* Uncomment when backend is ready
-      const result = await fetch('http://localhost:3001/api/auth/google', {
+      // Send token to backend
+      const backendResponse = await fetch('http://34.56.194.81.nip.io:8000/api/v1/auth/google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({
-          token: response.credential,
-          userInfo: userInfo
-        }),
+          token: response.credential
+        })
       });
 
-      const data = await result.json();
-      console.log('Server response:', data);
-      
-      if (data.success) {
-        updateUser(userInfo);
-        navigate('/share');
-      }
-      */
+      const data = await backendResponse.json();
+      console.log('Backend response:', data);
+
+      // Update user context with backend response
+      updateUser(data);
+      navigate('/share');
+
     } catch (error) {
       console.error('Login failed:', error);
     }

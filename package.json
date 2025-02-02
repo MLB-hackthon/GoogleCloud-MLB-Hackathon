@@ -12,17 +12,21 @@
     "react-dom": "^19.0.0",
     "react-masonry-css": "^1.0.16",
     "react-router-dom": "^6.22.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^4.2.4"
   },
   "devDependencies": {
     "cross-env": "^7.0.3"
   },
   "scripts": {
-    "start": "PORT=8080 react-scripts start",
+    "start": "set PORT=3000 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "docker:build": "docker build -t mlb-api ./backend",
+    "docker:run": "docker run -p 8000:8000 --env-file ./backend/.env mlb-api",
+    "docker:compose": "docker-compose -f ./backend/docker-compose.yml up --build",
+    "docker:compose:down": "docker-compose -f ./backend/docker-compose.yml down"
   },
   "eslintConfig": {
     "extends": [
@@ -41,5 +45,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:8080"
 }

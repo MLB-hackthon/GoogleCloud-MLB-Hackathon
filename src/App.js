@@ -2,11 +2,12 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { UserProvider, useUser } from './context/UserContext';
-import Login from './components/Login';
 import SharePage from "./SharePage";
 import "./SharePage.css";
 import StartPage from "./StartPage";
 import './App.css';
+import UserInfo from './components/UserInfo';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -64,35 +65,27 @@ const GoogleCallback = () => {
 };
 
 // Main App component
-// function App() {
-//   return (
-//     <UserProvider>
-//       <Router>
-//         <Routes>
-//           <Route path="/login" element={<Login />} />
-//           <Route path="/callback" element={<GoogleCallback />} />
-//           <Route
-//             path="/share"
-//             element={
-//               <ProtectedRoute>
-//                 <StartPage  />
-//                 <SharePage />
-//               </ProtectedRoute>
-//             }
-//           />
-//           <Route path="/" element={<Navigate to="/login" />} />
-//         </Routes>
-//       </Router>
-//     </UserProvider>
-//   );
-// }
-
 function App() {
   return (
-    <div className="app">
-      <StartPage  />
-      <SharePage />
-    </div>
+    <UserProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<StartPage />} />
+          <Route path="/callback" element={<GoogleCallback />} />
+          <Route
+            path="/share"
+            element={
+              <ProtectedRoute>
+                <SharePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/login" />} />
+        </Routes>
+        <UserInfo />
+        <LanguageSwitcher />
+      </Router>
+    </UserProvider>
   );
 }
 
