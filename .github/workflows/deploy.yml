@@ -79,7 +79,30 @@ jobs:
     - name: Add VM to known hosts
       run: |
         mkdir -p ~/.ssh
-        ssh-keyscan -H ${{ env.VM_IP }} >> ~/.ssh/known_hosts
+        chmod 700 ~/.ssh
+        
+        # Test connectivity first
+        if nc -zv ${{ env.VM_IP }} 22 2>/dev/null; then
+          echo "SSH port is reachable"
+          ssh-keyscan -H ${{ env.VM_IP }} >> ~/.ssh/known_hosts || {
+            echo "Failed to scan host keys. Trying with -T option..."
+            ssh-keyscan -T 10 -H ${{ env.VM_IP }} >> ~/.ssh/known_hosts
+          }
+        else
+          echo "Error: Cannot reach SSH port on ${{ env.VM_IP }}"
+          # Check if VM is accessible
+          ping -c 1 ${{ env.VM_IP }} || echo "VM is not responding to ping"
+          exit 1
+        fi
+        
+        # Verify known_hosts file
+        if [ -s ~/.ssh/known_hosts ]; then
+          echo "Known hosts file created successfully"
+          cat ~/.ssh/known_hosts
+        else
+          echo "Error: Known hosts file is empty"
+          exit 1
+        fi
 
     - name: Deploy FastAPI to VM
       if: contains(github.event.head_commit.modified, 'backend/')
