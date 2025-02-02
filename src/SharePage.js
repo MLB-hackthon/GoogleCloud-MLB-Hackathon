@@ -6,6 +6,7 @@ import HomeRuns from './components/HomeRuns';
 import youtubeData from './data/youtube_search_results.json';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 function SharePage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
@@ -39,14 +40,29 @@ function SharePage() {
 
   return (
     <div className="background">
-      <div className="team-logo-wrapper">
-        <img 
-          src="/test/logo.png"
-          alt="Team logo"
-          className="team-logo cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={handleLogoClick}
-        />  
+      
+      {/* Chat Button - Fixed to left middle */}
+      <div className="fixed left-6 top-1/2 -translate-y-1/2 z-40">
+        <div className="chat-button" onClick={toggleChatbot}>
+          <img src="/test/chat.png" alt="Chat Icon" className="chat-icon" />
+          <span className="chat-text">Chat with Us</span>
+        </div>
       </div>
+
+      {/* Header */}
+      <header>
+        <nav>
+          <div className="flex items-center gap-2">
+            <img 
+              src="/test/logo.png"
+              alt="Team logo"
+              className="h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={handleLogoClick}
+            />
+            <span className="title">🔥 Your Personalized MLB Highlights 🔥 </span>
+          </div>
+        </nav>
+      </header>
 
       <div className="content">
         
@@ -60,24 +76,23 @@ function SharePage() {
           </div>
           
           <div className="bottom-sections">
-            {/* 聊天按钮卡片 */}
-            <div className="bottom-section chat-section">
-              <div className="chat-button" onClick={toggleChatbot}>
-                <img src="/test/chat.png" alt="Chat Icon" className="chat-icon" />
-                <span>Chat with Us</span>
-              </div>
-            </div>
-
-            {/* 中间卡片 */}
+            {/* 左边卡片 */}
             <div className="bottom-section">
               <div className="chart1">
                 {/* 预留给图表内容 */}
               </div>
             </div>
 
-            {/* 右边卡片 */}
+            {/* 中间卡片 */}
             <div className="bottom-section">
               <div className="chart2">
+                {/* 预留给图表内容 */}
+              </div>
+            </div>
+
+            {/* 右边卡片 */}
+            <div className="bottom-section">
+              <div className="chart3">
                 {/* 预留给图表内容 */}
               </div>
             </div>
@@ -133,6 +148,11 @@ function SharePage() {
       </div>
 
       {isChatbotOpen && <Chatbot onClose={() => setIsChatbotOpen(false)} />}
+
+      {/* 右下角的语言切换器 */}
+      <div className="LanguageSwitcher">
+        <LanguageSwitcher />
+      </div>
     </div>
   );
 }
