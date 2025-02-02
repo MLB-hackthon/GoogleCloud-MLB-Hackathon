@@ -16,7 +16,7 @@ const NewsCard = ({ news }) => {
             className="w-full h-full object-cover"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = '/default-news-image.png'; // 设置一个默认图片
+              e.target.src = '/default-news-image.png'; 
             }}
           />
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent h-24" />

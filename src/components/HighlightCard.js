@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 const HighlightCard = ({ title, description, thumbnail, stats, url }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4 w-full max-w-md hover:shadow-lg transition-shadow">
       {/* Header Section */}
@@ -17,14 +19,21 @@ const HighlightCard = ({ title, description, thumbnail, stats, url }) => {
       </div>
       
       {/* Video Section */}
-      <div className="relative mt-3 rounded-lg overflow-hidden">
+      <div className="relative mt-3 rounded-lg overflow-hidden bg-gray-100">
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+          </div>
+        )}
         <video
           src={url}
           className="w-full rounded-lg"
           controls
           playsInline
-          poster={thumbnail}
           preload="metadata"
+          onLoadStart={() => setIsLoading(true)}
+          onLoadedData={() => setIsLoading(false)}
+          onError={() => setIsLoading(false)}
         >
           Your browser does not support the video tag.
         </video>
