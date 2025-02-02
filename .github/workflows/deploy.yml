@@ -8,9 +8,10 @@ on:
 env:
   PROJECT_ID: mlb-hackathon-448420
   REGION: us-central1
+  VM_IP: 34.56.194.81
 
 jobs:
-  deploy:
+  frontend-deploy:
     runs-on: self-hosted
 
     steps:
@@ -62,3 +63,81 @@ jobs:
         echo "Latest build status: $BUILD_STATUS"
         BUILD_ID=$(gcloud builds list --limit=1 --format="get(id)")
         echo "Build URL: https://console.cloud.google.com/cloud-build/builds/$BUILD_ID?project=${{ env.PROJECT_ID }}" 
+
+
+  deploy-backend:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for all branches and tags
+
+    - name: Check for backend changes
+      id: check-changes
+      run: |
+        echo "Checking for changes in backend directory..."
+        if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep "^backend/"; then
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+          echo "Changes detected in backend/"
+        else
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+          echo "No changes in backend/"
+        fi
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.VM_SSH_KEY }}
+
+    - name: Add VM to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        
+        # Test connectivity first
+        if nc -zv ${{ env.VM_IP }} 22 2>/dev/null; then
+          echo "SSH port is reachable"
+          ssh-keyscan -H ${{ env.VM_IP }} >> ~/.ssh/known_hosts || {
+            echo "Failed to scan host keys. Trying with -T option..."
+            ssh-keyscan -T 10 -H ${{ env.VM_IP }} >> ~/.ssh/known_hosts
+          }
+        else
+          echo "Error: Cannot reach SSH port on ${{ env.VM_IP }}"
+          # Check if VM is accessible
+          ping -c 1 ${{ env.VM_IP }} || echo "VM is not responding to ping"
+          exit 1
+        fi
+        
+        # Verify known_hosts file
+        if [ -s ~/.ssh/known_hosts ]; then
+          echo "Known hosts file created successfully"
+          cat ~/.ssh/known_hosts
+        else
+          echo "Error: Known hosts file is empty"
+          exit 1
+        fi
+
+    - name: Deploy FastAPI to VM
+      env:
+        VM_USER: ${{ secrets.VM_USER }}
+      run: |
+        ssh -o StrictHostKeyChecking=no ${VM_USER}@${{ env.VM_IP }} '
+          cd GoogleCloud-MLB-Hackathon/backend
+          
+          # Only pull if backend files changed
+          if [[ "${{ steps.check-changes.outputs.has_changes }}" == "true" ]]; then
+            echo "Backend changes detected, pulling latest code..."
+            git pull origin main
+          else
+            echo "No backend changes, skipping git pull..."
+          fi
+          
+          # Always restart the container
+          echo "Restarting Docker containers..."
+          docker-compose down
+          docker system prune -af
+          docker-compose up -d
+          echo "FastAPI Deployment completed"
+        ' 
