@@ -1,16 +1,13 @@
-name: CI/CD to Google Cloud
+name: Deploy Frontend
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'backend/**'  # This will trigger on any changes in backend directory
 
 env:
   PROJECT_ID: mlb-hackathon-448420
   REGION: us-central1
-  VM_IP: 34.56.194.81
 
 jobs:
   deploy:
@@ -59,60 +56,9 @@ jobs:
 
     - name: Submit Cloud Build
       run: |
-        # Submit build without waiting
         gcloud builds submit --config cloudbuild.yaml --project ${{ env.PROJECT_ID }} --async
-
-        # Wait a moment for build to start
         sleep 10
-
-        # Get latest build status
         BUILD_STATUS=$(gcloud builds list --limit=1 --format="get(status)")
         echo "Latest build status: $BUILD_STATUS"
-
-        # Optional: Print build URL
         BUILD_ID=$(gcloud builds list --limit=1 --format="get(id)")
-        echo "Build URL: https://console.cloud.google.com/cloud-build/builds/$BUILD_ID?project=${{ env.PROJECT_ID }}"
-
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.VM_SSH_KEY }}
-
-    - name: Add VM to known hosts
-      run: |
-        mkdir -p ~/.ssh
-        chmod 700 ~/.ssh
-        
-        # Test connectivity first
-        if nc -zv ${{ env.VM_IP }} 22 2>/dev/null; then
-          echo "SSH port is reachable"
-          ssh-keyscan -H ${{ env.VM_IP }} >> ~/.ssh/known_hosts || {
-            echo "Failed to scan host keys. Trying with -T option..."
-            ssh-keyscan -T 10 -H ${{ env.VM_IP }} >> ~/.ssh/known_hosts
-          }
-        else
-          echo "Error: Cannot reach SSH port on ${{ env.VM_IP }}"
-          # Check if VM is accessible
-          ping -c 1 ${{ env.VM_IP }} || echo "VM is not responding to ping"
-          exit 1
-        fi
-        
-        # Verify known_hosts file
-        if [ -s ~/.ssh/known_hosts ]; then
-          echo "Known hosts file created successfully"
-          cat ~/.ssh/known_hosts
-        else
-          echo "Error: Known hosts file is empty"
-          exit 1
-        fi
-
-    - name: Deploy FastAPI to VM
-      run: |
-        ssh ${{ secrets.VM_USER }}@${{ env.VM_IP }} << 'EOF'
-          cd GoogleCloud-MLB-Hackathon/backend
-          git pull origin main
-          docker-compose down
-          docker system prune -af
-          docker-compose up -d
-          echo "FastAPI Deployment completed"
-        EOF 
+        echo "Build URL: https://console.cloud.google.com/cloud-build/builds/$BUILD_ID?project=${{ env.PROJECT_ID }}" 
