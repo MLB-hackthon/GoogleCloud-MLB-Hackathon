@@ -22,7 +22,7 @@ COPY . .
 EXPOSE 8000
 
 # Add health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=10s --timeout=8s --start-period=5s --retries=3 \
   CMD curl --fail http://localhost:8000/health || exit 1
 
 # Command to run the application
