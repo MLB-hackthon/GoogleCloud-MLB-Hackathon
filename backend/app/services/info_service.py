@@ -32,7 +32,7 @@ class PlayerInfoService:
             print(f"Error getting team ID: {e}")
             return None
 
-    def get_team_logo_by_name(self, team_name: str) -> Optional[str]:
+    async def get_team_logo_by_name(self, team_name: str) -> Optional[str]:
         """
         Get team logo URL by team name
         Args:
@@ -73,7 +73,7 @@ class PlayerInfoService:
             print(f"Error getting player ID: {e}")
             return None
 
-    def get_player_info_by_name(self, player_name: str) -> Optional[Dict]:
+    async def get_player_info_by_name(self, player_name: str) -> Optional[Dict]:
         """
         Get player information by player name
         Args:
@@ -133,7 +133,7 @@ class PlayerInfoService:
             print(f"Error getting player info: {e}")
             return None
 
-    def get_player_headshot_by_name(self, player_name: str) -> Optional[str]:
+    async def get_player_headshot_by_name(self, player_name: str) -> Optional[str]:
         """
         Get player headshot image URL by player name
         Args:

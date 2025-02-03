@@ -22,24 +22,28 @@ async def get_player_images(
 async def get_player_news(
     player: str,
     limit: Optional[int] = Query(10, ge=1, le=50),
-    target_language: Optional[str] = None,
-    max_chars_title: Optional[int] = Query(None, ge=1),
-    max_chars_summary: Optional[int] = Query(None, ge=1),
+    max_chars_title_en: Optional[int] = Query(50, ge=1),
+    max_chars_title_ja: Optional[int] = Query(30, ge=1),
+    max_chars_title_es: Optional[int] = Query(45, ge=1),
+    max_chars_summary_en: Optional[int] = Query(50, ge=1),
+    max_chars_summary_ja: Optional[int] = Query(65, ge=1),
+    max_chars_summary_es: Optional[int] = Query(65, ge=1),
     content_service: PlayerContentService = Depends(get_content_service)
 ):
     """
     Get news about a player
-    - Optional translation parameters:
-        - target_language: Target language for translation
-        - max_chars_title: Maximum characters for translated title
-        - max_chars_summary: Maximum characters for translated summary
+    - Translation parameters for title and summary in English, Japanese, and Spanish
+    - Configurable maximum characters for each language
     """
-    news = content_service.get_player_news(
+    news = await content_service.get_player_news(
         player,
         limit=limit,
-        target_language=target_language,
-        max_chars_title=max_chars_title,
-        max_chars_summary=max_chars_summary
+        max_chars_title_en=max_chars_title_en,
+        max_chars_title_ja=max_chars_title_ja,
+        max_chars_title_es=max_chars_title_es,
+        max_chars_summary_en=max_chars_summary_en,
+        max_chars_summary_ja=max_chars_summary_ja,
+        max_chars_summary_es=max_chars_summary_es
     )
     return {"news": news}
 
@@ -47,24 +51,28 @@ async def get_player_news(
 async def search_news(
     query: str = Query(..., description="Search query string"),
     limit: Optional[int] = Query(10, ge=1, le=100),
-    target_language: Optional[str] = None,
-    max_chars_title: Optional[int] = Query(None, ge=1),
-    max_chars_summary: Optional[int] = Query(None, ge=1),
+    max_chars_title_en: Optional[int] = Query(50, ge=1),
+    max_chars_title_ja: Optional[int] = Query(30, ge=1),
+    max_chars_title_es: Optional[int] = Query(45, ge=1),
+    max_chars_summary_en: Optional[int] = Query(50, ge=1),
+    max_chars_summary_ja: Optional[int] = Query(65, ge=1),
+    max_chars_summary_es: Optional[int] = Query(65, ge=1),
     content_service: PlayerContentService = Depends(get_content_service)
 ) -> List[Dict]:
     """
     Search news with a custom query
-    - Optional translation parameters:
-        - target_language: Target language for translation
-        - max_chars_title: Maximum characters for translated title
-        - max_chars_summary: Maximum characters for translated summary
+    - Translation parameters for title and summary in English, Japanese, and Spanish
+    - Configurable maximum characters for each language
     """
-    return content_service.search_news(
+    return await content_service.search_news(
         query,
         limit=limit,
-        target_language=target_language,
-        max_chars_title=max_chars_title,
-        max_chars_summary=max_chars_summary
+        max_chars_title_en=max_chars_title_en,
+        max_chars_title_ja=max_chars_title_ja,
+        max_chars_title_es=max_chars_title_es,
+        max_chars_summary_en=max_chars_summary_en,
+        max_chars_summary_ja=max_chars_summary_ja,
+        max_chars_summary_es=max_chars_summary_es
     )
 
 @router.get("/videos/{player}")
@@ -73,46 +81,53 @@ async def get_player_videos(
     limit: Optional[int] = Query(10, ge=1, le=50),
     min_duration: Optional[int] = Query(60, ge=0),
     max_duration: Optional[int] = Query(1200, ge=0),
-    target_language: Optional[str] = None,
-    max_chars_title: Optional[int] = Query(None, ge=1),
-    max_chars_description: Optional[int] = Query(None, ge=1),
+    max_chars_title_en: Optional[int] = Query(50, ge=1),
+    max_chars_title_ja: Optional[int] = Query(30, ge=1),
+    max_chars_title_es: Optional[int] = Query(45, ge=1),
+    max_chars_description_en: Optional[int] = Query(50, ge=1),
+    max_chars_description_ja: Optional[int] = Query(65, ge=1),
+    max_chars_description_es: Optional[int] = Query(65, ge=1),
     content_service: PlayerContentService = Depends(get_content_service)
 ):
     """
     Get YouTube videos about a player
-    - Optional translation parameters:
-        - target_language: Target language for translation
-        - max_chars_title: Maximum characters for translated title
-        - max_chars_description: Maximum characters for translated description
+    - Translation parameters for title and description in English, Japanese, and Spanish
+    - Configurable maximum characters for each language
     """
-    videos = content_service.get_player_videos(
+    videos = await content_service.get_player_videos(
         player,
         limit=limit,
         min_duration=min_duration,
         max_duration=max_duration,
-        target_language=target_language,
-        max_chars_title=max_chars_title,
-        max_chars_description=max_chars_description
+        max_chars_title_en=max_chars_title_en,
+        max_chars_title_ja=max_chars_title_ja,
+        max_chars_title_es=max_chars_title_es,
+        max_chars_description_en=max_chars_description_en,
+        max_chars_description_ja=max_chars_description_ja,
+        max_chars_description_es=max_chars_description_es
     )
     return {"videos": videos}
 
 @router.get("/videos/{player}/homeruns")
 async def get_player_hr_videos(
     player: str,
-    target_language: Optional[str] = None,
-    max_chars_title: Optional[int] = Query(None, ge=1),
+    limit: Optional[int] = Query(10, ge=1, le=50),
+    max_chars_title_en: Optional[int] = Query(50, ge=1),
+    max_chars_title_ja: Optional[int] = Query(30, ge=1),
+    max_chars_title_es: Optional[int] = Query(45, ge=1),
     content_service: PlayerContentService = Depends(get_content_service)
 ):
     """
     Get MLB home run videos for a player
-    - Optional translation parameters:
-        - target_language: Target language for translation
-        - max_chars_title: Maximum characters for translated title
+    - Translation parameters for title in English, Japanese, and Spanish
+    - Configurable maximum characters for each language
     """
-    videos = content_service.get_player_hr_videos(
+    videos = await content_service.get_player_hr_videos(
         player,
-        target_language=target_language,
-        max_chars_title=max_chars_title
+        limit=limit,
+        max_chars_title_en=max_chars_title_en,
+        max_chars_title_ja=max_chars_title_ja,
+        max_chars_title_es=max_chars_title_es
     )
     if not videos:
         raise HTTPException(status_code=404, detail="No home run videos found for player")
@@ -124,26 +139,30 @@ async def search_videos(
     limit: Optional[int] = Query(10, ge=1, le=50),
     min_duration: Optional[int] = Query(60, ge=0),
     max_duration: Optional[int] = Query(1200, ge=0),
-    target_language: Optional[str] = None,
-    max_chars_title: Optional[int] = Query(None, ge=1),
-    max_chars_description: Optional[int] = Query(None, ge=1),
+    max_chars_title_en: Optional[int] = Query(50, ge=1),
+    max_chars_title_ja: Optional[int] = Query(30, ge=1),
+    max_chars_title_es: Optional[int] = Query(45, ge=1),
+    max_chars_description_en: Optional[int] = Query(50, ge=1),
+    max_chars_description_ja: Optional[int] = Query(65, ge=1),
+    max_chars_description_es: Optional[int] = Query(65, ge=1),
     content_service: PlayerContentService = Depends(get_content_service)
 ) -> List[Dict]:
     """
     Search MLB videos with a custom query
-    - Optional translation parameters:
-        - target_language: Target language for translation
-        - max_chars_title: Maximum characters for translated title
-        - max_chars_description: Maximum characters for translated description
+    - Translation parameters for title and description in English, Japanese, and Spanish
+    - Configurable maximum characters for each language
     """
-    return content_service.search_videos(
+    return await content_service.search_videos(
         query,
         limit=limit,
         min_duration=min_duration,
         max_duration=max_duration,
-        target_language=target_language,
-        max_chars_title=max_chars_title,
-        max_chars_description=max_chars_description
+        max_chars_title_en=max_chars_title_en,
+        max_chars_title_ja=max_chars_title_ja,
+        max_chars_title_es=max_chars_title_es,
+        max_chars_description_en=max_chars_description_en,
+        max_chars_description_ja=max_chars_description_ja,
+        max_chars_description_es=max_chars_description_es
     )
 
 

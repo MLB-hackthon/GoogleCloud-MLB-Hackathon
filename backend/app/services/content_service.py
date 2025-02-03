@@ -52,13 +52,16 @@ class PlayerContentService:
             print(f"Error getting player images: {e}")
             return []
 
-    def get_player_news(
+    async def get_player_news(
         self,
         player_name: str,
         limit: int = 10,
-        target_language: Optional[str] = None,
-        max_chars_title: Optional[int] = None,
-        max_chars_summary: Optional[int] = None
+        max_chars_title_en: Optional[int] = 50,
+        max_chars_title_ja: Optional[int] = 30,
+        max_chars_title_es: Optional[int] = 45,
+        max_chars_summary_en: Optional[int] = 50,
+        max_chars_summary_ja: Optional[int] = 65,
+        max_chars_summary_es: Optional[int] = 65
     ) -> List[Dict]:
         """Get news about a player with optional translation"""
         results = []
@@ -94,32 +97,36 @@ class PlayerContentService:
                                     .get('og:image'))
                     }
                     
-                    # Translate if target language is specified
-                    if target_language:
-                        # Translate title
-                        if result['title']:
-                            translated = self.translator.translate(
-                                result['title'],
-                                target_language,
-                                'news_title',
-                                max_chars_title
-                            )
-                            result['title'] = translated['translatedText']
+                    if not all(result.values()):
+                        continue
+
+                    # Translate title
+                    translated = await self.translator.translate(
+                        result['title'],
+                        'news_title',
+                        max_chars_title_en,
+                        max_chars_title_ja,
+                        max_chars_title_es
+                    )
+                    result['title_en'] = translated['translatedEnText']
+                    result['title_ja'] = translated['translatedJaText']
+                    result['title_es'] = translated['translatedEsText']
                         
-                        # Translate snippet
-                        if result['snippet']:
-                            translated = self.translator.translate(
-                                result['snippet'],
-                                target_language,
-                                'news_summary',
-                                max_chars_summary
-                            )
-                            result['snippet'] = translated['translatedText']
+                    # Translate snippet
+                    translated = await self.translator.translate(
+                        result['snippet'],
+                        'news_summary',
+                        max_chars_summary_en,
+                        max_chars_summary_ja,
+                        max_chars_summary_es
+                    )
+                    result['snippet_en'] = translated['translatedEnText']
+                    result['snippet_ja'] = translated['translatedJaText']
+                    result['snippet_es'] = translated['translatedEsText']
                     
-                    if all(result.values()):
-                        results.append(result)
-                        if len(results) >= limit:
-                            break
+                    results.append(result)
+                    if len(results) >= limit:
+                        break
                 
                 if len(results) >= limit:
                     break
@@ -130,15 +137,18 @@ class PlayerContentService:
             print(f"Error getting player news: {e}")
             return []
 
-    def get_player_videos(
+    async def get_player_videos(
         self,
         player_name: str,
         limit: int = 10,
-        min_duration: int = 60,
+        min_duration: int = 20,
         max_duration: int = 350,
-        target_language: Optional[str] = None,
-        max_chars_title: Optional[int] = None,
-        max_chars_description: Optional[int] = None
+        max_chars_title_en: Optional[int] = 50,
+        max_chars_title_ja: Optional[int] = 30,
+        max_chars_title_es: Optional[int] = 45,
+        max_chars_description_en: Optional[int] = 50,
+        max_chars_description_ja: Optional[int] = 65,
+        max_chars_description_es: Optional[int] = 65
     ) -> List[Dict]:
         """Get YouTube videos about a player with optional translation"""
         try:
@@ -148,7 +158,7 @@ class PlayerContentService:
             params = {
                 'part': 'snippet',
                 'q': f"{player_name} mlb highlights",
-                'maxResults': limit,
+                'maxResults': 20,
                 'key': API_KEY,
                 'type': 'video',
                 'order': 'date'
@@ -195,43 +205,53 @@ class PlayerContentService:
                             'embed_code': f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{video_id}" frameborder="0" allowfullscreen></iframe>'
                         }
                         
-                        # Translate if target language is specified
-                        if target_language:
-                            # Translate title
-                            if video_info['title']:
-                                translated = self.translator.translate(
-                                    video_info['title'],
-                                    target_language,
-                                    'news_title',
-                                    max_chars_title
-                                )
-                                video_info['title'] = translated['translatedText']
-                            
-                            # Translate description
-                            if video_info['description']:
-                                translated = self.translator.translate(
-                                    video_info['description'],
-                                    target_language,
-                                    'news_summary',
-                                    max_chars_description
-                                )
-                                video_info['description'] = translated['translatedText']
+                        if not all(video_info.values()):
+                            continue
+                        
+                        # Translate title
+                        translated = await self.translator.translate(
+                            video_info['title'],
+                            'news_title',
+                            max_chars_title_en,
+                            max_chars_title_ja,
+                            max_chars_title_es
+                        )
+                        video_info['title_en'] = translated['translatedEnText']
+                        video_info['title_ja'] = translated['translatedJaText']
+                        video_info['title_es'] = translated['translatedEsText']
+
+                        # Translate description
+                        translated = await self.translator.translate(
+                            video_info['description'],
+                            'news_summary',
+                            max_chars_description_en,
+                            max_chars_description_ja,
+                            max_chars_description_es
+                        )
+                        video_info['description_en'] = translated['translatedEnText']
+                        video_info['description_ja'] = translated['translatedJaText']
+                        video_info['description_es'] = translated['translatedEsText']
                         
                         processed_videos.append(video_info)
+                        if len(processed_videos) >= limit:
+                            break
             
-            return processed_videos
+            return processed_videos[:limit]
             
         except Exception as e:
             print(f"Error getting player videos: {e}")
             return []
 
-    def search_news(
+    async def search_news(
         self,
         query: str,
         limit: int = 10,
-        target_language: Optional[str] = None,
-        max_chars_title: Optional[int] = None,
-        max_chars_summary: Optional[int] = None
+        max_chars_title_en: Optional[int] = 50,
+        max_chars_title_ja: Optional[int] = 30,
+        max_chars_title_es: Optional[int] = 45,
+        max_chars_summary_en: Optional[int] = 50,
+        max_chars_summary_ja: Optional[int] = 65,
+        max_chars_summary_es: Optional[int] = 65
     ) -> List[Dict]:
         """Search news with optional translation"""
         results = []
@@ -267,32 +287,36 @@ class PlayerContentService:
                                     .get('og:image'))
                     }
                     
-                    # Translate if target language is specified
-                    if target_language:
-                        # Translate title
-                        if result['title']:
-                            translated = self.translator.translate(
-                                result['title'],
-                                target_language,
-                                'news_title',
-                                max_chars_title
-                            )
-                            result['title'] = translated['translatedText']
-                        
-                        # Translate snippet
-                        if result['snippet']:
-                            translated = self.translator.translate(
-                                result['snippet'],
-                                target_language,
-                                'news_summary',
-                                max_chars_summary
-                            )
-                            result['snippet'] = translated['translatedText']
+                    if not all(result.values()):
+                        continue
                     
-                    if all(result.values()):
-                        results.append(result)
-                        if len(results) >= limit:
-                            break
+                    # Translate title
+                    translated = await self.translator.translate(
+                        result['title'],
+                        'news_title',
+                        max_chars_title_en,
+                        max_chars_title_ja,
+                        max_chars_title_es
+                    )
+                    result['title_en'] = translated['translatedEnText']
+                    result['title_ja'] = translated['translatedJaText']
+                    result['title_es'] = translated['translatedEsText']
+                        
+                    # Translate snippet
+                    translated = await self.translator.translate(
+                        result['snippet'],
+                        'news_summary',
+                        max_chars_summary_en,
+                        max_chars_summary_ja,
+                        max_chars_summary_es
+                    )
+                    result['snippet_en'] = translated['translatedEnText']
+                    result['snippet_ja'] = translated['translatedJaText']
+                    result['snippet_es'] = translated['translatedEsText']
+                    
+                    results.append(result)
+                    if len(results) >= limit:
+                        break
                 
                 if len(results) >= limit:
                     break
@@ -303,12 +327,13 @@ class PlayerContentService:
             print(f"Error searching news: {e}")
             return []
 
-    def get_player_hr_videos(
+    async def get_player_hr_videos(
         self, 
         player_name: str, 
-        target_language: Optional[str] = None, 
-        max_chars_title: Optional[int] = None, 
-        max_chars_description: Optional[int] = None
+        limit: int = 10,
+        max_chars_title_en: Optional[int] = 50,
+        max_chars_title_ja: Optional[int] = 30,
+        max_chars_title_es: Optional[int] = 45
     ) -> List[Dict]:
         """
         Get home run videos for a specific player
@@ -332,30 +357,41 @@ class PlayerContentService:
                         'season': row['season']
                     }
 
-                    if target_language:
-                        hr_info['title'] = self.translator.translate(
-                            hr_info['title'],
-                            target_language,
-                            'news_title',
-                            max_chars_title
-                        )['translatedText']
+                    # Translate title
+                    translated = await self.translator.translate(
+                        hr_info['title'],
+                        'news_title',
+                        max_chars_title_en,
+                        max_chars_title_ja,
+                        max_chars_title_es
+                    )
+                    hr_info['title_en'] = translated['translatedEnText']
+                    hr_info['title_ja'] = translated['translatedJaText']
+                    hr_info['title_es'] = translated['translatedEsText']
 
                     player_hrs.append(hr_info)
-            return player_hrs
+
+                    if len(player_hrs) >= limit:
+                        break
+            
+            return player_hrs[:limit]
             
         except Exception as e:
             print(f"Error getting player home run videos: {e}")
             return []
 
-    def search_videos(
+    async def search_videos(
         self,
         query: str,
         limit: int = 10,
         min_duration: int = 60,
         max_duration: int = 1200,
-        target_language: Optional[str] = None,
-        max_chars_title: Optional[int] = None,
-        max_chars_description: Optional[int] = None
+        max_chars_title_en: Optional[int] = 50,
+        max_chars_title_ja: Optional[int] = 30,
+        max_chars_title_es: Optional[int] = 45,
+        max_chars_description_en: Optional[int] = 50,
+        max_chars_description_ja: Optional[int] = 65,
+        max_chars_description_es: Optional[int] = 65
     ) -> List[Dict]:
         """
         Search videos with custom query using YouTube API
@@ -424,31 +460,38 @@ class PlayerContentService:
                             'embed_code': f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{video_id}" frameborder="0" allowfullscreen></iframe>'
                         }
                         
-                        # Translate if target language is specified
-                        if target_language:
-                            # Translate title
-                            if video_info['title']:
-                                translated = self.translator.translate(
-                                    video_info['title'],
-                                    target_language,
-                                    'news_title',
-                                    max_chars_title
-                                )
-                                video_info['title'] = translated['translatedText']
+                        if not all(video_info.values()):
+                            continue
+                        
+                        # Translate title
+                        translated = await self.translator.translate(
+                            video_info['title'],
+                            'news_title',
+                            max_chars_title_en,
+                            max_chars_title_ja,
+                            max_chars_title_es
+                        )
+                        video_info['title_en'] = translated['translatedEnText']
+                        video_info['title_ja'] = translated['translatedJaText']
+                        video_info['title_es'] = translated['translatedEsText']
                             
-                            # Translate description
-                            if video_info['description']:
-                                translated = self.translator.translate(
-                                    video_info['description'],
-                                    target_language,
-                                    'news_summary',
-                                    max_chars_description
-                                )
-                                video_info['description'] = translated['translatedText']
+                        # Translate description
+                        translated = await self.translator.translate(
+                            video_info['description'],
+                            'news_summary',
+                            max_chars_description_en,
+                            max_chars_description_ja,
+                            max_chars_description_es
+                        )
+                        video_info['description_en'] = translated['translatedEnText']
+                        video_info['description_ja'] = translated['translatedJaText']
+                        video_info['description_es'] = translated['translatedEsText']
                         
                         processed_videos.append(video_info)
+                        if len(processed_videos) >= limit:
+                            break
             
-            return processed_videos
+            return processed_videos[:limit]
             
         except Exception as e:
             print(f"Error searching videos: {e}")

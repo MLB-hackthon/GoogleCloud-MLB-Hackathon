@@ -17,7 +17,7 @@ class TranslateAssistant:
         prompt_path = current_dir.parent / "prompts" / "translate_prompt.txt"
 
         self.assistant.load_system_prompt(str(prompt_path))
-        self.assistant.initialize_chat(temperature=0.1, enable_google_search=False)  # Low temperature for consistent translations
+        self.assistant.initialize_chat(temperature=0.1, enable_google_search=False, json_output=True)  # Low temperature for consistent translations
 
     def _parse_response(self, response: GenerateContentResponse | str) -> Dict[str, Any]:
         """
@@ -37,8 +37,9 @@ class TranslateAssistant:
                 # Handle empty response
                 return {
                     "originalText": "",
-                    "translatedText": "",
-                    "characterCount": 0
+                    "translatedEnText": "",
+                    "translatedJaText": "",
+                    "translatedEsText": ""
                 }
         else:
             response_text = response
@@ -58,49 +59,55 @@ class TranslateAssistant:
         # If parsing fails, return original text as fallback
         return {
             "originalText": response_text,
-            "translatedText": response_text,
-            "characterCount": len(response_text)
+            "translatedEnText": response_text,
+            "translatedJaText": response_text,
+            "translatedEsText": response_text
         }
 
-    def translate(
+    async def translate(
         self,
         text: str,
-        target_language: str,
         content_type: str,
-        max_chars: Optional[int] = None
+        max_chars_en: Optional[int] = None,
+        max_chars_ja: Optional[int] = None,
+        max_chars_es: Optional[int] = None
     ) -> Dict[str, Any]:
         """
-        Translate text to target language with specified constraints.
+        Translate text to multiple languages with specified constraints.
         
         Args:
             text: Text to translate
-            target_language: Target language code or name
             content_type: Either 'news_title' or 'news_summary'
-            max_chars: Maximum characters allowed (optional)
+            max_chars_en: Maximum characters allowed for English translation
+            max_chars_ja: Maximum characters allowed for Japanese translation
+            max_chars_es: Maximum characters allowed for Spanish translation
         """
         if not text:
             return {
                 "originalText": text,
-                "translatedText": text,
-                "characterCount": 0
+                "translatedEnText": text,
+                "translatedJaText": text,
+                "translatedEsText": text,
             }
 
         # Prepare the translation request
         request = {
-            "targetLanguage": target_language,
             "text": text,
             "type": content_type,
-            "maxCharacters": max_chars if max_chars else len(text) * 2  # Default to 2x original length if not specified
+            "maxEnCharacters": max_chars_en if max_chars_en else len(text) * 2,
+            "maxJaCharacters": max_chars_ja if max_chars_ja else len(text) * 2,
+            "maxEsCharacters": max_chars_es if max_chars_es else len(text) * 2
         }
 
         try:
-            # Send the request as JSON string
-            response = self.assistant.send_message(str(request))
+            # Send the request as a proper JSON-formatted string
+            response = await self.assistant.send_message(json.dumps(request))
             # Parse the response
             parsed_response = self._parse_response(response)
             
             # Validate the response format
-            if not all(key in parsed_response for key in ["originalText", "translatedText", "characterCount"]):
+            required_keys = ["originalText", "translatedEnText", "translatedJaText", "translatedEsText"]
+            if not all(key in parsed_response for key in required_keys):
                 raise ValueError("Invalid response format from translation service")
                 
             return parsed_response
@@ -108,6 +115,7 @@ class TranslateAssistant:
             print(f"Translation error: {e}")
             return {
                 "originalText": text,
-                "translatedText": text,
-                "characterCount": len(text)
+                "translatedEnText": text,
+                "translatedJaText": text,
+                "translatedEsText": text,
             } 
