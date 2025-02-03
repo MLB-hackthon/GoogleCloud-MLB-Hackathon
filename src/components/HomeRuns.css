@@ -1,5 +1,5 @@
 .home-runs-container {
-  background-color: #1E2A47;
+  background: #112240;
   padding: 1rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 215, 0, 0.3) rgba(30, 42, 71, 0.5);
@@ -55,6 +55,7 @@
   font-weight: 600;
 }
 
+/* 滚动条样式 */
 .home-runs-container::-webkit-scrollbar {
   width: 8px;
 }

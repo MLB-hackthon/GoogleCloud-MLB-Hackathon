@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './HomeRuns.css';
 
 function HomeRuns() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const containerRef = useRef(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     const backupVideos = {
@@ -202,6 +204,70 @@ function HomeRuns() {
     handleFetch();
   }, []);
 
+  // 自动滚动效果
+  useEffect(() => {
+    if (!containerRef.current || loading || error) return;
+
+    const container = containerRef.current;
+    const scrollHeight = container.scrollHeight;
+    const clientHeight = container.clientHeight;
+    const maxScroll = scrollHeight - clientHeight;
+    
+    const scrollSpeed = 0.03; // 每毫秒滚动的像素
+    let lastTime = null;
+    let animationFrameId = null;
+
+    const scroll = (currentTime) => {
+      if (lastTime === null) {
+        lastTime = currentTime;
+      }
+      
+      const delta = currentTime - lastTime;
+      lastTime = currentTime;
+
+      setScrollPosition((prevPosition) => {
+        const newPosition = prevPosition + scrollSpeed * delta;
+        
+        // 如果滚动到底部，重置到顶部
+        if (newPosition >= maxScroll) {
+          container.scrollTop = 0;
+          return 0;
+        }
+        
+        container.scrollTop = newPosition;
+        return newPosition;
+      });
+
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    animationFrameId = requestAnimationFrame(scroll);
+
+    // 鼠标悬停时暂停滚动
+    const handleMouseEnter = () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+
+    // 鼠标离开时恢复滚动
+    const handleMouseLeave = () => {
+      lastTime = null;
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      container.removeEventListener('mouseenter', handleMouseEnter);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [videos, loading, error]);
+
   if (loading) {
     return (
         <div className="flex justify-center items-center h-full">
@@ -219,7 +285,11 @@ function HomeRuns() {
   }
 
   return (
-    <div className="h-full overflow-y-auto home-runs-container" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+    <div 
+      ref={containerRef}
+      className="h-full overflow-y-auto home-runs-container" 
+      style={{ maxHeight: 'calc(100vh - 200px)' }}
+    >
       <div className="p-4">
         <div className="grid grid-cols-1 gap-4 max-w-2xl mx-auto">
           {videos.map((video) => (

@@ -283,7 +283,6 @@ nav {
   border-radius: 6px;
   z-index: 0;
   transition: transform 0.01s cubic-bezier(0.4, 0, 0.2, 1);  
-  /* background: rgba(255, 204, 102, 0.15); */
   background: linear-gradient(45deg, #00E6FF, #00A3FF);
   backdrop-filter: blur(4px);
 }
@@ -291,7 +290,7 @@ nav {
 .tab-content {
   flex: 1;
   overflow: hidden;
-  background: rgba(17, 34, 64, 0.2);
+  background: #112240;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 0 0 8px 8px;
