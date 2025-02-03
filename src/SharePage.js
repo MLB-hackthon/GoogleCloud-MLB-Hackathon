@@ -104,22 +104,142 @@ function SharePage() {
           <div className="bottom-sections">
             {/* 左边卡片 */}
             <div className="bottom-section">
-              <div className="chart1">
-                {/* 预留给图表内容 */}
+              <div className="chart1 flex flex-col items-center justify-center">
+                <div 
+                  className="text-8xl font-bold"
+                  style={{
+                    color: '#FFD700',
+                    textShadow: `
+                      2px 2px 8px rgba(255, 215, 0, 0.3),
+                      -2px -2px 8px rgba(255, 215, 0, 0.3),
+                      2px -2px 8px rgba(255, 215, 0, 0.3),
+                      -2px 2px 8px rgba(255, 215, 0, 0.3)
+                    `,
+                    fontFamily: 'Poppins, sans-serif'
+                  }}
+                >
+                  315
+                </div>
+                <div 
+                  className="text-sm mt-2"
+                  style={{
+                    color: 'rgba(255, 215, 0, 0.8)',
+                    fontWeight: '500'
+                  }}
+                >
+                  Career Home Runs
+                </div>
               </div>
             </div>
 
             {/* 中间卡片 */}
             <div className="bottom-section">
-              <div className="chart2">
-                {/* 预留给图表内容 */}
+              <div className="chart2 p-4">
+                <div className="space-y-6">
+                  {/* Batting Run Value */}
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm text-gray-300">Batting Run Value</span>
+                      <span className="text-sm font-semibold text-gray-200">100</span>
+                    </div>
+                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: '100%' }}
+                        transition={{ 
+                          duration: 1.5,
+                          ease: "easeOut"
+                        }}
+                        className="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Baserunning Run Value */}
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm text-gray-300">Baserunning Run Value</span>
+                      <span className="text-sm font-semibold text-gray-200">54</span>
+                    </div>
+                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: '54%' }}
+                        transition={{ 
+                          duration: 1.5,
+                          ease: "easeOut",
+                          delay: 0.2
+                        }}
+                        className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Fielding Run Value */}
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm text-gray-300">Fielding Run Value</span>
+                      <span className="text-sm font-semibold text-gray-200">27</span>
+                    </div>
+                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: '27%' }}
+                        transition={{ 
+                          duration: 1.5,
+                          ease: "easeOut",
+                          delay: 0.4
+                        }}
+                        className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* 右边卡片 */}
             <div className="bottom-section">
-              <div className="chart3">
-                {/* 预留给图表内容 */}
+              <div className="chart3 p-4">
+                <div className="space-y-4">
+                  {/* 名字 */}
+                  <div 
+                    className="text-2xl font-bold"
+                    style={{
+                      color: '#FFD700',
+                      textShadow: '0 0 10px rgba(255, 215, 0, 0.3)'
+                    }}
+                  >
+                    Aaron Judge
+                  </div>
+                  
+                  {/* 主要信息 */}
+                  <div className="flex flex-wrap gap-2 text-sm text-gray-300">
+                    <span className="font-semibold">CF</span>
+                    <span className="text-gray-500">|</span>
+                    <span>Bats/Throws: R/R</span>
+                    <span className="text-gray-500">|</span>
+                    <span>6' 7" 282LBS</span>
+                    <span className="text-gray-500">|</span>
+                    <span>Age: 32</span>
+                  </div>
+                  
+                  {/* 选秀信息 */}
+                  <div className="text-sm text-gray-300 leading-relaxed">
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-400 font-semibold">Draft:</span>
+                      <span>2013</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-400 font-semibold">Selected:</span>
+                      <span>Rd: 1, #32, New York Yankees</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-400 font-semibold">College:</span>
+                      <span>Fresno State</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

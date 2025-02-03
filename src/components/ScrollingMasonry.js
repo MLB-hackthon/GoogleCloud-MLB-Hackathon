@@ -144,7 +144,7 @@ export default function ScrollingMasonry() {
     // 立即显示备用数据，不显示错误信息
     const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
     setApiData(backupNewsArray);
-    setError(null);  // 不设置错误信息
+    setError(null); 
     setLoading(false);
 
     // 后台持续尝试获取数据的函数

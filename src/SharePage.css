@@ -93,6 +93,7 @@ nav {
 .image-section {
   position: relative;
   overflow: visible;
+  height: 60%;
 }
 
 .pitcher-image {
