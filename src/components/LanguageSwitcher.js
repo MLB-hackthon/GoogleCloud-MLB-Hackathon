@@ -7,7 +7,7 @@ const LanguageSwitcher = () => {
   const [selectedLang, setSelectedLang] = useState('EN');
 
   const languages = [
-    { code: 'EN', label: 'English', flag: '🇺🇸' },
+    { code: 'EN', label: 'ENGLISH', flag: '🇺🇸' },
     { code: 'JP', label: '日本語', flag: '🇯🇵' },
     { code: 'ES', label: 'Español', flag: '🇪🇸' }
   ];

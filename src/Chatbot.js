@@ -36,8 +36,8 @@ function Chatbot({ onClose }) {
   return (
     <div className="chatbot-container">
       <div className="chatbot-header">
-        <h3>Chat with Us</h3>
-        <button className="close-button" onClick={onClose}>×</button>
+        <h3>CHAT WITH US</h3>
+        <button className="close-button" onClick={onClose}></button>
       </div>
 
       <div className="messages-container">

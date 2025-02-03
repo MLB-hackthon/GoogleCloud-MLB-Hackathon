@@ -145,16 +145,19 @@ nav {
   height: 24px;
   margin-bottom: 15px;
   filter: brightness(0);
+  transform: rotate(270deg);
 }
 
 .chat-text {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   white-space: nowrap;
-  font-size: 14px;
+  font-size: 20px;
   letter-spacing: 1px;
   color: #1a1a1a;
   font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
 }
 
 /* 图表区域样式 */
@@ -250,4 +253,6 @@ nav {
   bottom: 1%;
   right: 1%;
   z-index: 50;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
 }
