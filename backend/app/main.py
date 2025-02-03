@@ -8,8 +8,7 @@ from .models.user import User  # Import your User model
 
 # Create tables before starting the app
 async def create_tables():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="MLB API",
