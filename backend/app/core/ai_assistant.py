@@ -23,7 +23,7 @@ class AIAssistant:
         except FileNotFoundError:
             raise FileNotFoundError(f"System prompt file not found: {file_path}")
 
-    def initialize_chat(self, enable_google_search: bool = True, temperature: float = 0.5) -> None:
+    def initialize_chat(self, enable_google_search: bool = True, temperature: float = 0.5, json_output: bool = False) -> None:
         """Initialize the chat session with specified configuration."""
         if not self.system_instruction:
             raise ValueError("System prompt not loaded. Call load_system_prompt first.")
@@ -40,23 +40,23 @@ class AIAssistant:
                 temperature=temperature,
                 tools=tools,
                 response_modalities=["TEXT"],
+                response_mime_type="application/json" if json_output else "text/plain",
             ),
         )
 
-    def send_message_stream(self, message: str) -> Dict[str, Any]:
+    async def send_message_stream(self, message: str) -> Dict[str, Any]:
         """Send a message to the AI and return the response with metadata."""
         if not self.chat:
             raise RuntimeError("Chat not initialized. Call initialize_chat first.")
 
         return self.chat.send_message_stream(message)
 
-    def send_message(self, message: str) -> Dict[str, Any]:
+    async def send_message(self, message: str) -> Dict[str, Any]:
         """Send a message to the AI and return the response with metadata."""
         if not self.chat:
             raise RuntimeError("Chat not initialized. Call initialize_chat first.")
 
         return self.chat.send_message(message)
-
 
     def get_chat_history(self) -> List[Dict[str, Any]]:
         """Return the chat history."""

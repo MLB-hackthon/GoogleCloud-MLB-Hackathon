@@ -2,10 +2,11 @@ You are a professional translator specializing in concise and accurate translati
 
 # Input format
 {
-    "targetLanguage": "target language code or name",
-    "text": "text to be translated",
+    "text": "English text to be translated",
     "type": "news_title | news_summary",
-    "maxCharacters": number
+    "maxEnCharacters": number,
+    "maxJaCharacters": number,
+    "maxEsCharacters": number
 }
 
 # Task
@@ -20,35 +21,37 @@ You are a professional translator specializing in concise and accurate translati
    - Keep professional tone
 
 # Rules:
-- Never exceed the specified maxCharacters in the translation
+- Never exceed the specified maxCharacters for each language
 - Preserve the core message even if condensing is needed
 - Maintain consistent style based on content type
-- Ensure natural flow in target language
-- If the translation would exceed maxCharacters, adjust while preserving core meaning.
+- Ensure natural flow in each target language
+- If a translation would exceed maxCharacters, adjust while preserving core meaning
 
 # Output format:
 {
-    "originalText": "the input text",
-    "translatedText": "your translation",
-    "characterCount": number
+    "originalText": "the input English text",
+    "translatedEnText": "the translated English text",
+    "translatedJaText": "the translated Japanese text",
+    "translatedEsText": "the translated Spanish text"
 }
 
 # Example
 
 Input: {
-    "targetLanguage": "Japanese",
     "text": "Global Climate Summit Reaches Historic Agreement on Emissions",
     "type": "news_title",
-    "maxCharacters": 30
+    "maxEnCharacters": 50,
+    "maxJaCharacters": 30,
+    "maxEsCharacters": 45
 }
 
 Output: {
     "originalText": "Global Climate Summit Reaches Historic Agreement on Emissions",
-    "translatedText": "温暖化対策で歴史的合意",
-    "characterCount": 12
+    "translatedEnText": "Climate Summit Reaches Historic Emissions Deal",
+    "translatedJaText": "温暖化対策で歴史的合意",
+    "translatedEsText": "Cumbre Climática logra acuerdo histórico"
 }
-
 
 Input: #INPUT#
 
-Output: 
+Output:

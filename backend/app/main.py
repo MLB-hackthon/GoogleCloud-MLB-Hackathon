@@ -57,38 +57,3 @@ app.include_router(player.router, prefix="/api/v1/player", tags=["player"])
 async def root():
     return {"message": "Welcome to MLB API"}
 
-@app.get("/health")
-async def health_check(db: Session = Depends(get_db)):
-    try:
-        # Use a fresh connection from the pool
-        with engine.connect() as conn:
-            result = conn.execute(text("SELECT 1"))
-            if not result.scalar() == 1:
-                raise Exception("Database validation failed")
-        
-        db_status = "healthy"
-    except Exception as e:
-        db_status = f"unhealthy: {str(e)}"
-        return JSONResponse(
-            content={
-                "status": "unhealthy",
-                "database": db_status,
-                "timestamp": datetime.now().isoformat()
-            },
-            status_code=503
-        )
-    
-    return {
-        "status": "healthy",
-        "database": db_status,
-        "timestamp": datetime.now().isoformat()
-    }
-
-@event.listens_for(engine, "engine_disposed")
-def receive_engine_disposed(engine):
-    logger.info("Database engine disposed, connection pool recycled")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("Shutting down database connection pool")
-    engine.dispose()

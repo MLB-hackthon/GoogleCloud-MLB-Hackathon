@@ -13,7 +13,7 @@ async def get_player_info(
     """
     Get detailed player information from MLB Stats API
     """
-    player_info = info_service.get_player_info_by_name(player)
+    player_info = await info_service.get_player_info_by_name(player)
     if not player_info:
         raise HTTPException(status_code=404, detail="Player not found")
     return {"info": player_info}
@@ -26,7 +26,7 @@ async def get_player_headshot(
     """
     Get player headshot image URL
     """
-    headshot_url = info_service.get_player_headshot_by_name(player)
+    headshot_url = await info_service.get_player_headshot_by_name(player)
     if not headshot_url:
         raise HTTPException(status_code=404, detail="Player headshot not found")
     return {"headshot_url": headshot_url}
@@ -39,7 +39,7 @@ async def get_team_logo(
     """
     Get team logo URL by team name
     """
-    logo_url = info_service.get_team_logo_by_name(team)
+    logo_url = await info_service.get_team_logo_by_name(team)
     if not logo_url:
         raise HTTPException(status_code=404, detail="Team logo not found")
     return {"logo_url": logo_url}
