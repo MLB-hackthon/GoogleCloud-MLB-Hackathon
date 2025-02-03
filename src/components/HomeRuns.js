@@ -7,13 +7,13 @@ function HomeRuns() {
 
   useEffect(() => {
     const backupVideo = {
-      play_id: "backup-video-001",
-      title: "Aaron Judge 2023 Season Highlights",
-      video_url: "https://sporty-clips.mlb.com/BACKUP_VIDEO_URL.mp4",
-      exit_velocity: 98.9,
-      launch_angle: 28,
-      hit_distance: 339.1788252,
-      season: "2023"
+        "play_id": "380941da-ac6b-4c38-97cd-fd625274b50a",
+        "title": "Aaron Judge homers (13) on a fly ball to right field.    Juan Soto scores.",
+        "video_url": "https://sporty-clips.mlb.com/MzVENURfWGw0TUFRPT1fQlFsUlhWQUZBbE1BV1FFRUJBQUFVZ1ZlQUZnQ0FBVUFWQUVEQWdZSEJnY0hCUUlI.mp4",
+        "exit_velocity": 98.9,
+        "launch_angle": 28,
+        "hit_distance": 339.1788252,
+        "season": "2024"
     };
 
     const fetchVideos = async () => {

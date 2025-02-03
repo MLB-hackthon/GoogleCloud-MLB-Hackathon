@@ -10,19 +10,26 @@ const isGettyScriptLoaded = () => {
 const BACKUP_NEWS = {
   "news": [
     {
-      "url": "https://www.mlb.com/news/ranking-the-best-position-groups-for-2025",
-      "domain": "www.mlb.com",
-      "title": "Ranking the most stacked positions of 2025",
-      "snippet": "He is the 22nd player to have his number retired by New York, by far the most among major league teams.",
-      "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9/t_w2208/mlb/alooqfx5lkof5mmwi9ah"
-    },
-    {
-      "url": "https://www.espn.com/mlb/story/_/id/38679320/shohei-ohtani-dodgers-historic-deal",
-      "domain": "www.espn.com",
-      "title": "Shohei Ohtani agrees to record $700 million deal with Dodgers",
-      "snippet": "Two-way superstar Shohei Ohtani has agreed to a record-breaking 10-year, $700 million contract with the Los Angeles Dodgers.",
-      "image_url": "https://a.espncdn.com/photo/2023/1209/r1263329_1296x729_16-9.jpg"
-    }
+        "url": "https://www.mlb.com/news/baseball-writers-association-of-america-awards-dinner-2025",
+        "domain": "www.mlb.com",
+        "title": "Stars come out in full force at BBWAA awards dinner in New York",
+        "snippet": "Baseball's biggest stars were out in full force in New York on Saturday night to celebrate the 100th centennial of the New York chapter's Baseball Writers' Association of America awards dinner.",
+        "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/mlb/xyfhftl7gfbubfpsum2x"
+      },
+      {
+        "url": "https://www.mlb.com/news/aaron-judge-home-run-record",
+        "domain": "www.mlb.com",
+        "title": "Aaron Judge sets AL home run record",
+        "snippet": "Aaron Judge made history with his 62nd home run of the season, setting a new American League record.",
+        "image_url": "https://img.mlbstatic.com/mlb-images/image/private/t_16x9/t_w1024/mlb/l1qxunceypdq1wcqm3ip"
+  },
+        {
+        "url": "https://www.mlb.com/news/aaron-judge-to-move-back-to-right-field-for-yankees",
+        "domain": "www.mlb.com",
+        "title": "Judge expected to move back to RF, opening door for Martian in CF",
+        "snippet": "DALLAS – Juan Soto’s decision to cross borough lines from the Bronx to Queens could prompt another relocation of sorts, with the Yankees now expected to shift team captain Aaron Judge back to his “Chambers” in right field.",
+        "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/mlb/bismofyowhubohaloqcc"
+        }
   ]
 };
 
@@ -104,72 +111,74 @@ export default function ScrollingMasonry() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-        try {
-          const response = await fetch('http://34.56.194.81:8000/api/v1/content/news/Aaron%20Judge%20?limit=20&target_language=English&max_chars_title=50&max_chars_summary=50', {
-            signal: controller.signal
-          });
-          
-          clearTimeout(timeoutId);
+        const response = await fetch('http://34.56.194.81:8000/api/v1/content/news/Aaron%20Judge%20?limit=20&target_language=English&max_chars_title=50&max_chars_summary=50', {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          const data = await response.json();
-          if (!data || !data.news || data.news.length === 0) {
-            throw new Error('No data available');
-          }
-
-          const shuffledNews = [...data.news, ...data.news].sort(() => Math.random() - 0.5);
-          setApiData(shuffledNews);
-          setError(null);
-          return true;
-
-        } catch (error) {
-          if (error.name === 'AbortError') {
-            console.log('Request timed out');
-          }
-          throw error;
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        if (!data || !data.news || data.news.length === 0) {
+          throw new Error('No data available');
         }
 
-      } catch (err) {
-        console.error('Fetch error:', err);
+        const shuffledNews = [...data.news, ...data.news].sort(() => Math.random() - 0.5);
+        setApiData(shuffledNews);
+        setError(null);
+        return true;
+
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          console.log('Request timed out');
+        }
+        throw error;
+      }
+    };
+
+    // 立即显示备用数据，不显示错误信息
+    const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
+    setApiData(backupNewsArray);
+    setError(null);  // 不设置错误信息
+    setLoading(false);
+
+    // 后台持续尝试获取数据的函数
+    const backgroundFetch = async () => {
+      try {
+        const success = await fetchNews();
+        if (success) {
+          console.log('Successfully fetched live news');
+          return true;
+        }
+      } catch (error) {
+        console.log('Background fetch attempt failed, will retry...');
         return false;
       }
     };
 
-    let retryInterval;
-
-    const attemptFetch = async () => {
-      const success = await fetchNews();
-      if (success) {
-        console.log('Successfully fetched news, stopping retries');
-        if (retryInterval) {
-          clearInterval(retryInterval);
+    // 开始后台轮询
+    const startPolling = () => {
+      const pollInterval = setInterval(async () => {
+        const success = await backgroundFetch();
+        if (success) {
+          clearInterval(pollInterval);
+          console.log('Live data fetched successfully, stopping polling');
         }
-      }
+      }, 2000);
+
+      // 返回清理函数
+      return () => clearInterval(pollInterval);
     };
 
-    // 立即显示备用数据
-    const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
-    setApiData(backupNewsArray);
-    setError('Loading... Using backup data while fetching live updates');
-    setLoading(false);
+    // 启动轮询
+    const cleanup = startPolling();
 
-    // 首次尝试获取实时数据
-    attemptFetch();
-
-    // 设置后台重试间隔
-    retryInterval = setInterval(() => {
-      console.log('Retrying news fetch in background...');
-      attemptFetch();
-    }, 2000);
-
-    // 清理函数
+    // 组件卸载时清理
     return () => {
-      if (retryInterval) {
-        clearInterval(retryInterval);
-      }
+      cleanup();
     };
   }, []); // 只在组件挂载时运行一次
 
