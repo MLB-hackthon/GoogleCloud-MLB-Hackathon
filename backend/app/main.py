@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .api.endpoints import chat, content, auth
+from .api.endpoints import chat, content, auth, player
 from .core.database import Base, engine, get_db
 from datetime import datetime
 
@@ -33,6 +33,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(chat.router, prefix="/api/v1/chat", tags=["chat"])
 app.include_router(content.router, prefix="/api/v1/content", tags=["content"])
+app.include_router(player.router, prefix="/api/v1/player", tags=["player"])
 
 @app.get("/")
 async def root():
