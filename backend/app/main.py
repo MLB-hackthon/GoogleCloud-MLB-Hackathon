@@ -5,10 +5,25 @@ from .api.endpoints import chat, content, auth, player
 from .core.database import Base, engine, get_db
 from datetime import datetime
 from .models.user import User  # Import your User model
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy import event
+from sqlalchemy.exc import DisconnectionError
+import asyncio
 
 # Create tables before starting the app
 async def create_tables():
-    Base.metadata.create_all(bind=engine)
+    retries = 10
+    delay = 10
+    for i in range(retries):
+        try:
+            Base.metadata.create_all(bind=engine)
+            break
+        except Exception as e:
+            if i == retries - 1:
+                raise
+            logger.warning(f"Database connection failed, retrying in {delay} seconds...")
+            await asyncio.sleep(delay)
 
 app = FastAPI(
     title="MLB API",

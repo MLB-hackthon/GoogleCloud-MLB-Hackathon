@@ -1,17 +1,23 @@
 .language-button {
-  background-color: white;
-  border-radius: 9999px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: #112240;
+  border-radius: 10px;
+  border: 1px solid #A8B2D1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+}
+
+.language-button:hover {
+  border-color: #FFD700;
+  transform: scale(1.05);
 }
 
 .language-label {
-  color:#000;
-  font-weight: 500;
+  color: #FFFFFF;
+  font-weight: 600;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -20,9 +26,10 @@
   bottom: 100%;
   margin-bottom: 0.5rem;
   right: 0;
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background-color: #112240;
+  border: 1px solid #A8B2D1;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
 
@@ -33,13 +40,18 @@
   padding: 0.5rem 1rem;
   width: 100%;
   transition: all 0.2s ease;
+  background-color: #112240;
+}
+
+.language-option:hover {
+  background-color: rgba(255, 215, 0, 0.1);
 }
 
 .language-option-label {
-  color: #000;
+  color: #A8B2D1;
   transition: color 0.2s ease;
 }
 
 .language-option:hover .language-option-label {
-  color: #D72638;
+  color: #FFD700;
 } 

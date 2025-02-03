@@ -16,6 +16,13 @@ services:
       - GOOGLE_SEARCH_ENGINE_ID=${GOOGLE_SEARCH_ENGINE_ID}
     volumes:
       - ./app:/app/app
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+          cpus: '0.75'
+        reservations:
+          memory: 384m
     restart: unless-stopped
 
 volumes:

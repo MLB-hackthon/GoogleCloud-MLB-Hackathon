@@ -3,7 +3,6 @@ import "./SharePage.css";
 import Chatbot from "./Chatbot";
 import ScrollingMasonry from "./components/ScrollingMasonry";
 import HomeRuns from './components/HomeRuns';
-import youtubeData from './data/youtube_search_results.json';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -67,12 +66,39 @@ function SharePage() {
       <div className="content">
         
         <div className="left-section">
-          <div className="image-section">
+          <div className="image-section relative">
             <img 
-              src="/test/Image2.png" 
+              src="/test/AaronJudge.jpg" 
               alt="Pitcher"
               className="pitcher-image"
             />
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ 
+                scale: [0, 1.5, 1],
+                opacity: [0, 1, 1]
+              }}
+              transition={{ 
+                duration: 1.5,
+                times: [0, 0.6, 1],
+                ease: "easeInOut"
+              }}
+              className="absolute bottom-4 left-4 transform origin-bottom-left
+                         text-white text-7xl font-bold z-10
+                         whitespace-nowrap pointer-events-none"
+              style={{
+                textShadow: `
+                  2px 2px 8px rgba(0,0,0,0.8),
+                  -2px -2px 8px rgba(0,0,0,0.8),
+                  2px -2px 8px rgba(0,0,0,0.8),
+                  -2px 2px 8px rgba(0,0,0,0.8),
+                  0 0 15px rgba(0,0,0,0.7)
+                `,
+                fontFamily: 'Poppins, sans-serif'
+              }}
+            >
+              Aaron Judge
+            </motion.div>
           </div>
           
           <div className="bottom-sections">
