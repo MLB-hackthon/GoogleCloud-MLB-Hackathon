@@ -35,7 +35,7 @@ nav {
 }
 
 .title {
-  color: white;
+  color: #FFFFFF;
   font-size: 24px;
   font-weight: bold;
 }
@@ -45,25 +45,21 @@ nav {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  /* background-color: #0F172A; */
-  background-image: url('../public/test/bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-color: #0A192F;
 }
 
 .content {
   display: flex;
   width: 90%;
   height: 85%;
-  background: rgba(255, 255, 255, 0.15);  /* 浅色透明背景 */
-  backdrop-filter: blur(10px);  /* 磨砂效果 */
-  -webkit-backdrop-filter: blur(10px);  /* Safari 支持 */
+  background: #112240;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(168, 178, 209, 0.2);
   border-radius: 12px;
   padding: 0 12px;
   box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);  /* 浅色阴影 */
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.2);  /* 浅色边框增加层次感 */
 }
 
 .left-section {
@@ -84,6 +80,9 @@ nav {
   flex-direction: column;
   border-radius: 8px;
   z-index: 1;
+  background: rgba(17, 34, 64, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 
@@ -112,9 +111,9 @@ nav {
 .bottom-section {
   width: 100%;
   flex: 1;
-  background: rgba(0, 31, 63, 0.8);
+  background: #112240;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -127,7 +126,7 @@ nav {
 
 .bottom-section:hover {
   transform: scale(1.05);
-  border: 2px solid #0077B6;
+  border: 2px solid #FFD700;
 }
 
 /* 聊天按钮区域特殊样式 */
@@ -142,27 +141,29 @@ nav {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #1a1a1a;
+  background-color: #112240;
+  color: #FFFFFF;
   padding: 20px 12px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 50px;
+  border: 1px solid #A8B2D1;
 }
 
 .chat-button:hover {
-  background-color: rgba(255, 255, 255, 1);
+  background-color: #112240;
   transform: scale(1.05);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  border-color: #FFD700;
 }
 
 .chat-icon {
   width: 24px;
   height: 24px;
   margin-bottom: 15px;
-  filter: brightness(0);
+  filter: invert(1);
   transform: rotate(270deg);
 }
 
@@ -172,7 +173,7 @@ nav {
   white-space: nowrap;
   font-size: 20px;
   letter-spacing: 1px;
-  color: #1a1a1a;
+  color: #FFFFFF;
   font-weight: 500;
   font-family: 'Poppins', sans-serif;
   font-weight: bold;
@@ -205,7 +206,7 @@ nav {
   position: relative;
   padding: 4px;
   border-radius: 8px 8px 0 0;
-  background: rgba(255, 255, 255, 0.1);
+  background: #112240;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -223,18 +224,18 @@ nav {
   border: none;
   background-color: transparent;
   cursor: pointer;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  color: #A8B2D1;
   position: relative;
   transition: color 0.3s ease;
 }
 
 .tab.active {
-  color: #000;
+  color: #FFFFFF;
 }
 
 .tab:hover:not(.active) {
-  color: rgba(255, 255, 255, 0.8);
+  color: #FFD700;
 }
 
 .tab-indicator {
@@ -246,17 +247,18 @@ nav {
   border-radius: 6px;
   z-index: 0;
   transition: transform 0.3s ease;
-  background: rgba(255, 255, 255, 0.9);
+  background: #112240;
 }
 
 .tab-content {
   flex: 1;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(17, 34, 64, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 0 0 8px 8px;
 }
+
 .LanguageSwitcher {
   position: fixed;
   bottom: 1%;

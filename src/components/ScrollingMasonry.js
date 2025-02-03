@@ -10,28 +10,28 @@ const isGettyScriptLoaded = () => {
 const BACKUP_NEWS = {
   "news": [
     {
-        "url": "https://www.mlb.com/news/baseball-writers-association-of-america-awards-dinner-2025",
-        "domain": "www.mlb.com",
-        "title": "Stars come out in full force at BBWAA awards dinner in New York",
-        "snippet": "Baseball's biggest stars were out in full force in New York on Saturday night to celebrate the 100th centennial of the New York chapter's Baseball Writers' Association of America awards dinner.",
-        "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/mlb/xyfhftl7gfbubfpsum2x"
-      },
+      "url": "https://www.mlb.com/news/baseball-writers-association-of-america-awards-dinner-2025",
+      "domain": "www.mlb.com",
+      "title": "Stars come out in full force at BBWAA awards dinner in New York",
+      "snippet": "Baseball's biggest stars were out in full force in New York on Saturday night.",
+      "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/mlb/xyfhftl7gfbubfpsum2x"
+    },
 
-      {
-        "url": "https://www.mlb.com/news/aaron-judge-s-all-rise-foundation-hosts-all-star-gala",
-        "domain": "www.mlb.com",
-        "title": "Judge's star-studded All-Star Gala only part of Yanks' charitable efforts",
-        "snippet": "This story was excerpted from Bryan Hoch’s Yankees Beat newsletter. To read the full newsletter, click here. And subscribe to get it regularly in your inbox.",
-        "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/v1732501276/mlb/fezafbpgcilp5m6fi5ig"
-        },
-      
-        {
-        "url": "https://www.mlb.com/news/aaron-judge-to-move-back-to-right-field-for-yankees",
-        "domain": "www.mlb.com",
-        "title": "Judge expected to move back to RF, opening door for Martian in CF",
-        "snippet": "DALLAS – Juan Soto’s decision to cross borough lines from the Bronx to Queens could prompt another relocation of sorts, with the Yankees now expected to shift team captain Aaron Judge back to his “Chambers” in right field.",
-        "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/mlb/bismofyowhubohaloqcc"
-        }
+    {
+      "url": "https://www.mlb.com/news/aaron-judge-s-all-rise-foundation-hosts-all-star-gala",
+      "domain": "www.mlb.com",
+      "title": "Judge's star-studded All-Star Gala only part of Yanks' charitable efforts",
+      "snippet": "This story was excerpted from Bryan Hoch's Yankees Beat newsletter.",
+      "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/v1732501276/mlb/fezafbpgcilp5m6fi5ig"
+    },
+    
+    {
+      "url": "https://www.mlb.com/news/aaron-judge-to-move-back-to-right-field-for-yankees",
+      "domain": "www.mlb.com",
+      "title": "Judge expected to move back to RF, opening door for Martian in CF",
+      "snippet": "DALLAS – Juan Soto's decision to cross borough lines from the Bronx to Queens could prompt another relocation of sorts.",
+      "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/mlb/bismofyowhubohaloqcc"
+    }
   ]
 };
 
@@ -190,7 +190,7 @@ export default function ScrollingMasonry() {
     img.onload = () => {
       setImageAspectRatios(prev => ({
         ...prev,
-        [index]: img.width > 1.5 * img.height  // 如果宽度大于高度的1.5倍，则为横向图片
+        [index]: img.width > 3 * img.height  // 如果宽度大于高度的1.5倍，则为横向图片
       }));
     };
     img.src = imageUrl;
@@ -229,10 +229,6 @@ export default function ScrollingMasonry() {
     }, 1000);
   };
 
-  // 替换原来的 leftColumn 和 rightColumn 定义
-  const leftColumn = apiData.filter((_, index) => index % 2 === 0);
-  const rightColumn = apiData.filter((_, index) => index % 2 === 1);
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -266,11 +262,11 @@ export default function ScrollingMasonry() {
         className="flex w-full gap-4 p-4"
         columnClassName="flex flex-col gap-4 [&:nth-child(2)]:mt-4"
       >
-        {leftColumn.map((item, index) => {
+        {apiData.map((item, index) => {
           const isWide = imageAspectRatios[index];
           return (
             <div
-              key={`left-${index}`}
+              key={index}
               className="newImageCard"
               style={{ aspectRatio: isWide ? '4/3' : '3/4' }}
               onClick={() => handleNewsClick(item.url)}
@@ -279,7 +275,7 @@ export default function ScrollingMasonry() {
             >
               <div 
                 className="newImageCard-image"
-                style={{ height: isWide ? '75%' : '85%' }}
+                style={{ height: '75%' }}
               >
                 <img
                   src={item.image_url}
@@ -293,52 +289,9 @@ export default function ScrollingMasonry() {
               </div>
               <div 
                 className="newImageCard-title"
-                style={{ height: isWide ? '25%' : '15%' }}
+                style={{ height: '25%' }}
               >
                 <p>{item.title}</p>
-              </div>
-            </div>
-          );
-        })}
-        {rightColumn.map((item, index) => {
-          const isWide = imageAspectRatios[index];
-          return (
-            <div
-              key={`right-${index}`}
-              className="w-full bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer transform transition-transform hover:scale-[1.02]"
-              style={{ 
-                aspectRatio: isWide ? '4/3' : '3/4'
-              }}
-              onClick={() => handleNewsClick(item.url)}
-              onMouseEnter={() => setHoveredDomain(item.domain)}
-              onMouseLeave={() => setHoveredDomain(null)}
-            >
-              <div 
-                className="flex-grow w-full relative rounded-lg overflow-hidden"
-                style={{ 
-                  height: isWide ? '75%' : '85%' 
-                }}
-              >
-                <img
-                  src={item.image_url}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                />
-                {hoveredDomain === item.domain && (
-                  <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                    {item.domain}
-                  </div>
-                )}
-              </div>
-              <div 
-                className="w-full bg-gray-800 flex items-center p-2"
-                style={{ 
-                  height: isWide ? '25%' : '15%' 
-                }}
-              >
-                <p className="text-left font-medium text-white text-sm leading-tight line-clamp-2">
-                  {item.title}
-                </p>
               </div>
             </div>
           );

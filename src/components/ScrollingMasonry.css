@@ -43,11 +43,16 @@
   overflow: hidden;
   cursor: pointer;
   transform: translateZ(0);
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .newImageCard:hover {
   transform: scale(1.02);
+  border-color: #FFD700;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),
+              0 0 8px rgba(255, 215, 0, 0.3);
 }
 
 .newImageCard-image {
@@ -70,7 +75,7 @@
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
   font-family: 'Poppins', sans-serif;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .newImageCard-title {
@@ -83,7 +88,6 @@
 
 .newImageCard-title p {
   text-align: left;
-  font-weight: 500;
   color: white;
   font-size: 0.875rem;
   line-height: 1.25;
@@ -92,5 +96,5 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-family: 'Poppins', sans-serif;
-  font-weight: bold;
+  font-weight: 600;
 } 
