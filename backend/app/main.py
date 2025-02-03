@@ -7,10 +7,23 @@ from datetime import datetime
 from .models.user import User  # Import your User model
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
+from sqlalchemy import event
+from sqlalchemy.exc import DisconnectionError
+import asyncio
 
 # Create tables before starting the app
 async def create_tables():
-    Base.metadata.create_all(bind=engine)
+    retries = 10
+    delay = 10
+    for i in range(retries):
+        try:
+            Base.metadata.create_all(bind=engine)
+            break
+        except Exception as e:
+            if i == retries - 1:
+                raise
+            logger.warning(f"Database connection failed, retrying in {delay} seconds...")
+            await asyncio.sleep(delay)
 
 app = FastAPI(
     title="MLB API",
@@ -47,9 +60,12 @@ async def root():
 @app.get("/health")
 async def health_check(db: Session = Depends(get_db)):
     try:
-        # Test database connection with commit
-        db.execute(text("SELECT 1"))
-        db.commit()  # Add explicit commit
+        # Use a fresh connection from the pool
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1"))
+            if not result.scalar() == 1:
+                raise Exception("Database validation failed")
+        
         db_status = "healthy"
     except Exception as e:
         db_status = f"unhealthy: {str(e)}"
@@ -67,3 +83,12 @@ async def health_check(db: Session = Depends(get_db)):
         "database": db_status,
         "timestamp": datetime.now().isoformat()
     }
+
+@event.listens_for(engine, "engine_disposed")
+def receive_engine_disposed(engine):
+    logger.info("Database engine disposed, connection pool recycled")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    logger.info("Shutting down database connection pool")
+    engine.dispose()

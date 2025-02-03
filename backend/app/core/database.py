@@ -7,7 +7,10 @@ from .config import settings
 engine = create_engine(
     f"postgresql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}",
     pool_pre_ping=True,
-    pool_recycle=300
+    pool_recycle=300,
+    pool_size=8,
+    max_overflow=2,
+    pool_timeout=10
 )
 
 # Test connection immediately

@@ -41,4 +41,6 @@ async def google_auth(
         raise HTTPException(status_code=401, detail="Invalid authentication credentials")
     except Exception as e:
         logger.error(f"Auth error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Authentication failed") 
+        raise HTTPException(status_code=500, detail="Authentication failed")
+    finally:
+        db.close()  # Add explicit connection closing 
