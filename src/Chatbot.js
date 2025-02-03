@@ -37,7 +37,22 @@ function Chatbot({ onClose }) {
     <div className="chatbot-container">
       <div className="chatbot-header">
         <h3>CHAT WITH US</h3>
-        <button className="close-button" onClick={onClose}></button>
+        <div className="header-buttons">
+          <button 
+            className="minimize-button"
+            onClick={onClose}
+            title="Minimize"
+          >
+            −
+          </button>
+          <button 
+            className="close-button"
+            onClick={onClose}
+            title="Close"
+          >
+            ×
+          </button>
+        </div>
       </div>
 
       <div className="messages-container">
