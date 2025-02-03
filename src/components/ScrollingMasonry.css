@@ -39,20 +39,23 @@
 
 .newImageCard {
   width: 100%;
-  border-radius: 0.5rem;
+  /* border-radius: 0.5rem; */
   overflow: hidden;
   cursor: pointer;
   transform: translateZ(0);
   transition: all 0.2s ease;
   border: 2px solid transparent;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background-color: #1E2A47;
+  border-radius: 12px;
 }
 
 .newImageCard:hover {
   transform: scale(1.02);
   border-color: #FFD700;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),
-              0 0 8px rgba(255, 215, 0, 0.3);
+              0 0 8px rgba(255, 215, 0, 0.3),
+              0 0 15px rgba(64, 169, 255, 0.2);
 }
 
 .newImageCard-image {
@@ -80,15 +83,15 @@
 
 .newImageCard-title {
   width: 100%;
-  background-color: rgb(31, 41, 55);
+  background: linear-gradient(135deg, #152A4E, #0A192F);
   display: flex;
   align-items: center;
-  padding: 0.5rem;
+  padding: 0.75rem;
 }
 
 .newImageCard-title p {
   text-align: left;
-  color: white;
+  color: #D0D3D4;
   font-size: 0.875rem;
   line-height: 1.25;
   display: -webkit-box;
@@ -97,4 +100,36 @@
   overflow: hidden;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.newImageCard:hover .newImageCard-title p {
+  color: #FFFFFF;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;  /* 初始状态 */
+}
+
+/* 保持其他hover效果 */
+.newImageCard:hover {
+  transform: scale(1.02);
+  border-color: #FFD700;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),
+              0 0 8px rgba(255, 215, 0, 0.3),
+              0 0 15px rgba(64, 169, 255, 0.2);
 } 

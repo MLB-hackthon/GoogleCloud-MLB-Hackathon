@@ -268,7 +268,7 @@ export default function ScrollingMasonry() {
             <div
               key={index}
               className="newImageCard"
-              style={{ aspectRatio: isWide ? '4/3' : '3/4' }}
+              style={{ aspectRatio: isWide ? '9/6' : '3/4' }}
               onClick={() => handleNewsClick(item.url)}
               onMouseEnter={() => setHoveredDomain(item.domain)}
               onMouseLeave={() => setHoveredDomain(null)}
