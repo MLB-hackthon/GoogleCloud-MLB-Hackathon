@@ -132,74 +132,38 @@ function HomeRuns() {
       ]
     };
 
-    const fetchVideos = async () => {
+    (async () => {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000);
-
         const response = await fetch('http://34.56.194.81:8000/api/v1/content/videos/Aaron%20Judge/homeruns', {
           method: 'GET',
           headers: {
             'accept': 'application/json'
-          },
-          signal: controller.signal
+          }
         });
-
-        clearTimeout(timeoutId);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        if (!data || !data.videos || data.videos.length === 0) {
-          throw new Error('Invalid or empty response');
-        }
-        return data;
-
-      } catch (error) {
-        console.log('Error occurred:', error.message);
-        setVideos(backupVideos.videos);
-        setError('Unable to fetch videos from API, showing backup data');
-        return backupVideos;
-      }
-    };
-
-    const handleData = async (data) => {
-      try {
-        const uniqueVideos = data.videos.filter((video, index, self) => 
-          self.findIndex(v => v.play_id === video.play_id) === index &&
-          (video.title.toLowerCase().includes('aaron judge homers') || video.play_id === 'backup-video-001')
-        );
-        
-        if (uniqueVideos.length === 0) {
-          throw new Error('No valid videos found');
-        }
-
-        setVideos(uniqueVideos);
+        setVideos(data.videos || backupVideos.videos);
         setError(null);
       } catch (error) {
-        console.log('Error in handling data:', error.message);
+        console.error('Failed to fetch videos:', error);
         setVideos(backupVideos.videos);
-        setError('Unable to process videos, showing backup data');
+        setError('Using backup data');
       } finally {
         setLoading(false);
       }
-    };
+    })();
 
-    const handleFetch = async () => {
+    return () => {
+      // 清理函数
+      setVideos([]);
       setLoading(true);
-      try {
-        const data = await fetchVideos();
-        await handleData(data);
-      } catch (error) {
-        console.log('Error in handleFetch:', error.message);
-        setError('Unable to fetch videos from API, showing backup data');
-      }
+      setError(null);
     };
-
-    handleFetch();
-  }, []);
+  }, []); // 空依赖数组，确保只执行一次
 
   if (loading) {
     return (

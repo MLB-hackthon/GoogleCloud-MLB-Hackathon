@@ -110,15 +110,8 @@ export default function ScrollingMasonry() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-        const response = await fetch('http://34.56.194.81:8000/api/v1/content/news/Aaron%20Judge%20?limit=20&target_language=English&max_chars_title=50&max_chars_summary=50', {
-          signal: controller.signal
-        });
+        const response = await fetch('http://34.56.194.81:8000/api/v1/content/news/Aaron%20Judge%20?limit=20&target_language=English&max_chars_title=50&max_chars_summary=50');
         
-        clearTimeout(timeoutId);
-
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -131,58 +124,27 @@ export default function ScrollingMasonry() {
         const shuffledNews = [...data.news, ...data.news].sort(() => Math.random() - 0.5);
         setApiData(shuffledNews);
         setError(null);
-        return true;
-
+        
       } catch (error) {
-        if (error.name === 'AbortError') {
-          console.log('Request timed out');
-        }
-        throw error;
+        console.error('Failed to fetch news:', error);
+        const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
+        setApiData(backupNewsArray);
+        setError('Using backup data');
+      } finally {
+        setLoading(false);
       }
     };
 
-    // 立即显示备用数据，不显示错误信息
-    const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
-    setApiData(backupNewsArray);
-    setError(null); 
-    setLoading(false);
+    // 执行一次性获取
+    fetchNews();
 
-    // 后台持续尝试获取数据的函数
-    const backgroundFetch = async () => {
-      try {
-        const success = await fetchNews();
-        if (success) {
-          console.log('Successfully fetched live news');
-          return true;
-        }
-      } catch (error) {
-        console.log('Background fetch attempt failed, will retry...');
-        return false;
-      }
-    };
-
-    // 开始后台轮询
-    const startPolling = () => {
-      const pollInterval = setInterval(async () => {
-        const success = await backgroundFetch();
-        if (success) {
-          clearInterval(pollInterval);
-          console.log('Live data fetched successfully, stopping polling');
-        }
-      }, 2000);
-
-      // 返回清理函数
-      return () => clearInterval(pollInterval);
-    };
-
-    // 启动轮询
-    const cleanup = startPolling();
-
-    // 组件卸载时清理
     return () => {
-      cleanup();
+      // 清理函数
+      setApiData([]);
+      setLoading(true);
+      setError(null);
     };
-  }, []); // 只在组件挂载时运行一次
+  }, []); // 空依赖数组，确保只执行一次
 
   // 检查图片方向
   const checkImageOrientation = (imageUrl, index) => {
