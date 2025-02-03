@@ -26,23 +26,26 @@ function HomeRuns() {
           video.title.toLowerCase().includes('aaron judge homers')
         );
         
+        if (uniqueVideos.length === 0) {
+          throw new Error('No videos found');
+        }
+
         setVideos(uniqueVideos);
         setError(null);
       } catch (err) {
         console.error('API Error:', err);
-        // 使用备用数据
-        const backupData = {
-          "videos": [{
-            "play_id": "380941da-ac6b-4c38-97cd-fd625274b50a",
-            "title": "Aaron Judge homers (13) on a fly ball to right field.    Juan Soto scores.",
-            "video_url": "https://sporty-clips.mlb.com/MzVENURfWGw0TUFRPT1fQlFsUlhWQUZBbE1BV1FFRUJBQUFVZ1ZlQUZnQ0FBVUFWQUVEQWdZSEJnY0hCUUlI.mp4",
-            "exit_velocity": 98.9,
-            "launch_angle": 28,
-            "hit_distance": 339.1788252,
-            "season": "2024"
-          }]
+        // 确保备用数据总是在API失败时使用
+        const backupVideo = {
+          "play_id": "380941da-ac6b-4c38-97cd-fd625274b50a",
+          "title": "Aaron Judge homers (13) on a fly ball to right field.    Juan Soto scores.",
+          "video_url": "https://sporty-clips.mlb.com/MzVENURfWGw0TUFRPT1fQlFsUlhWQUZBbE1BV1FFRUJBQUFVZ1ZlQUZnQ0FBVUFWQUVEQWdZSEJnY0hCUUlI.mp4",
+          "exit_velocity": 98.9,
+          "launch_angle": 28,
+          "hit_distance": 339.1788252,
+          "season": "2024"
         };
-        setVideos(backupData.videos);
+        
+        setVideos([backupVideo]); // 直接设置为包含备用视频的数组
         setError('Unable to fetch videos from API, showing backup data');
       } finally {
         setLoading(false);
