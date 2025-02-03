@@ -5,6 +5,8 @@ from .api.endpoints import chat, content, auth, player
 from .core.database import Base, engine, get_db
 from datetime import datetime
 from .models.user import User  # Import your User model
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
 
 # Create tables before starting the app
 async def create_tables():
@@ -45,11 +47,20 @@ async def root():
 @app.get("/health")
 async def health_check(db: Session = Depends(get_db)):
     try:
-        # Test database connection
-        db.execute("SELECT 1")
+        # Test database connection with commit
+        db.execute(text("SELECT 1"))
+        db.commit()  # Add explicit commit
         db_status = "healthy"
     except Exception as e:
         db_status = f"unhealthy: {str(e)}"
+        return JSONResponse(
+            content={
+                "status": "unhealthy",
+                "database": db_status,
+                "timestamp": datetime.now().isoformat()
+            },
+            status_code=503
+        )
     
     return {
         "status": "healthy",
