@@ -218,21 +218,25 @@ function SharePage() {
                     <span className="font-semibold">CF</span>
                     <span className="text-gray-500">|</span>
                     <span>Bats/Throws: R/R</span>
-                    <span className="text-gray-500">|</span>
-                    <span>6' 7" 282LBS</span>
-                    <span className="text-gray-500">|</span>
-                    <span>Age: 32</span>
                   </div>
                   
                   {/* 选秀信息 */}
                   <div className="text-sm text-gray-300 leading-relaxed">
+                  <div className="flex items-center gap-2">
+                      <span className="text-blue-400 font-semibold">Height | Weight:</span>
+                      <span>6' 7" | 282LBS</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-400 font-semibold">Age:</span>
+                      <span>32</span>
+                    </div>
                     <div className="flex items-center gap-2">
                       <span className="text-blue-400 font-semibold">Draft:</span>
                       <span>2013</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-blue-400 font-semibold">Selected:</span>
-                      <span>Rd: 1, #32, New York Yankees</span>
+                      <span>New York Yankees</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-blue-400 font-semibold">College:</span>
