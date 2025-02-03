@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './HomeRuns.css';
 
 function HomeRuns() {
   const [videos, setVideos] = useState([]);
@@ -44,11 +45,6 @@ function HomeRuns() {
         return data;
 
       } catch (error) {
-        // 捕获所有可能的错误，包括：
-        // - 超时
-        // - 网络错误
-        // - API 错误
-        // - 数据格式错误
         console.log('Error occurred:', error.message);
         setVideos([backupVideo]);
         setError('Unable to fetch videos from API, showing backup data');
@@ -109,18 +105,18 @@ function HomeRuns() {
   }
 
   return (
-    <div className="h-full overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+    <div className="h-full overflow-y-auto home-runs-container" style={{ maxHeight: 'calc(100vh - 200px)' }}>
       <div className="p-4">
         <div className="grid grid-cols-1 gap-4 max-w-2xl mx-auto">
           {videos.map((video) => (
-            <div key={video.play_id} className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="p-4 border-b">
-                <h3 className="text-lg font-semibold text-gray-800">{video.title}</h3>
+            <div key={video.play_id} className="home-run-card">
+              <div className="home-run-header">
+                <h3 className="home-run-title">{video.title}</h3>
               </div>
               
               <div className="relative">
                 <video
-                  className="w-full"
+                  className="home-run-video"
                   controls
                   playsInline
                   preload="metadata"
@@ -130,19 +126,19 @@ function HomeRuns() {
                 </video>
               </div>
               
-              <div className="p-4 bg-gray-50">
+              <div className="stats-container">
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <p className="text-sm text-gray-500">Exit Velocity</p>
-                    <p className="font-semibold text-gray-800">{video.exit_velocity} mph</p>
+                  <div className="stat-item">
+                    <p className="stat-label">Exit Velocity</p>
+                    <p className="stat-value">{video.exit_velocity} mph</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-sm text-gray-500">Launch Angle</p>
-                    <p className="font-semibold text-gray-800">{video.launch_angle}°</p>
+                  <div className="stat-item">
+                    <p className="stat-label">Launch Angle</p>
+                    <p className="stat-value">{video.launch_angle}°</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-sm text-gray-500">Distance</p>
-                    <p className="font-semibold text-gray-800">{Math.round(video.hit_distance)} ft</p>
+                  <div className="stat-item">
+                    <p className="stat-label">Distance</p>
+                    <p className="stat-value">{Math.round(video.hit_distance)} ft</p>
                   </div>
                 </div>
               </div>
