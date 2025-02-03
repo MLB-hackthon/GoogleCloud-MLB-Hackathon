@@ -6,9 +6,10 @@ from ...schemas.user import UserCreate, User
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from ...core.config import settings
-from ...core.logger import logger
+import logging
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.post("/google", response_model=User)
 async def google_auth(
