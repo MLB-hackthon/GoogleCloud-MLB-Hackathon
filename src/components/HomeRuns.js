@@ -6,59 +6,96 @@ function HomeRuns() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const backupVideo = {
+      play_id: "backup-video-001",
+      title: "Aaron Judge 2023 Season Highlights",
+      video_url: "https://sporty-clips.mlb.com/BACKUP_VIDEO_URL.mp4",
+      exit_velocity: 98.9,
+      launch_angle: 28,
+      hit_distance: 339.1788252,
+      season: "2023"
+    };
+
     const fetchVideos = async () => {
       try {
+        // Create AbortController for timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
         const response = await fetch('http://34.56.194.81:8000/api/v1/content/videos/Aaron%20Judge/homeruns', {
           method: 'GET',
           headers: {
             'accept': 'application/json'
-          }
+          },
+          signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        
+        // 检查返回的数据是否有效
+        if (!data || !data.videos || data.videos.length === 0) {
+          throw new Error('Invalid or empty response');
+        }
+        return data;
+
+      } catch (error) {
+        // 捕获所有可能的错误，包括：
+        // - 超时
+        // - 网络错误
+        // - API 错误
+        // - 数据格式错误
+        console.log('Error occurred:', error.message);
+        setVideos([backupVideo]);
+        setError('Unable to fetch videos from API, showing backup data');
+        return { videos: [backupVideo] };
+      }
+    };
+
+    const handleData = async (data) => {
+      try {
         const uniqueVideos = data.videos.filter((video, index, self) => 
           self.findIndex(v => v.play_id === video.play_id) === index &&
-          video.title.toLowerCase().includes('aaron judge homers')
+          (video.title.toLowerCase().includes('aaron judge homers') || video.play_id === 'backup-video-001')
         );
         
         if (uniqueVideos.length === 0) {
-          throw new Error('No videos found');
+          throw new Error('No valid videos found');
         }
 
         setVideos(uniqueVideos);
         setError(null);
-      } catch (err) {
-        console.error('API Error:', err);
-        // 确保备用数据总是在API失败时使用
-        const backupVideo = {
-          "play_id": "380941da-ac6b-4c38-97cd-fd625274b50a",
-          "title": "Aaron Judge homers (13) on a fly ball to right field.    Juan Soto scores.",
-          "video_url": "https://sporty-clips.mlb.com/MzVENURfWGw0TUFRPT1fQlFsUlhWQUZBbE1BV1FFRUJBQUFVZ1ZlQUZnQ0FBVUFWQUVEQWdZSEJnY0hCUUlI.mp4",
-          "exit_velocity": 98.9,
-          "launch_angle": 28,
-          "hit_distance": 339.1788252,
-          "season": "2024"
-        };
-        
-        setVideos([backupVideo]); // 直接设置为包含备用视频的数组
-        setError('Unable to fetch videos from API, showing backup data');
+      } catch (error) {
+        console.log('Error in handling data:', error.message);
+        setVideos([backupVideo]);
+        setError('Unable to process videos, showing backup data');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVideos();
+    const handleFetch = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchVideos();
+        await handleData(data);
+      } catch (error) {
+        console.log('Error in handleFetch:', error.message);
+        setError('Unable to fetch videos from API, showing backup data');
+      }
+    };
+
+    handleFetch();
   }, []);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+        <div className="flex justify-center items-center h-full">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
       </div>
     );
   }
