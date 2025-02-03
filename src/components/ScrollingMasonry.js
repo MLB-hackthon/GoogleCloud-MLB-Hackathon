@@ -12,7 +12,7 @@ const BACKUP_NEWS = {
     {
       "url": "https://www.mlb.com/news/baseball-writers-association-of-america-awards-dinner-2025",
       "domain": "www.mlb.com",
-      "title": "Stars come out in full force at BBWAA awards dinner in New York",
+      "title": "Stars come out at BBWAA awards dinner in New York",
       "snippet": "Baseball's biggest stars were out in full force in New York on Saturday night.",
       "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/mlb/xyfhftl7gfbubfpsum2x"
     },
@@ -20,7 +20,7 @@ const BACKUP_NEWS = {
     {
       "url": "https://www.mlb.com/news/aaron-judge-s-all-rise-foundation-hosts-all-star-gala",
       "domain": "www.mlb.com",
-      "title": "Judge's star-studded All-Star Gala only part of Yanks' charitable efforts",
+      "title": "Judge's star-studded All-Star Gala",
       "snippet": "This story was excerpted from Bryan Hoch's Yankees Beat newsletter.",
       "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/v1732501276/mlb/fezafbpgcilp5m6fi5ig"
     },
@@ -28,7 +28,7 @@ const BACKUP_NEWS = {
     {
       "url": "https://www.mlb.com/news/aaron-judge-to-move-back-to-right-field-for-yankees",
       "domain": "www.mlb.com",
-      "title": "Judge expected to move back to RF, opening door for Martian in CF",
+      "title": "Judge expected to move back to RF",
       "snippet": "DALLAS – Juan Soto's decision to cross borough lines from the Bronx to Queens could prompt another relocation of sorts.",
       "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/mlb/bismofyowhubohaloqcc"
     }
