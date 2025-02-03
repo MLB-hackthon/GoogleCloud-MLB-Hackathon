@@ -16,13 +16,15 @@ const BACKUP_NEWS = {
         "snippet": "Baseball's biggest stars were out in full force in New York on Saturday night to celebrate the 100th centennial of the New York chapter's Baseball Writers' Association of America awards dinner.",
         "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/mlb/xyfhftl7gfbubfpsum2x"
       },
+
       {
-        "url": "https://www.mlb.com/news/aaron-judge-home-run-record",
+        "url": "https://www.mlb.com/news/aaron-judge-s-all-rise-foundation-hosts-all-star-gala",
         "domain": "www.mlb.com",
-        "title": "Aaron Judge sets AL home run record",
-        "snippet": "Aaron Judge made history with his 62nd home run of the season, setting a new American League record.",
-        "image_url": "https://img.mlbstatic.com/mlb-images/image/private/t_16x9/t_w1024/mlb/l1qxunceypdq1wcqm3ip"
-  },
+        "title": "Judge's star-studded All-Star Gala only part of Yanks' charitable efforts",
+        "snippet": "This story was excerpted from Bryan Hoch’s Yankees Beat newsletter. To read the full newsletter, click here. And subscribe to get it regularly in your inbox.",
+        "image_url": "https://img.mlbstatic.com/mlb-images/image/upload/t_16x9,w_640/v1732501276/mlb/fezafbpgcilp5m6fi5ig"
+        },
+      
         {
         "url": "https://www.mlb.com/news/aaron-judge-to-move-back-to-right-field-for-yankees",
         "domain": "www.mlb.com",

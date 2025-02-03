@@ -224,7 +224,7 @@ nav {
   background-color: transparent;
   cursor: pointer;
   font-weight: 500;
-  color: #666;
+  color: rgba(255, 255, 255, 0.6);
   position: relative;
   transition: color 0.3s ease;
 }
@@ -233,16 +233,20 @@ nav {
   color: #000;
 }
 
+.tab:hover:not(.active) {
+  color: rgba(255, 255, 255, 0.8);
+}
+
 .tab-indicator {
   position: absolute;
   bottom: 4px;
   left: 4px;
   width: calc(50% - 3px);
   height: calc(100% - 8px);
-  /* background-color: white; */
   border-radius: 6px;
   z-index: 0;
   transition: transform 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .tab-content {
