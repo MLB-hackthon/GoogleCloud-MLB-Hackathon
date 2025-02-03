@@ -1,3 +1,8 @@
+/* 在文件开头添加全局字体设置 */
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
 /* 添加文本截断样式 */
 .line-clamp-2 {
   display: -webkit-box;
@@ -30,4 +35,62 @@
 .overflow-y-auto::-webkit-scrollbar-thumb {
   background-color: #cbd5e0;
   border-radius: 3px;
+}
+
+.newImageCard {
+  width: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  transform: translateZ(0);
+  transition: transform 0.2s ease;
+}
+
+.newImageCard:hover {
+  transform: scale(1.02);
+}
+
+.newImageCard-image {
+  width: 100%;
+  position: relative;
+}
+
+.newImageCard-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.newImageCard-domain {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+}
+
+.newImageCard-title {
+  width: 100%;
+  background-color: rgb(31, 41, 55);
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.newImageCard-title p {
+  text-align: left;
+  font-weight: 500;
+  color: white;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
 } 

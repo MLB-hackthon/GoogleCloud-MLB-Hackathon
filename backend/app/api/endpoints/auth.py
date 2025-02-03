@@ -33,11 +33,19 @@ async def google_auth(
         db_user = UserService.get_user_by_email(db, user_data.email)
         
         if db_user:
-            # Update last login
-            return UserService.update_user_login(db, db_user)
+            db_user = UserService.update_user_login(db, db_user)
         else:
-            # Create new user
-            return UserService.create_user(db, user_data)
+            db_user = UserService.create_user(db, user_data)
+        
+        # Return all user fields including database-generated ones
+        return {
+            "id": db_user.id,
+            "email": db_user.email,
+            "name": db_user.name,
+            "picture": db_user.picture,
+            "created_at": db_user.created_at.isoformat(),
+            "last_login": db_user.last_login.isoformat()
+        }
 
     except Exception as e:
         raise HTTPException(

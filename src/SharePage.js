@@ -45,7 +45,7 @@ function SharePage() {
       <div className="fixed left-6 top-1/2 -translate-y-1/2 z-40">
         <div className="chat-button" onClick={toggleChatbot}>
           <img src="/test/chat.png" alt="Chat Icon" className="chat-icon" />
-          <span className="chat-text">Chat with Us</span>
+          <span className="chat-text">CHAT WITH US</span>
         </div>
       </div>
 
@@ -59,7 +59,7 @@ function SharePage() {
               className="h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity"
               onClick={handleLogoClick}
             />
-            <span className="title">🔥 Your Personalized MLB Highlights 🔥 </span>
+            <span className="title">Your Personalized MLB Highlights</span>
           </div>
         </nav>
       </header>
