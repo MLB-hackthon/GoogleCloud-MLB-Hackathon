@@ -4,14 +4,18 @@ from sqlalchemy.orm import Session
 from .api.endpoints import chat, content, auth
 from .core.database import Base, engine, get_db
 from datetime import datetime
+from .models.user import User  # Import your User model
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Create tables before starting the app
+async def create_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 app = FastAPI(
     title="MLB API",
     description="Backend API for MLB application",
-    version="1.0.0"
+    version="1.0.0",
+    on_startup=[create_tables]
 )
 
 # Configure CORS
