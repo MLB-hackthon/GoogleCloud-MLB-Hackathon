@@ -3,6 +3,7 @@ from ..models.user import User
 from ..schemas.user import UserCreate
 from datetime import datetime
 import logging
+from sqlalchemy import insert, func
 
 logger = logging.getLogger(__name__)
 
@@ -30,4 +31,28 @@ class UserService:
         user.last_login = datetime.now()
         db.commit()
         db.refresh(user)
-        return user 
+        return user
+
+    @staticmethod
+    def upsert_user(db: Session, user_data: UserCreate):
+        """Create or update user with full upsert operation"""
+        logger.info(f"Upserting user: {user_data.email}")
+        
+        # PostgreSQL upsert syntax
+        stmt = insert(User).values(
+            email=user_data.email,
+            name=user_data.name,
+            picture=user_data.picture,
+            last_login=func.now()
+        ).on_conflict_do_update(
+            index_elements=['email'],
+            set_={
+                'name': user_data.name,
+                'picture': user_data.picture,
+                'last_login': func.now()
+            }
+        ).returning(User)
+
+        result = db.execute(stmt)
+        db.commit()
+        return result.scalar_one() 

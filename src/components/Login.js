@@ -54,7 +54,7 @@ function Login() {
       }
 
       // Send token to backend
-      const backendResponse = await fetch('http://34.56.194.81.nip.io:8000/api/v1/auth/google', {
+      const backendResponse = await fetch('http://localhost:3001/api/auth/google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
