@@ -3,7 +3,7 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     # Database settings
-    DB_HOST: str 
+    DB_HOST: str
     DB_PORT: int
     DB_USER: str
     DB_PASSWORD: str

@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 
 def test_send_message_without_user_id(client: TestClient):

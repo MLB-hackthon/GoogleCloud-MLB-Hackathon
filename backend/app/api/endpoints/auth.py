@@ -6,8 +6,10 @@ from ...schemas.user import UserCreate, User
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from ...core.config import settings
+import logging
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.post("/google", response_model=User)
 async def google_auth(
@@ -29,18 +31,14 @@ async def google_auth(
             picture=idinfo.get('picture')
         )
 
-        # Check if user exists
-        db_user = UserService.get_user_by_email(db, user_data.email)
+        # Upsert user record
+        db_user = UserService.upsert_user(db, user_data)
         
-        if db_user:
-            # Update last login
-            return UserService.update_user_login(db, db_user)
-        else:
-            # Create new user
-            return UserService.create_user(db, user_data)
+        return db_user
 
+    except ValueError as e:
+        # Invalid token
+        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
     except Exception as e:
-        raise HTTPException(
-            status_code=401,
-            detail=f"Could not validate credentials: {str(e)}"
-        ) 
+        logger.error(f"Auth error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Authentication failed") 
