@@ -12,7 +12,7 @@ function SharePage() {
   const [activeTab, setActiveTab] = useState('masonry');
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedPlayer = 'Aaron Judge', pushFrequency = 'daily' } = location.state || {};
+  const { selectedPlayer = 'Juan Soto', pushFrequency = 'daily' } = location.state || {};
   const [currentPlayer, setCurrentPlayer] = useState(selectedPlayer);
 
   useEffect(() => {
@@ -58,7 +58,10 @@ function SharePage() {
       age: '32',
       draft: '2013',
       team: 'New York Yankees',
-      college: 'Fresno State'
+      college: 'Fresno State',
+      battingRunValue: 100,
+      baserunningRunValue: 54,
+      fieldingRunValue: 27,
     },
     'Juan Soto': {
       name: 'Juan Soto',
@@ -71,7 +74,10 @@ function SharePage() {
       age: '26',
       draft: '2015',
       team: 'New York Mets',
-      college: 'N/A'
+      college: 'N/A',
+      battingRunValue: 79,
+      baserunningRunValue: -3,
+      fieldingRunValue: -1,
     }
   };
 
@@ -154,12 +160,12 @@ function SharePage() {
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className={`text-sm ${getThemeClass(currentPlayer)}-text`}>Batting Run Value</span>
-                        <span className={`text-sm font-semibold ${getThemeClass(currentPlayer)}-text`}>100</span>
+                        <span className={`text-sm font-semibold ${getThemeClass(currentPlayer)}-text`}>{currentPlayerInfo.battingRunValue}</span>
                       </div>
                       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={{ width: '100%' }}
+                          animate={{ width: `${currentPlayerInfo.battingRunValue}%` }}
                           transition={{ 
                             duration: 1.5,
                             ease: "easeOut"
@@ -173,12 +179,12 @@ function SharePage() {
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className={`text-sm ${getThemeClass(currentPlayer)}-text`}>Baserunning Run Value</span>
-                        <span className={`text-sm font-semibold ${getThemeClass(currentPlayer)}-text`}>54</span>
+                        <span className={`text-sm font-semibold ${getThemeClass(currentPlayer)}-text`}>{currentPlayerInfo.baserunningRunValue}</span>
                       </div>
                       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={{ width: '54%' }}
+                          animate={{ width: `${currentPlayerInfo.baserunningRunValue}%` }}
                           transition={{ 
                             duration: 1.5,
                             ease: "easeOut",
@@ -193,12 +199,12 @@ function SharePage() {
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className={`text-sm ${getThemeClass(currentPlayer)}-text`}>Fielding Run Value</span>
-                        <span className={`text-sm font-semibold ${getThemeClass(currentPlayer)}-text`}>27</span>
+                        <span className={`text-sm font-semibold ${getThemeClass(currentPlayer)}-text`}>{currentPlayerInfo.fieldingRunValue}</span>
                       </div>
                       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={{ width: '27%' }}
+                          animate={{ width: `${currentPlayerInfo.fieldingRunValue}%` }}
                           transition={{ 
                             duration: 1.5,
                             ease: "easeOut",
@@ -235,11 +241,11 @@ function SharePage() {
                       <div className="text-xs md:text-sm text-gray-300 leading-relaxed">
                         <div className="flex items-center gap-1 md:gap-2">
                           <span className="text-blue-400 font-semibold">Height | Weight</span>
-                          <span>{currentPlayerInfo.height} | {currentPlayerInfo.weight}</span>
+                          <span className={`info-value ${getThemeClass(currentPlayer)}-text`}>{currentPlayerInfo.height} | {currentPlayerInfo.weight}</span>
                         </div>
                         <div className="flex items-center gap-1 md:gap-2">
                           <span className="text-blue-400 font-semibold">Age</span>
-                          <span>{currentPlayerInfo.age}</span>
+                          <span className={`info-value ${getThemeClass(currentPlayer)}-text`}>{currentPlayerInfo.age}</span>
                         </div>
                         <div className="info-row">
                           <span className="info-label">Draft:</span>
