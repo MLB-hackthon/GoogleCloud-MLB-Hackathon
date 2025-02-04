@@ -24,7 +24,7 @@ class ChatService:
                 replacements={"##PLAYERS##": settings.DEFAULT_PLAYER, "##TEAMS##": settings.DEFAULT_TEAM}
             )
             # Initialize the chat session
-            assistant.initialize_chat(temperature=0.5)
+            assistant.initialize_chat(temperature=0.5, enable_google_search=True)
             self._sessions[user_id] = assistant
             
         return self._sessions[user_id]
