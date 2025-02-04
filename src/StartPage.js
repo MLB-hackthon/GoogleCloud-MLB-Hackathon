@@ -77,18 +77,18 @@ const StartPage = () => {
 
   const handleGoogleLogin = async (response) => { 
     try {
+      console.log("handleGoogleLogin response before", response);
       if (!response.credential) {
         console.error('No credential received');
         return;
       }
-
       // Send the credential to your FastAPI endpoint:
       const res = await fetch("http://34.56.194.81:8000/api/v1/auth/google", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: response.credential })
       });
-
+      console.log("handleGoogleLogin response after", res);
       if (!res.ok) {
         throw new Error(`Auth failed with status ${res.status}`);
       }
@@ -103,7 +103,7 @@ const StartPage = () => {
         picture: userRecord.picture,
         token: response.credential
       });
-
+      console.log("updateUser done");
       navigate('/share');
     } catch (error) {
       console.error('Login failed:', error);
