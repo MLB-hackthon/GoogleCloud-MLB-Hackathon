@@ -80,27 +80,13 @@ const StartPage = () => {
         return;
       }
 
-      // Send the credential to your FastAPI endpoint:
-      const res = await fetch("http://34.56.194.81:8000/api/v1/auth/google", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: response.credential })
-      });
-
-      if (!res.ok) {
-        throw new Error(`Auth failed with status ${res.status}`);
-      }
-
-      // The upserted user data from the backend
-      const userRecord = await res.json();
-
-      // Optionally store user info in your local context or localStorage
-      updateUser({
-        email: userRecord.email,
-        name: userRecord.name,
-        picture: userRecord.picture,
+      const decoded = JSON.parse(atob(response.credential.split('.')[1]));
+      const userInfo = {
+        email: decoded.email,
+        name: decoded.name,
+        picture: decoded.picture,
         token: response.credential
-      });
+      };
 
       navigate('/share');
     } catch (error) {
@@ -177,46 +163,46 @@ const StartPage = () => {
                     transition={{ duration: 0.5, delay: 1.9 }}
                     className="relative z-10"
                   >
-                    {/* Settings Panel */}
-                    <div className="mb-6 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
-                      <div className="flex gap-4">
-                        <div className="flex-1">
-                          <label className="text-sm font-semibold text-gray-700 block mb-1">Select Player</label>
-                          <select
-                            value={selectedPlayer}
-                            onChange={(e) => setSelectedPlayer(e.target.value)}
-                            className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                          >
-                            {players.map((player) => (
-                              <option key={player.value} value={player.value}>
-                                {player.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className="flex-1">
-                          <label className="text-sm font-semibold text-gray-700 block mb-1">Push Frequency</label>
-                          <select
-                            value={pushFrequency}
-                            onChange={(e) => setPushFrequency(e.target.value)}
-                            className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                          >
-                            {frequencies.map((freq) => (
-                              <option key={freq.value} value={freq.value}>
-                                {freq.label}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
                     <div 
                       id="google-login-button"
                       className="google-login-button flex justify-center"
                     ></div>
                   </motion.div>
+
+                  {/* Settings Panel */}
+                  <div className="mb-6 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <label className="text-sm font-semibold text-gray-700 block mb-1">Select Player</label>
+                        <select
+                          value={selectedPlayer}
+                          onChange={(e) => setSelectedPlayer(e.target.value)}
+                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        >
+                          {players.map((player) => (
+                            <option key={player.value} value={player.value}>
+                              {player.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="flex-1">
+                        <label className="text-sm font-semibold text-gray-700 block mb-1">Push Frequency</label>
+                        <select
+                          value={pushFrequency}
+                          onChange={(e) => setPushFrequency(e.target.value)}
+                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        >
+                          {frequencies.map((freq) => (
+                            <option key={freq.value} value={freq.value}>
+                              {freq.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* 底部装饰 */}
                   <div className="absolute bottom-0 left-0 w-full h-32 opacity-10">

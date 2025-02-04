@@ -2,11 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import Masonry from 'react-masonry-css';
 import './ScrollingMasonry.css';
 
-// 创建一个函数来检查脚本是否已加载
-const isGettyScriptLoaded = () => {
-  return document.querySelector('script[src*="embed-cdn.gettyimages.com/widgets.js"]') !== null;
-};
-
 const BACKUP_NEWS = {
   "news": [
     {
