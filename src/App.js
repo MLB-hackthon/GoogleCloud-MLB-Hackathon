@@ -7,6 +7,7 @@ import "./SharePage.css";
 import StartPage from "./StartPage";
 import './App.css';
 import UserInfo from './components/UserInfo';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -66,15 +67,17 @@ const GoogleCallback = () => {
 // Main App component
 function App() {
   return (
-    <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<StartPage />} />
-          <Route path="/share" element={<SharePage />} />
-        </Routes>
-        <UserInfo />
-      </Router>
-    </UserProvider>
+    <LanguageProvider>
+      <UserProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<StartPage />} />
+            <Route path="/share" element={<SharePage />} />
+          </Routes>
+          <UserInfo />
+        </Router>
+      </UserProvider>
+    </LanguageProvider>
   );
 }
 
