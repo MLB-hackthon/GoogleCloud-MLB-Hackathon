@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "./context/UserContext";
-import { jwtDecode } from "jwt-decode";
 
 const StartPage = () => {
   const [showIntro, setShowIntro] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState('Aaron Judge');
   const [pushFrequency, setPushFrequency] = useState('daily');
+  const { updateUser } = useUser();
   const navigate = useNavigate();
   const CLIENT_ID = "218661372917-r65cdbmtlha18e38dgkmq6baq1au3ahh.apps.googleusercontent.com";
 
@@ -49,7 +50,9 @@ const StartPage = () => {
       const initializeGoogleSignIn = () => {
         window.google.accounts.id.initialize({
           client_id: CLIENT_ID,
-          callback: handleCallbackResponse
+          callback: handleGoogleLogin,
+          auto_select: false,
+          cancel_on_tap_outside: true
         });
 
         const buttonContainer = document.getElementById('google-login-button');
@@ -72,15 +75,46 @@ const StartPage = () => {
     }
   }, [showIntro]);
 
-  const handleCallbackResponse = (response) => {
-    const userObject = jwtDecode(response.credential);
-    console.log(userObject);
-    // 在导航到 share 页面时传递选择的玩家信息
+  const handleGoogleLogin = async (response) => { 
+    try {
+      if (!response.credential) {
+        console.error('No credential received');
+        return;
+      }
+
+      // Send the credential to your FastAPI endpoint:
+      const res = await fetch("http://34.56.194.81:8000/api/v1/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential })
+      });
+
+      if (!res.ok) {
+        throw new Error(`Auth failed with status ${res.status}`);
+      }
+
+      // The upserted user data from the backend
+      const userRecord = await res.json();
+
+      // Optionally store user info in your local context or localStorage
+      updateUser({
+        email: userRecord.email,
+        name: userRecord.name,
+        picture: userRecord.picture,
+        token: response.credential
+      });
+
+      navigate('/share');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
+  const handleConfirm = () => {
     navigate('/share', { 
       state: { 
         selectedPlayer: selectedPlayer,
-        pushFrequency: pushFrequency,
-        user: userObject 
+        pushFrequency: pushFrequency
       } 
     });
   };
@@ -154,56 +188,66 @@ const StartPage = () => {
                     transition={{ duration: 0.5, delay: 1.9 }}
                     className="relative z-10"
                   >
-                    <div 
-                      id="google-login-button"
-                      className="google-login-button flex justify-center"
-                    ></div>
+                    {!showSettings ? (
+                      <div 
+                        id="google-login-button"
+                        className="google-login-button flex justify-center"
+                      ></div>
+                    ) : (
+                      <div className="space-y-4">
+                        {/* Settings Panel */}
+                        <div className="bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg relative z-50">
+                          <div className="flex gap-4">
+                            <div className="flex-1 relative">
+                              <label className="text-sm font-semibold text-gray-700 block mb-1">Select Player</label>
+                              <select
+                                value={selectedPlayer}
+                                onChange={(e) => setSelectedPlayer(e.target.value)}
+                                className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm 
+                                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm
+                                         relative z-50 cursor-pointer"
+                              >
+                                {players.map((player) => (
+                                  <option key={player.value} value={player.value}>
+                                    {player.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            <div className="flex-1 relative">
+                              <label className="text-sm font-semibold text-gray-700 block mb-1">Push Frequency</label>
+                              <select
+                                value={pushFrequency}
+                                onChange={(e) => setPushFrequency(e.target.value)}
+                                className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm 
+                                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm
+                                         relative z-50 cursor-pointer"
+                              >
+                                {frequencies.map((freq) => (
+                                  <option key={freq.value} value={freq.value}>
+                                    {freq.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+
+                          {/* Confirm Button */}
+                          <div className="mt-6 flex justify-center">
+                            <button
+                              onClick={handleConfirm}
+                              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 
+                                       transition-colors duration-200 font-semibold shadow-md
+                                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            >
+                              Confirm
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </motion.div>
-
-                  {/* Settings Panel */}
-                  <div className="mb-6 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg relative z-50">
-                    <div className="flex gap-4">
-                      <div className="flex-1 relative">
-                        <label className="text-sm font-semibold text-gray-700 block mb-1">Select Player</label>
-                        <select
-                          value={selectedPlayer}
-                          onChange={(e) => setSelectedPlayer(e.target.value)}
-                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm 
-                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm
-                                   relative z-50 cursor-pointer"
-                        >
-                          {players.map((player) => (
-                            <option key={player.value} value={player.value}>
-                              {player.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div className="flex-1 relative">
-                        <label className="text-sm font-semibold text-gray-700 block mb-1">Push Frequency</label>
-                        <select
-                          value={pushFrequency}
-                          onChange={(e) => setPushFrequency(e.target.value)}
-                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm 
-                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm
-                                   relative z-50 cursor-pointer"
-                        >
-                          {frequencies.map((freq) => (
-                            <option key={freq.value} value={freq.value}>
-                              {freq.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 底部装饰 */}
-                  <div className="absolute bottom-0 left-0 w-full h-32 opacity-10">
-                    <div className="absolute bottom-0 left-0 w-full h-full 
-                                  bg-gradient-to-t from-blue-500/20 to-transparent"></div>
-                  </div>
                 </div>
               </motion.div>
             </div>
@@ -302,15 +346,25 @@ const MainPage = () => {
         return;
       }
 
-      const decoded = JSON.parse(atob(response.credential.split(".")[1]));
-      const userInfo = {
-        email: decoded.email,
-        name: decoded.name,
-        picture: decoded.picture,
+      // Send the credential to your FastAPI endpoint:
+      const res = await fetch("http://34.56.194.81:8000/api/v1/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential })
+      });
+      if (!res.ok) {
+        throw new Error(`Auth failed with status ${res.status}`);
+      }
+      // The upserted user data from the backend
+      const userRecord = await res.json();
+      // Optionally store user info in your local context or localStorage
+      updateUser({
+        email: userRecord.email,
+        name: userRecord.name,
+        picture: userRecord.picture,
         token: response.credential,
-      };
+      });
 
-      updateUser(userInfo);
       navigate("/share");
     } catch (error) {
       console.error("Login failed:", error);
@@ -503,4 +557,4 @@ const BaseballAnimation = () => {
   );
 };
 
-export default StartPage;
+export default StartPage; 
