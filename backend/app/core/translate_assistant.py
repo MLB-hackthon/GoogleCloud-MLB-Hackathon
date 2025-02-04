@@ -177,7 +177,7 @@ class TranslateAssistant:
             }
 
             try:
-                self.logger.info(f"\tAssistant {batch_index} processing sub-batch of {len(sub_batch)} items")
+                # self.logger.info(f"\tAssistant {batch_index} processing sub-batch of {len(sub_batch)} items")
                 # Use synchronous version of send_message
                 response = assistant.chat.send_message(json.dumps(batch_request))
                 parsed_response = self._parse_response(response)
