@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .api.endpoints import chat, content, auth, player
+from .api.endpoints import chat, content, auth, player, subscriptions
 from .core.database import Base, engine, get_db
 from datetime import datetime
 from .models.user import User  # Import your User model
@@ -10,6 +10,7 @@ from sqlalchemy import text
 from sqlalchemy import event
 from sqlalchemy.exc import DisconnectionError
 import asyncio
+from .models.subscription import Subscription
 
 # Create tables before starting the app
 async def create_tables():
@@ -52,6 +53,7 @@ app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(chat.router, prefix="/api/v1/chat", tags=["chat"])
 app.include_router(content.router, prefix="/api/v1/content", tags=["content"])
 app.include_router(player.router, prefix="/api/v1/player", tags=["player"])
+app.include_router(subscriptions.router, prefix="/api/v1/subscriptions", tags=["subscriptions"])
 
 @app.get("/")
 async def root():
