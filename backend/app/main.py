@@ -57,3 +57,26 @@ app.include_router(player.router, prefix="/api/v1/player", tags=["player"])
 async def root():
     return {"message": "Welcome to MLB API"}
 
+@app.get("/health")
+async def health_check(db: Session = Depends(get_db)):
+    try:
+        # Test database connection with commit
+        db.execute(text("SELECT 1"))
+        db.commit()  # Add explicit commit
+        db_status = "healthy"
+    except Exception as e:
+        db_status = f"unhealthy: {str(e)}"
+        return JSONResponse(
+            content={
+                "status": "unhealthy",
+                "database": db_status,
+                "timestamp": datetime.now().isoformat()
+            },
+            status_code=503
+        )
+    
+    return {
+        "status": "healthy",
+        "database": db_status,
+        "timestamp": datetime.now().isoformat()
+    }

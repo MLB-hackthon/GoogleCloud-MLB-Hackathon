@@ -7,16 +7,23 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 from ...core.config import settings
 import logging
+from pydantic import BaseModel
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+class TokenPayload(BaseModel):
+    token: str
+
 @router.post("/google", response_model=User)
 async def google_auth(
-    token: str,
+    payload: TokenPayload,
     db: Session = Depends(get_db)
 ):
     try:
+        # Extract the token from the Pydantic model
+        token = payload.token
+        
         # Verify Google token
         idinfo = id_token.verify_oauth2_token(
             token, 
@@ -36,7 +43,7 @@ async def google_auth(
         
         return db_user
 
-    except ValueError as e:
+    except ValueError:
         # Invalid token
         raise HTTPException(status_code=401, detail="Invalid authentication credentials")
     except Exception as e:
