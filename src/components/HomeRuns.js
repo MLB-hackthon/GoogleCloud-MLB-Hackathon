@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './HomeRuns.css';
 
-function HomeRuns() {
+function HomeRuns({ playerName }) {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -132,42 +132,33 @@ function HomeRuns() {
       ]
     };
 
-    // 创建一个延时 Promise
-    const timeout = new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('timeout');
-      }, 3000); // 3秒超时
-    });
-
-    // 先显示 backup videos
-    setVideos(backupVideos.videos);
-    setLoading(false);
-
     const fetchVideos = async () => {
       try {
-        // 创建 fetch Promise
-        const fetchPromise = fetch('http://34.56.194.81:8000/api/v1/content/videos/Aaron%20Judge/homeruns', {
+        const response = await fetch(`http://34.56.194.81:8000/api/v1/content/videos/${encodeURIComponent(playerName)}/homeruns`, {
           method: 'GET',
           headers: {
             'accept': 'application/json'
           }
         });
 
-        // 使用 Promise.race 比较哪个先完成
-        const result = await Promise.race([fetchPromise, timeout]);
-
-        // 如果不是超时，则处理 API 响应
-        if (result !== 'timeout') {
-          const response = await result.json();
-          if (response && response.videos && response.videos.length > 0) {
-            setVideos(response.videos);
-            setError(null);
-          }
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const data = await response.json();
+        if (data && data.videos && data.videos.length > 0) {
+          setVideos(data.videos);
+          setError(null);
+        } else {
+          throw new Error('No videos available');
+        }
+
       } catch (error) {
         console.error('Failed to fetch videos:', error);
-        // 已经显示了 backup videos，所以这里只需要设置错误状态
+        setVideos(backupVideos.videos);
         setError('Using backup data');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -180,7 +171,7 @@ function HomeRuns() {
       setLoading(true);
       setError(null);
     };
-  }, []); // 空依赖数组，确保只执行一次
+  }, [playerName]); // 依赖于 playerName
 
   if (loading) {
     return (

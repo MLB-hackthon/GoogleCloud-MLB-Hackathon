@@ -30,7 +30,7 @@ const BACKUP_NEWS = {
   ]
 };
 
-export default function ScrollingMasonry() {
+export default function ScrollingMasonry({ playerName }) {
   const [isPaused, setIsPaused] = useState(false);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [hoveredDomain, setHoveredDomain] = useState(null);
@@ -70,41 +70,32 @@ export default function ScrollingMasonry() {
 
   useEffect(() => {
     const fetchNews = async () => {
-      // 创建一个延时 Promise
-      const timeout = new Promise((resolve) => {
-        setTimeout(() => {
-          resolve('timeout');
-        }, 3000); // 3秒超时
-      });
-
-      // 先显示 backup news
-      const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
-      setApiData(backupNewsArray);
-      setLoading(false);
-
       try {
-        // 创建 fetch Promise
-        const fetchPromise = fetch('http://34.56.194.81:8000/api/v1/content/news/Aaron%20Judge%20?limit=20&target_language=English&max_chars_title=50&max_chars_summary=50');
-
-        // 使用 Promise.race 比较哪个先完成
-        const result = await Promise.race([fetchPromise, timeout]);
-
-        // 如果不是超时，则处理 API 响应
-        if (result !== 'timeout') {
-          const response = await result.json();
-          
-          if (!response || !response.news || response.news.length === 0) {
-            throw new Error('No data available');
-          }
-
-          const shuffledNews = [...response.news, ...response.news].sort(() => Math.random() - 0.5);
-          setApiData(shuffledNews);
-          setError(null);
+        const apiUrl = `http://34.56.194.81:8000/api/v1/content/news/${encodeURIComponent(playerName)}?limit=20&target_language=English&max_chars_title=50&max_chars_summary=50`;
+        
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+        const data = await response.json();
+        
+        if (!data || !data.news || data.news.length === 0) {
+          throw new Error('No data available');
+        }
+
+        const shuffledNews = [...data.news, ...data.news].sort(() => Math.random() - 0.5);
+        setApiData(shuffledNews);
+        setError(null);
+        
       } catch (error) {
         console.error('Failed to fetch news:', error);
-        // 已经显示了 backup news，所以这里只需要设置错误状态
+        const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
+        setApiData(backupNewsArray);
         setError('Using backup data');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -117,7 +108,7 @@ export default function ScrollingMasonry() {
       setLoading(true);
       setError(null);
     };
-  }, []); // 空依赖数组，确保只执行一次
+  }, [playerName]); // 依赖于 playerName
 
   // 检查图片方向
   const checkImageOrientation = (imageUrl, index) => {
