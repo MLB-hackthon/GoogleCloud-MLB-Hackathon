@@ -15,6 +15,9 @@ COPY requirements.txt .
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install gunicorn
+RUN pip install gunicorn
+
 # Copy the rest of the application
 COPY . .
 
@@ -25,5 +28,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=8s --start-period=5s --retries=3 \
   CMD curl --fail http://localhost:8000/health || exit 1
 
-# Command to run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"] 
+# Command to run the application with gunicorn
+CMD ["gunicorn", "app.main:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"] 
