@@ -24,9 +24,10 @@ function Chatbot({ onClose }) {
 
     const userMessage = inputText;
     setInputText('');
+    
+    // Only add the user message and set typing indicator
     setMessages(prev => [...prev, { text: userMessage, isBot: false }]);
-    setMessages(prev => [...prev, { text: '', isBot: true }]);
-    setIsTyping(true);
+    setIsTyping(true);  // This will show the typing indicator
 
     try {
       const response = await fetch('http://0.0.0.0:8000/api/v1/chat/send', {
@@ -44,6 +45,12 @@ function Chatbot({ onClose }) {
 
       const reader = response.body.getReader();
       let accumulatedText = '';
+      
+      // Add the bot message only when we start receiving the response
+      setMessages(prev => [...prev, { text: '', isBot: true }]);
+
+      // Helper function to add delay
+      const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
       while (true) {
         const { done, value } = await reader.read();
@@ -96,7 +103,7 @@ function Chatbot({ onClose }) {
   return (
     <div className="chatbot-container">
       <div className="chatbot-header">
-        <h3>CHAT WITH US</h3>
+        <h3>The Dugout Oracle.</h3>
         <div className="header-buttons">
           <button 
             className="minimize-button"
