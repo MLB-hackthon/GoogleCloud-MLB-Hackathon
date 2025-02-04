@@ -30,7 +30,7 @@ function Chatbot({ onClose }) {
     setIsTyping(true);  // This will show the typing indicator
 
     try {
-      const response = await fetch('http://0.0.0.0:8000/api/v1/chat/send', {
+      const response = await fetch('http://34.56.194.81:8000/api/v1/chat/send', {
         method: 'POST',
         headers: {
           'user_id': '1',
