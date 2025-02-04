@@ -67,16 +67,28 @@ const StartPage = () => {
         return;
       }
 
-      const decoded = JSON.parse(atob(response.credential.split('.')[1]));
-      const userInfo = {
-        email: decoded.email,
-        name: decoded.name,
-        picture: decoded.picture,
-        token: response.credential
-      };
+      // Send the credential to your FastAPI endpoint:
+      const res = await fetch("http://34.56.194.81:8000/api/v1/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential })
+      });
 
-      console.log('Setting user info:', userInfo);
-      updateUser(userInfo);
+      if (!res.ok) {
+        throw new Error(`Auth failed with status ${res.status}`);
+      }
+
+      // The upserted user data from the backend
+      const userRecord = await res.json();
+
+      // Optionally store user info in your local context or localStorage
+      updateUser({
+        email: userRecord.email,
+        name: userRecord.name,
+        picture: userRecord.picture,
+        token: response.credential
+      });
+
       navigate('/share');
     } catch (error) {
       console.error('Login failed:', error);

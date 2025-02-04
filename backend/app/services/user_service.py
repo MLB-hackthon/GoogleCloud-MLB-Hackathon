@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy import func
 from ..models.user import User
 from ..schemas.user import UserCreate
 from datetime import datetime
 import logging
-from sqlalchemy import insert, func
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ class UserService:
         """Create or update user with full upsert operation"""
         logger.info(f"Upserting user: {user_data.email}")
         
-        # PostgreSQL upsert syntax
+        # PostgreSQL upsert syntax using PG dialect
         stmt = insert(User).values(
             email=user_data.email,
             name=user_data.name,
