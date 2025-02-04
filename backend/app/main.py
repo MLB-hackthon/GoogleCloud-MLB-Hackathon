@@ -4,11 +4,8 @@ from sqlalchemy.orm import Session
 from app.api.endpoints import chat, content, auth, player
 from app.core.database import Base, engine, get_db
 from datetime import datetime
-from app.models.user import User
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
-from sqlalchemy import event
-from sqlalchemy.exc import DisconnectionError
 import asyncio
 
 # Create tables before starting the app
@@ -22,7 +19,7 @@ async def create_tables():
         except Exception as e:
             if i == retries - 1:
                 raise
-            logger.warning(f"Database connection failed, retrying in {delay} seconds...")
+            # logger.warning(f"Database connection failed, retrying in {delay} seconds...")
             await asyncio.sleep(delay)
 
 app = FastAPI(
@@ -52,6 +49,7 @@ app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(chat.router, prefix="/api/v1/chat", tags=["chat"])
 app.include_router(content.router, prefix="/api/v1/content", tags=["content"])
 app.include_router(player.router, prefix="/api/v1/player", tags=["player"])
+app.include_router(subscriptions.router, prefix="/api/v1/subscriptions", tags=["subscriptions"])
 
 @app.get("/")
 async def root():
