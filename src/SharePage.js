@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./SharePage.css";
 import Chatbot from "./Chatbot";
 import ScrollingMasonry from "./components/ScrollingMasonry";
@@ -12,7 +12,13 @@ function SharePage() {
   const [activeTab, setActiveTab] = useState('masonry');
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedPlayer = 'Juan Soto', pushFrequency = 'daily' } = location.state || {};
+  const { selectedPlayer = 'Aaron Judge', pushFrequency = 'daily' } = location.state || {};
+  const [currentPlayer, setCurrentPlayer] = useState(selectedPlayer);
+
+  useEffect(() => {
+    // 当 selectedPlayer 变化时更新 currentPlayer
+    setCurrentPlayer(selectedPlayer);
+  }, [selectedPlayer]);
 
   const toggleChatbot = () => {
     setIsChatbotOpen(!isChatbotOpen);
@@ -31,19 +37,20 @@ function SharePage() {
   const content = React.useMemo(() => {
     switch (activeTab) {
       case 'masonry':
-        return <ScrollingMasonry playerName={selectedPlayer} />;
+        return <ScrollingMasonry playerName={currentPlayer} />;
       case 'homeruns':
-        return <HomeRuns playerName={selectedPlayer} />;
+        return <HomeRuns playerName={currentPlayer} />;
       default:
-        return <ScrollingMasonry playerName={selectedPlayer} />;
+        return <ScrollingMasonry playerName={currentPlayer} />;
     }
-  }, [activeTab, selectedPlayer]);
+  }, [activeTab, currentPlayer]);
 
   // 更新玩家相关的信息
   const playerInfo = {
     'Aaron Judge': {
       name: 'Aaron Judge',
       image: '/test/AaronJudge.jpg',
+      logo: '/test/logo/AaronJudge.png',
       position: 'CF',
       batsThrows: 'R/R',
       height: "6' 7\"",
@@ -56,52 +63,56 @@ function SharePage() {
     'Juan Soto': {
       name: 'Juan Soto',
       image: '/test/JuanSoto.jpg',
+      logo: '/test/logo/JuanSoto.png',
       position: 'RF',
       batsThrows: 'L/L',
       height: "6' 2\"",
       weight: '224LBS',
-      age: '25',
+      age: '26',
       draft: '2015',
-      team: 'New York Yankees',
+      team: 'New York Mets',
       college: 'N/A'
     }
   };
 
-  const currentPlayer = playerInfo[selectedPlayer];
+  const currentPlayerInfo = playerInfo[currentPlayer];
+
+  const getThemeClass = (playerName) => {
+    const formattedName = playerName.replace(/\s+/g, '-').toLowerCase();
+    return `theme-${formattedName}`;
+  };
 
   return (
-    <div className="background">
-      
-      {/* Chat Button - Fixed to left middle */}
-      <div className="fixed left-6 top-1/2 -translate-y-1/2 z-40">
-        <div className="chat-button" onClick={toggleChatbot}>
-          <img src="/test/chat.png" alt="Chat Icon" className="chat-icon" />
-          <span className="chat-text">CHAT WITH US</span>
-        </div>
-      </div>
-
-      {/* Header */}
-      <header>
-        <nav>
-          <div className="flex items-center gap-2">
-            <img 
-              src="/test/logo/AaronJudge.png"
-              alt="Team logo"
-              className="h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={handleLogoClick}
-            />
-            <span className="title">Your Personalized MLB Highlights</span>
+    <div className={`${getThemeClass(currentPlayer)} share-page-bg`}>
+        {/* Chat Button - Fixed to left middle */}
+        <div className="fixed left-6 top-1/2 -translate-y-1/2 z-40">
+          <div className="chat-button" onClick={toggleChatbot}>
+            <img src="/test/chat.png" alt="Chat Icon" className="chat-icon" />
+            <span className="chat-text">CHAT WITH US</span>
           </div>
-        </nav>
-      </header>
+        </div>
+
+        {/* Header */}
+        <header>
+          <nav>
+            <div className="flex items-center gap-2">
+              <img 
+                src={currentPlayerInfo.logo}
+                alt="Team logo"
+                className="h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={handleLogoClick}
+              />
+              <span className={"title"}>Your Personalized MLB Highlights</span>
+            </div>
+          </nav>
+        </header>
 
       <div className="content">
-        
         <div className="left-section">
           <div className="image-section relative">
             <img 
-              src={currentPlayer.image}
-              alt={currentPlayer.name}
+              src={currentPlayerInfo.image}
+              alt={currentPlayerInfo.name}
               className="pitcher-image"
             />
             <motion.div
@@ -117,14 +128,14 @@ function SharePage() {
               }}
               className="player-name"
             >
-              {currentPlayer.name}
+              {currentPlayerInfo.name}
             </motion.div>
           </div>
           
           <div className="bottom-sections">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4" style={{ height: '30vh' }}>
               {/* 左边卡片 */}
-              <div className="bottom-section bg-[#1E2A47] rounded-lg shadow-lg overflow-hidden">
+              <div className={`${getThemeClass(currentPlayer)} bottom-section`}>
                 <div className="chart1 h-full flex flex-col items-center justify-center">
                   <div className="career-homers">
                     315
@@ -136,14 +147,14 @@ function SharePage() {
               </div>
 
               {/* 中间卡片 */}
-              <div className="bottom-section bg-[#1E2A47] rounded-lg shadow-lg overflow-hidden">
+              <div className={`${getThemeClass(currentPlayer)} bottom-section`}>
                 <div className="chart2 h-full p-4 flex flex-col justify-center">
                   <div className="space-y-4 md:space-y-6">
                     {/* Batting Run Value */}
                     <div>
                       <div className="flex justify-between mb-1">
-                        <span className="text-sm text-gray-300">Batting Run Value</span>
-                        <span className="text-sm font-semibold text-gray-200">100</span>
+                        <span className={`text-sm ${getThemeClass(currentPlayer)}-text`}>Batting Run Value</span>
+                        <span className={`text-sm font-semibold ${getThemeClass(currentPlayer)}-text`}>100</span>
                       </div>
                       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <motion.div
@@ -161,8 +172,8 @@ function SharePage() {
                     {/* Baserunning Run Value */}
                     <div>
                       <div className="flex justify-between mb-1">
-                        <span className="text-sm text-gray-300">Baserunning Run Value</span>
-                        <span className="text-sm font-semibold text-gray-200">54</span>
+                        <span className={`text-sm ${getThemeClass(currentPlayer)}-text`}>Baserunning Run Value</span>
+                        <span className={`text-sm font-semibold ${getThemeClass(currentPlayer)}-text`}>54</span>
                       </div>
                       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <motion.div
@@ -181,8 +192,8 @@ function SharePage() {
                     {/* Fielding Run Value */}
                     <div>
                       <div className="flex justify-between mb-1">
-                        <span className="text-sm text-gray-300">Fielding Run Value</span>
-                        <span className="text-sm font-semibold text-gray-200">27</span>
+                        <span className={`text-sm ${getThemeClass(currentPlayer)}-text`}>Fielding Run Value</span>
+                        <span className={`text-sm font-semibold ${getThemeClass(currentPlayer)}-text`}>27</span>
                       </div>
                       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <motion.div
@@ -202,20 +213,20 @@ function SharePage() {
               </div>
 
               {/* 右边卡片 */}
-              <div className="bottom-section bg-[#1E2A47] rounded-lg shadow-lg overflow-hidden">
+              <div className={`${getThemeClass(currentPlayer)} bottom-section`}>
                 <div className="chart3 h-full p-4 flex flex-col justify-center">
                   <div className="space-y-2 md:space-y-3">
                     {/* 名字 */}
                     <div className="player-info-name">
-                      {currentPlayer.name}
+                      {currentPlayerInfo.name}
                     </div>
                     
                     {/* 主要信息 */}
                     <div className="player-main-info">
-                      <div className="flex flex-wrap gap-1 md:gap-2 text-xs md:text-sm text-gray-300">
-                        <span className="font-semibold">{currentPlayer.position}</span>
+                      <div className={`flex flex-wrap gap-1 md:gap-2 text-xs md:text-sm ${getThemeClass(currentPlayer)}-text`}>
+                        <span className="font-semibold">{currentPlayerInfo.position}</span>
                         <span className="text-gray-500">|</span>
-                        <span>Bats/Throws: {currentPlayer.batsThrows}</span>
+                        <span>Bats/Throws: {currentPlayerInfo.batsThrows}</span>
                       </div>
                     </div>
                     
@@ -224,23 +235,23 @@ function SharePage() {
                       <div className="text-xs md:text-sm text-gray-300 leading-relaxed">
                         <div className="flex items-center gap-1 md:gap-2">
                           <span className="text-blue-400 font-semibold">Height | Weight</span>
-                          <span>{currentPlayer.height} | {currentPlayer.weight}</span>
+                          <span>{currentPlayerInfo.height} | {currentPlayerInfo.weight}</span>
                         </div>
                         <div className="flex items-center gap-1 md:gap-2">
                           <span className="text-blue-400 font-semibold">Age</span>
-                          <span>{currentPlayer.age}</span>
+                          <span>{currentPlayerInfo.age}</span>
                         </div>
                         <div className="info-row">
                           <span className="info-label">Draft:</span>
-                          <span className="info-value">{currentPlayer.draft}</span>
+                          <span className={`info-value ${getThemeClass(currentPlayer)}-text`}>{currentPlayerInfo.draft}</span>
                         </div>
                         <div className="info-row">
                           <span className="info-label">Selected:</span>
-                          <span className="info-value">{currentPlayer.team}</span>
+                          <span className={`info-value ${getThemeClass(currentPlayer)}-text`}>{currentPlayerInfo.team}</span>
                         </div>
                         <div className="info-row">
                           <span className="info-label">College:</span>
-                          <span className="info-value">{currentPlayer.college}</span>
+                          <span className={`info-value ${getThemeClass(currentPlayer)}-text`}>{currentPlayerInfo.college}</span>
                         </div>
                       </div>
                     </div>

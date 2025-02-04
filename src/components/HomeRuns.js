@@ -82,7 +82,7 @@ function HomeRuns({ playerName }) {
   }
 
   return (
-    <div className="h-full overflow-y-auto home-runs-container" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+    <div className={`h-full overflow-y-auto home-runs-container theme-${playerName.toLowerCase().replace(' ', '-')}`} style={{ maxHeight: 'calc(100vh - 200px)' }}>
       <div className="p-4">
         <div className="grid grid-cols-1 gap-4 max-w-2xl mx-auto">
           {videos.map((video) => (

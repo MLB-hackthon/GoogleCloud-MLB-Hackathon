@@ -3,19 +3,16 @@ body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  /* background: linear-gradient(135deg, #0D1321, #001F3F); */
   color: white;
 }
 
 header {
-  /* background: rgba(13, 19, 33, 0.9); */
   position: fixed;
   top: 1%;
   left: 1%;
   padding: 10px;
   z-index: 50;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 nav {
@@ -35,34 +32,152 @@ nav {
 }
 
 .title {
-  color: #FFFFFF;
   font-size: 24px;
   font-weight: bold;
 }
 
-.background {
+/* 基础样式 */
+.share-page-bg {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #0A192F, #0A192F);  /* 添加渐变背景 */
+  transition: background 0.3s ease;
 }
 
 .content {
   display: flex;
   width: 90%;
   height: 85%;
-  background: #112240;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(168, 178, 209, 0.2);
   border-radius: 12px;
   padding: 0 12px;
-  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);  /* 浅色阴影 */
   position: relative;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),  /* 主阴影 */
-  0 0 8px rgba(255, 215, 0, 0.3),  /* 金色光晕 */
-  0 0 15px rgba(64, 169, 255, 0.2); 
+  transition: all 0.3s ease;
+}
+
+.bottom-section {
+  width: 100%;
+  flex: 1;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  text-align: center;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.chat-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 50px;
+  border: 1px solid #A8B2D1;
+}
+
+.tab-content {
+  flex: 1;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 0 0 8px 8px;
+}
+
+/* Aaron Judge 主题 */
+.theme-aaron-judge {
+  /* 背景 */
+  &.share-page-bg {
+    background: linear-gradient(135deg, #0A192F, #0A192F);
+  }
+  
+  .title {
+    color: #FFFFFF;
+  }
+  /* 内容区域 */
+  .content {
+    background: rgba(14, 47, 85, 0.95);
+    border: 1px solid rgba(227, 227, 227, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),
+                0 0 8px rgba(227, 227, 227, 0.3),
+                0 0 15px rgba(0, 48, 135, 0.2);
+  }
+  .tab-content {
+    background: #112240;
+  }
+  /* 底部区域 */
+  .bottom-section {
+    background: #112240;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  .chat-section {
+    background: rgba(0, 31, 63, 0.8);
+  }
+  .chat-button{
+    background-color: #112240;
+    color: #FFFFFF;
+  }
+  /* 文字颜色 */
+  .career-homers { color: #FFD700; }
+  .career-homers-label { color: #FFD700; }
+  .player-info-name { color: #FFD700; }
+  .info-label { color: #60A5FA; }
+}
+
+/* Juan Soto 主题 */
+.theme-juan-soto {
+  /* 背景 */
+  &.share-page-bg {
+    background: linear-gradient(135deg, #E8F1F8, #F2F5F9);
+  }
+
+  .title {
+    color: #1C3D5A;
+  }
+  /* 内容区域 */
+  .content {
+    background: #D0E1F2;
+    border: 1px solid rgba(215, 215, 215, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),
+                0 0 8px rgba(255, 215, 0, 0.3),
+                0 0 15px rgba(30, 60, 120, 0.2);
+  }  
+  
+  .tab-content {
+    background:  #C7D8E5  ;
+  }
+  
+  /* 底部区域 */
+  .bottom-section {
+    background: #C7D8E5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .chat-section {
+    background: #D0E1F2;
+  }
+  .chat-button{
+    background-color: #1E3A8A;
+  }
+  
+
+  /* 文字颜色 */
+  .career-homers { color: #1E3A8A; }
+  .career-homers-label { color: #1E3A8A; }
+  .player-info-name { color: #1E3A8A; }
+  .info-label { color: #2563EB; }
 }
 
 .left-section {
@@ -83,7 +198,7 @@ nav {
   flex-direction: column;
   border-radius: 8px;
   z-index: 1;
-  background: rgba(17, 34, 64, 0.2);
+  background: rgba(115, 7, 50, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -143,53 +258,7 @@ nav {
   gap: 12px;
 }
 
-/* 下部分的三个小区域 */
-.bottom-section {
-  width: 100%;
-  flex: 1;
-  background: #112240;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-align: center;
-  padding: 15px;
-  transition: 0.3s;
-  border: 2px solid transparent;
-}
-
-.bottom-section:hover {
-  transform: scale(1.05);
-  border: 2px solid #FFD700;
-}
-
-/* 聊天按钮区域特殊样式 */
-.chat-section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 31, 63, 0.8);
-}
-
-.chat-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #112240;
-  color: #FFFFFF;
-  padding: 20px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 50px;
-  border: 1px solid #A8B2D1;
-}
-
 .chat-button:hover {
-  background-color: #112240;
   transform: scale(1.05);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
   border-color: #FFD700;
@@ -280,21 +349,6 @@ nav {
   bottom: 4px;
   left: 4px;
   width: calc(50% - 3px);
-  height: calc(100% - 8px);
-  border-radius: 6px;
-  z-index: 0;
-  transition: transform 0.01s cubic-bezier(0.4, 0, 0.2, 1);  
-  background: linear-gradient(45deg, #00E6FF, #00A3FF);
-  backdrop-filter: blur(4px);
-}
-
-.tab-content {
-  flex: 1;
-  overflow: hidden;
-  background: #112240;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 0 0 8px 8px;
 }
 
 .LanguageSwitcher {
@@ -328,7 +382,6 @@ nav {
 }
 
 .career-homers {
-  color: #FFD700;
   text-shadow: 
     2px 2px 8px rgba(255, 215, 0, 0.3),
     -2px -2px 8px rgba(255, 215, 0, 0.3),
@@ -338,13 +391,11 @@ nav {
 }
 
 .career-homers-label {
-  color: rgba(255, 215, 0, 0.8);
   font-weight: 500;
   font-size: clamp(0.75rem, 1vw, 0.875rem);
 }
 
 .player-info-name {
-  color: #FFD700;
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
   font-size: clamp(1rem, 2vw, 1.5rem);
   font-weight: bold;
@@ -374,7 +425,6 @@ nav {
 }
 
 .info-label {
-  color: #60A5FA;
   font-weight: 600;
   min-width: fit-content;
 }
@@ -393,4 +443,45 @@ nav {
 /* 调整间距 */
 .space-y-2 > * + * {
   margin-top: clamp(0.5rem, 1.5vw, 0.75rem);
+}
+
+/* Player-specific text colors */
+.theme-aaron-judge-text {
+  color: #9CA3AF; /* gray-400 */
+}
+
+.theme-juan-soto-text {
+  color: #1E3A8A; /* blue-900 */
+}
+
+/* Aaron Judge theme */
+.theme-aaron-judge .tabs-container {
+  position: relative;
+  padding: 4px;
+  border-radius: 8px 8px 0 0;
+  background: #112240;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Juan Soto theme */
+.theme-juan-soto .tabs-container {
+  position: relative;
+  padding: 4px;
+  border-radius: 8px 8px 0 0;
+  background: #E8F1F8;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Aaron Judge theme */
+.theme-aaron-judge .tab.active {
+  color: #FFFFFF;
+  border-radius: 6px;
+}
+
+/* Juan Soto theme */
+.theme-juan-soto .tab.active {
+  color: #1E3A8A;
+  border-radius: 6px;
 }

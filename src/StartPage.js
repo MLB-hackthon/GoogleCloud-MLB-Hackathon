@@ -111,11 +111,13 @@ const StartPage = () => {
   };
 
   const handleConfirm = () => {
+    console.log('Navigating to share page...');
     navigate('/share', { 
       state: { 
         selectedPlayer: selectedPlayer,
         pushFrequency: pushFrequency
-      } 
+      },
+      replace: true
     });
   };
 
@@ -241,7 +243,7 @@ const StartPage = () => {
                                        transition-colors duration-200 font-semibold shadow-md
                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             >
-                              Confirm
+                              Follow Him
                             </button>
                           </div>
                         </div>

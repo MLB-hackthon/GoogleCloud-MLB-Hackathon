@@ -8,6 +8,7 @@ from google.auth.transport import requests
 from ...core.config import settings
 import logging
 from pydantic import BaseModel
+from typing import List
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -71,3 +72,19 @@ def get_user_by_id(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user 
+
+@router.get("/users", response_model=List[User])
+def get_all_users(
+    db: Session = Depends(get_db),
+    # In production, you should add authentication/authorization here
+    # current_user: User = Depends(get_current_admin_user)
+):
+    """
+    Get all users (Admin only)
+    """
+    try:
+        users = UserService.get_all_users(db)
+        return users
+    except Exception as e:
+        logger.error(f"Error fetching users: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error retrieving users") 

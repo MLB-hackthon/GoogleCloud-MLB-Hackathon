@@ -1,17 +1,33 @@
-.home-runs-container {
+/* Aaron Judge theme */
+.theme-aaron-judge.home-runs-container {
   background: #112240;
   padding: 1rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 215, 0, 0.3) rgba(30, 42, 71, 0.5);
 }
 
-.home-run-card {
+.theme-aaron-judge .home-run-card {
   background-color: #2A3655 !important;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),
               0 0 8px rgba(255, 215, 0, 0.3),
               0 0 15px rgba(64, 169, 255, 0.2);
+  transition: transform 0.2s ease-in-out;
+  border: 2px solid transparent;
+}
+
+/* Juan Soto theme */
+.theme-juan-soto.home-runs-container {
+  background: #E8F1F8;
+  padding: 1rem;
+}
+
+.theme-juan-soto .home-run-card {
+  background-color: #D0E1F2 !important;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1),
+              0 0 8px rgba(30, 58, 138, 0.2),
+              0 0 15px rgba(30, 58, 138, 0.1);
   transition: transform 0.2s ease-in-out;
   border: 2px solid transparent;
 }
@@ -29,35 +45,59 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.home-run-title {
+/* Aaron Judge theme */
+.theme-aaron-judge .home-run-title {
   color: #E5E7EB;
   font-size: 1.125rem;
   font-weight: 600;
 }
 
-.home-run-video {
+/* Juan Soto theme */
+.theme-juan-soto .home-run-title {
+  color: #1E3A8A;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+/* Aaron Judge theme */
+.theme-aaron-judge .home-run-video {
   width: 100%;
   background-color: #1A2238;
 }
 
-.stats-container {
+.theme-aaron-judge .stats-container {
   background-color: #2A3655;
   padding: 1rem;
 }
 
-.stat-item {
-  text-align: center;
+/* Juan Soto theme */
+.theme-juan-soto .home-run-video {
+  width: 100%;
+  background-color: #E8F1F8;
 }
 
-.stat-label {
+.theme-juan-soto .stats-container {
+  background-color: #D0E1F2;
+  padding: 1rem;
+}
+
+/* Aaron Judge theme */
+.theme-aaron-judge .stat-label {
   color: #9CA3AF;
-  font-size: 0.875rem;
-  margin-bottom: 0.25rem;
 }
 
-.stat-value {
+.theme-aaron-judge .stat-value {
   color: #E5E7EB;
-  font-weight: 600;
+}
+
+/* Juan Soto theme */
+.theme-juan-soto .stat-label {
+  color: #1E3A8A;
+  opacity: 0.7; /* Making the label slightly lighter */
+}
+
+.theme-juan-soto .stat-value {
+  color: #1E3A8A;
 }
 
 /* 滚动条样式 */
@@ -78,5 +118,18 @@
 
 .home-runs-container::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, rgba(255, 215, 0, 0.5), rgba(64, 169, 255, 0.5));
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-weight: 600;
 }
   

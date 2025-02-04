@@ -69,17 +69,8 @@ function App() {
     <UserProvider>
       <Router>
         <Routes>
-          <Route path="/login" element={<StartPage />} />
-          <Route path="/callback" element={<GoogleCallback />} />
-          <Route
-            path="/share"
-            element={
-              <ProtectedRoute>
-                <SharePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/" element={<StartPage />} />
+          <Route path="/share" element={<SharePage />} />
         </Routes>
         <UserInfo />
       </Router>
