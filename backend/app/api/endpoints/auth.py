@@ -22,15 +22,18 @@ async def google_auth(
     db: Session = Depends(get_db)
 ):
     try:
+        logger.info(f"Auth request received | Env: {settings.ENV} | Client ID: {settings.GOOGLE_CLIENT_ID[:5]}...")
+        
         # Extract the token from the Pydantic model
         token = payload.token
         
         # Verify Google token
         idinfo = id_token.verify_oauth2_token(
             token, 
-            requests.Request(), 
+            requests.Request(),
             settings.GOOGLE_CLIENT_ID
         )
+        logger.debug(f"Google token verified | Email: {idinfo['email']}")
 
         # Extract user info
         user_data = UserCreate(
@@ -39,8 +42,10 @@ async def google_auth(
             picture=idinfo.get('picture')
         )
 
-        # Upsert user record
+        # Database operation logging
+        logger.info(f"Upserting user: {user_data.email}")
         db_user = UserService.upsert_user(db, user_data)
+        logger.info(f"User upserted | ID: {db_user.id}")
         
         return db_user
 
@@ -48,8 +53,8 @@ async def google_auth(
         # Invalid token
         raise HTTPException(status_code=401, detail="Invalid authentication credentials")
     except Exception as e:
-        logger.error(f"Auth error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Authentication failed")
+        logger.error(f"AUTH FAILURE: {str(e)}", exc_info=True)
+        raise
     finally:
         db.close()  # Add explicit connection closing 
 

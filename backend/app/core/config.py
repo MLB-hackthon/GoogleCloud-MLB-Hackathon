@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     DEFAULT_TEAM: str = "New York Yankees"
     DEFAULT_PLAYER: str = "Aaron Judge"
 
+    # Add ENV to your existing settings
+    ENV: str = "development"
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
