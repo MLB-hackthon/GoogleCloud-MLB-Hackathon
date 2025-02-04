@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import './Chatbot.css';
 
 function Chatbot({ onClose }) {
@@ -22,17 +23,14 @@ function Chatbot({ onClose }) {
     if (!inputText.trim()) return;
 
     const userMessage = inputText;
-    
-    // Clear input and add user message
     setInputText('');
-    setMessages(prev => [...prev, { text: userMessage, isBot: false }]);
     
-    // Add initial empty bot message
-    setMessages(prev => [...prev, { text: '', isBot: true }]);
-    setIsTyping(true);
+    // Only add the user message and set typing indicator
+    setMessages(prev => [...prev, { text: userMessage, isBot: false }]);
+    setIsTyping(true);  // This will show the typing indicator
 
     try {
-      const response = await fetch('http://34.56.194.81:8000/api/v1/chat/send', {
+      const response = await fetch('http://0.0.0.0:8000/api/v1/chat/send', {
         method: 'POST',
         headers: {
           'user_id': '1',
@@ -46,33 +44,48 @@ function Chatbot({ onClose }) {
       }
 
       const reader = response.body.getReader();
+      let accumulatedText = '';
+      
+      // Add the bot message only when we start receiving the response
+      setMessages(prev => [...prev, { text: '', isBot: true }]);
+
+      // Helper function to add delay
+      const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        // Convert chunk to text
         const text = new TextDecoder().decode(value);
-        
-        // Process each line in the chunk
         const lines = text.split('\n');
+        
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            const content = line.slice(6); // Remove 'data: ' prefix
-            
-            try {
-              // Check if it's metadata
-              const jsonData = JSON.parse(content);
-              if (jsonData.type === 'metadata') continue;
-            } catch {
-              // If not metadata, immediately append to the last message
-              setMessages(prev => {
-                const newMessages = [...prev];
-                const lastMessage = newMessages[newMessages.length - 1];
-                lastMessage.text += content;
-                return [...newMessages];
-              });
+            const content = line.slice(6).trim();
+            if (!content) continue;
+
+            // Skip metadata
+            if (content.includes('"type":"metadata"')) {
+              continue;
             }
+
+            // Clean up the text - remove quotes at start and end if they exist
+            let cleanContent = content;
+            if (cleanContent.startsWith('"') && cleanContent.endsWith('"')) {
+              cleanContent = cleanContent.slice(1, -1);
+            }
+            
+            // Skip if it's a JSON-like string
+            if (cleanContent.startsWith('{') && cleanContent.endsWith('}')) {
+              continue;
+            }
+
+            accumulatedText += cleanContent;
+            setMessages(prev => {
+              const newMessages = [...prev];
+              newMessages[newMessages.length - 1].text = accumulatedText;
+              return newMessages;
+            });
           }
         }
       }
@@ -90,7 +103,7 @@ function Chatbot({ onClose }) {
   return (
     <div className="chatbot-container">
       <div className="chatbot-header">
-        <h3>CHAT WITH US</h3>
+        <h3>The Dugout Oracle.</h3>
         <div className="header-buttons">
           <button 
             className="minimize-button"
@@ -110,12 +123,15 @@ function Chatbot({ onClose }) {
       </div>
 
       <div className="messages-container">
+        {console.log('Rendering messages:', messages)}
         {messages.map((message, index) => (
           <div 
             key={index} 
             className={`message ${message.isBot ? 'bot' : 'user'}`}
           >
-            {message.text}
+            <ReactMarkdown>
+              {message.text.replace(/\\n/g, '\n')}
+            </ReactMarkdown>
           </div>
         ))}
         {isTyping && (

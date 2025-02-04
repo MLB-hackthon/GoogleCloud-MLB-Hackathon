@@ -134,3 +134,53 @@
 .send-button:hover {
   background: #0056b3;
 }
+
+.message p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.message h1, 
+.message h2, 
+.message h3, 
+.message h4, 
+.message h5, 
+.message h6 {
+  margin: 0.5em 0;
+}
+
+.message ul, 
+.message ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.message code {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.message pre {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 1em;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+.message blockquote {
+  border-left: 3px solid #ccc;
+  margin: 0.5em 0;
+  padding-left: 1em;
+  color: #666;
+}
+
+.message a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.message a:hover {
+  text-decoration: underline;
+}
