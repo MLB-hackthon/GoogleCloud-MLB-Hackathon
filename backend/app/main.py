@@ -57,7 +57,7 @@ app.include_router(subscriptions.router, prefix="/api/v1/subscriptions", tags=["
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to MLB API"}
+    return {"message": "Welcome to MLB API!"}
 
 @app.get("/health")
 async def health_check(db: Session = Depends(get_db)):
