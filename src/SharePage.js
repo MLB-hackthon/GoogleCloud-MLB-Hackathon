@@ -83,19 +83,7 @@ function SharePage() {
                 times: [0, 0.6, 1],
                 ease: "easeInOut"
               }}
-              className="absolute bottom-4 left-4 transform origin-bottom-left
-                         text-white text-7xl font-bold z-10
-                         whitespace-nowrap pointer-events-none"
-              style={{
-                textShadow: `
-                  2px 2px 8px rgba(0,0,0,0.8),
-                  -2px -2px 8px rgba(0,0,0,0.8),
-                  2px -2px 8px rgba(0,0,0,0.8),
-                  -2px 2px 8px rgba(0,0,0,0.8),
-                  0 0 15px rgba(0,0,0,0.7)
-                `,
-                fontFamily: 'Poppins, sans-serif'
-              }}
+              className="player-name"
             >
               Aaron Judge
             </motion.div>
@@ -106,27 +94,10 @@ function SharePage() {
               {/* 左边卡片 */}
               <div className="bottom-section bg-[#1E2A47] rounded-lg shadow-lg overflow-hidden">
                 <div className="chart1 h-full flex flex-col items-center justify-center">
-                  <div 
-                    className="text-5xl md:text-6xl lg:text-8xl font-bold"
-                    style={{
-                      color: '#FFD700',
-                      textShadow: `
-                        2px 2px 8px rgba(255, 215, 0, 0.3),
-                        -2px -2px 8px rgba(255, 215, 0, 0.3),
-                        2px -2px 8px rgba(255, 215, 0, 0.3),
-                        -2px 2px 8px rgba(255, 215, 0, 0.3)
-                      `
-                    }}
-                  >
+                  <div className="career-homers">
                     315
                   </div>
-                  <div 
-                    className="text-xs md:text-sm mt-2"
-                    style={{
-                      color: 'rgba(255, 215, 0, 0.8)',
-                      fontWeight: '500'
-                    }}
-                  >
+                  <div className="career-homers-label">
                     Career Home Runs
                   </div>
                 </div>
@@ -201,49 +172,44 @@ function SharePage() {
               {/* 右边卡片 */}
               <div className="bottom-section bg-[#1E2A47] rounded-lg shadow-lg overflow-hidden">
                 <div className="chart3 h-full p-4 flex flex-col justify-center">
-                  <div className="space-y-2 md:space-y-4">
+                  <div className="space-y-2 md:space-y-3">
                     {/* 名字 */}
-                    <div 
-                      className="text-xl md:text-2xl font-bold"
-                      style={{
-                        color: '#FFD700',
-                        textShadow: '0 0 10px rgba(255, 215, 0, 0.3)'
-                      }}
-                    >
+                    <div className="player-info-name">
                       Aaron Judge
                     </div>
                     
                     {/* 主要信息 */}
-                    <div className="flex flex-wrap gap-1 md:gap-2 text-xs md:text-sm text-gray-300">
+                    <div className="player-main-info">
                       <span className="font-semibold">CF</span>
                       <span className="text-gray-500">|</span>
                       <span>Bats/Throws: R/R</span>
                     </div>
                     
                     {/* 选秀信息 */}
-                    <div className="text-xs md:text-sm text-gray-300 leading-relaxed">
-
-                    <div className="flex items-center gap-1 md:gap-2">
-                        <span className="text-blue-400 font-semibold">Height | Weight</span>
-                        <span>6' 7" | 282LBS</span>
+                    <div className="player-details">
+                      <div className="info-row">
+                        <span className="info-label">Height | Weight</span>
+                        <span className="info-value">6' 7" | 282LBS</span>
                       </div>
 
-                    <div className="flex items-center gap-1 md:gap-2">
-                        <span className="text-blue-400 font-semibold">Age</span>
-                        <span>32</span>
+                      <div className="info-row">
+                        <span className="info-label">Age</span>
+                        <span className="info-value">32</span>
                       </div>
 
-                      <div className="flex items-center gap-1 md:gap-2">
-                        <span className="text-blue-400 font-semibold">Draft:</span>
-                        <span>2013</span>
+                      <div className="info-row">
+                        <span className="info-label">Draft:</span>
+                        <span className="info-value">2013</span>
                       </div>
-                      <div className="flex items-center gap-1 md:gap-2">
-                        <span className="text-blue-400 font-semibold">Selected:</span>
-                        <span>Rd: 1, #32, New York Yankees</span>
+
+                      <div className="info-row">
+                        <span className="info-label">Selected:</span>
+                        <span className="info-value">New York Yankees</span>
                       </div>
-                      <div className="flex items-center gap-1 md:gap-2">
-                        <span className="text-blue-400 font-semibold">College:</span>
-                        <span>Fresno State</span>
+
+                      <div className="info-row">
+                        <span className="info-label">College:</span>
+                        <span className="info-value">Fresno State</span>
                       </div>
                     </div>
                   </div>

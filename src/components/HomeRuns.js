@@ -132,30 +132,47 @@ function HomeRuns() {
       ]
     };
 
-    (async () => {
+    // 创建一个延时 Promise
+    const timeout = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve('timeout');
+      }, 3000); // 3秒超时
+    });
+
+    // 先显示 backup videos
+    setVideos(backupVideos.videos);
+    setLoading(false);
+
+    const fetchVideos = async () => {
       try {
-        const response = await fetch('http://34.56.194.81:8000/api/v1/content/videos/Aaron%20Judge/homeruns', {
+        // 创建 fetch Promise
+        const fetchPromise = fetch('http://34.56.194.81:8000/api/v1/content/videos/Aaron%20Judge/homeruns', {
           method: 'GET',
           headers: {
             'accept': 'application/json'
           }
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // 使用 Promise.race 比较哪个先完成
+        const result = await Promise.race([fetchPromise, timeout]);
 
-        const data = await response.json();
-        setVideos(data.videos || backupVideos.videos);
-        setError(null);
+        // 如果不是超时，则处理 API 响应
+        if (result !== 'timeout') {
+          const response = await result.json();
+          if (response && response.videos && response.videos.length > 0) {
+            setVideos(response.videos);
+            setError(null);
+          }
+        }
       } catch (error) {
         console.error('Failed to fetch videos:', error);
-        setVideos(backupVideos.videos);
+        // 已经显示了 backup videos，所以这里只需要设置错误状态
         setError('Using backup data');
-      } finally {
-        setLoading(false);
       }
-    })();
+    };
+
+    // 执行获取
+    fetchVideos();
 
     return () => {
       // 清理函数

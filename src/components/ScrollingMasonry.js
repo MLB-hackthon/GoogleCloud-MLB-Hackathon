@@ -40,13 +40,10 @@ export default function ScrollingMasonry() {
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [hoveredDomain, setHoveredDomain] = useState(null);
   const containerRef = useRef(null);
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [imageAspectRatios, setImageAspectRatios] = useState({});
   const [apiData, setApiData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [retryCount, setRetryCount] = useState(0);
-  const [useTestData, setUseTestData] = useState(true); // 添加测试数据开关
   const userScrollTimeout = useRef(null);
 
   const breakpointColumnsObj = {
@@ -54,37 +51,6 @@ export default function ScrollingMasonry() {
     1100: 2,    // 屏幕宽度 <= 1100px 时保持两列
     700: 1      // 屏幕宽度 <= 700px 时变成一列
   };
-
-  useEffect(() => {
-    // 只在脚本未加载时加载脚本
-    if (!isGettyScriptLoaded()) {
-      const script = document.createElement('script');
-      script.src = 'https://embed-cdn.gettyimages.com/widgets.js';
-      script.async = true;
-      script.onload = () => {
-        setIsScriptLoaded(true);
-        // 初始化 Getty Images widget
-        if (window.gie && window.gie.widgets) {
-          window.gie(function(){
-            window.gie.widgets.load({
-              id: 'M69qFxwlQiBnf5gCeRWivg',
-              sig: 'FRBNKSFwo87XtFeBLiOBTZ85QVCGZ6U5aVouo8hprbQ=',
-              w: '100%',
-              h: '100%',
-              items: '1474925731',
-              caption: false,
-              tld: 'com',
-              is360: false
-            });
-          });
-        }
-      };
-      script.onerror = (error) => {
-        console.error('Getty Images script failed to load:', error);
-      };
-      document.body.appendChild(script);
-    }
-  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -109,33 +75,45 @@ export default function ScrollingMasonry() {
 
   useEffect(() => {
     const fetchNews = async () => {
-      try {
-        const response = await fetch('http://34.56.194.81:8000/api/v1/content/news/Aaron%20Judge%20?limit=20&target_language=English&max_chars_title=50&max_chars_summary=50');
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        if (!data || !data.news || data.news.length === 0) {
-          throw new Error('No data available');
-        }
+      // 创建一个延时 Promise
+      const timeout = new Promise((resolve) => {
+        setTimeout(() => {
+          resolve('timeout');
+        }, 3000); // 3秒超时
+      });
 
-        const shuffledNews = [...data.news, ...data.news].sort(() => Math.random() - 0.5);
-        setApiData(shuffledNews);
-        setError(null);
-        
+      // 先显示 backup news
+      const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
+      setApiData(backupNewsArray);
+      setLoading(false);
+
+      try {
+        // 创建 fetch Promise
+        const fetchPromise = fetch('http://34.56.194.81:8000/api/v1/content/news/Aaron%20Judge%20?limit=20&target_language=English&max_chars_title=50&max_chars_summary=50');
+
+        // 使用 Promise.race 比较哪个先完成
+        const result = await Promise.race([fetchPromise, timeout]);
+
+        // 如果不是超时，则处理 API 响应
+        if (result !== 'timeout') {
+          const response = await result.json();
+          
+          if (!response || !response.news || response.news.length === 0) {
+            throw new Error('No data available');
+          }
+
+          const shuffledNews = [...response.news, ...response.news].sort(() => Math.random() - 0.5);
+          setApiData(shuffledNews);
+          setError(null);
+        }
       } catch (error) {
         console.error('Failed to fetch news:', error);
-        const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
-        setApiData(backupNewsArray);
+        // 已经显示了 backup news，所以这里只需要设置错误状态
         setError('Using backup data');
-      } finally {
-        setLoading(false);
       }
     };
 
-    // 执行一次性获取
+    // 执行获取
     fetchNews();
 
     return () => {
@@ -168,12 +146,6 @@ export default function ScrollingMasonry() {
   const handleNewsClick = (url) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
-
-  const handleRetry = () => {
-    setLoading(true);
-    setRetryCount(prev => prev + 1);
-  };
-
   // 处理用户滚动
   const handleScroll = () => {
     if (!isUserScrolling) {
@@ -230,7 +202,7 @@ export default function ScrollingMasonry() {
             <div
               key={index}
               className="newImageCard"
-              style={{ aspectRatio: isWide ? '9/6' : '3/4' }}
+              style={{ aspectRatio: isWide ? '16/9' : '3/4' }}
               onClick={() => handleNewsClick(item.url)}
               onMouseEnter={() => setHoveredDomain(item.domain)}
               onMouseLeave={() => setHoveredDomain(null)}
