@@ -21,12 +21,22 @@ RUN pip install gunicorn
 # Copy the rest of the application
 COPY . .
 
-# Expose port
-EXPOSE 8000
+# Create SSL directory
+RUN mkdir -p /app/ssl
+
+# Expose HTTPS port
+EXPOSE 443
 
 # Add health check
 HEALTHCHECK --interval=10s --timeout=8s --start-period=5s --retries=3 \
-  CMD curl --fail http://localhost:8000/health || exit 1
+  CMD curl --fail --insecure https://localhost:443/health || exit 1
 
-# Command to run the application with gunicorn
-CMD ["gunicorn", "app.main:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--access-logfile", "-", "--error-logfile", "-"] 
+# Use Gunicorn with SSL
+CMD ["gunicorn", "app.main:app", \
+     "--workers", "4", \
+     "--worker-class", "uvicorn.workers.UvicornWorker", \
+     "--bind", "0.0.0.0:443", \
+     "--keyfile", "/app/ssl/private.key", \
+     "--certfile", "/app/ssl/certificate.crt", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-"] 

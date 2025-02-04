@@ -73,7 +73,18 @@ jobs:
         ssh ${{ secrets.VM_USER }}@${{ env.VM_IP }} '
           cd GoogleCloud-MLB-Hackathon/backend
           cp /home/hangzheng_17/.env .
-          # Only pull if backend files changed
+          
+          # Create SSL directory if it doesn't exist
+          mkdir -p ssl
+          
+          # Copy SSL certificates (assuming they're stored in secrets)
+          echo "${{ secrets.SSL_PRIVATE_KEY }}" > ssl/private.key
+          echo "${{ secrets.SSL_CERTIFICATE }}" > ssl/certificate.crt
+          
+          # Set proper permissions
+          chmod 600 ssl/private.key
+          chmod 644 ssl/certificate.crt
+          
           if [[ "${{ steps.check-changes.outputs.has_changes }}" == "true" ]]; then
             echo "Backend changes detected, pulling latest code..."
             git pull origin main

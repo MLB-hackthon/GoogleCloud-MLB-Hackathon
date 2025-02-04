@@ -71,7 +71,7 @@ export default function ScrollingMasonry({ playerName }) {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const apiUrl = `http://34.56.194.81:8000/api/v1/content/news/${encodeURIComponent(playerName)}?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45&max_chars_summary_en=50&max_chars_summary_ja=65&max_chars_summary_es=65`;
+        const apiUrl = `https://34.56.194.81.nip.io/api/v1/content/news/${encodeURIComponent(playerName)}?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45&max_chars_summary_en=50&max_chars_summary_ja=65&max_chars_summary_es=65`;
         
         console.log('Fetching from URL:', apiUrl);
 
