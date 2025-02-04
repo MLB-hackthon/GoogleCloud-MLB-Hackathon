@@ -97,12 +97,11 @@ nav {
 }
 
 /* Aaron Judge 主题 */
+.theme-aaron-judge.share-page-bg {
+  background: linear-gradient(135deg, #0A192F, #0A192F);
+}
+
 .theme-aaron-judge {
-  /* 背景 */
-  &.share-page-bg {
-    background: linear-gradient(135deg, #0A192F, #0A192F);
-  }
-  
   .title {
     color: #FFFFFF;
   }
@@ -137,12 +136,11 @@ nav {
 }
 
 /* Juan Soto 主题 */
-.theme-juan-soto {
-  /* 背景 */
-  &.share-page-bg {
-    background: linear-gradient(135deg, #E8F1F8, #F2F5F9);
-  }
+.theme-juan-soto.share-page-bg {
+  background: linear-gradient(135deg, #E8F1F8, #F2F5F9);
+}
 
+.theme-juan-soto {
   .title {
     color: #1C3D5A;
   }

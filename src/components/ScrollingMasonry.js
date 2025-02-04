@@ -71,30 +71,37 @@ export default function ScrollingMasonry({ playerName }) {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const apiUrl = `http://34.56.194.81:8000/api/v1/content/news/Aaron%20Judge?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45&max_chars_summary_en=50&max_chars_summary_ja=65&max_chars_summary_es=65`;
+        const apiUrl = `http://34.56.194.81:8000/api/v1/content/news/${encodeURIComponent(playerName)}?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45&max_chars_summary_en=50&max_chars_summary_ja=65&max_chars_summary_es=65`;
         
-        console.log('Fetching from URL:', apiUrl); // 打印请求 URL
+        console.log('Fetching from URL:', apiUrl);
 
         const response = await fetch(apiUrl);
-        console.log('Response status:', response.status); // 打印响应状态
-        console.log('Response headers:', response.headers); // 打印响应头
+        console.log('Response status:', response.status);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Received data:', data); // 打印接收到的数据
+        console.log('Received data:', data);
         
-        if (!data || !data.news || data.news.length === 0) {
+        if (!data || !data.news) {
           throw new Error('No data available');
         }
 
-        const shuffledNews = [...data.news, ...data.news].sort(() => Math.random() - 0.5);
+        // Convert object to array
+        const newsArray = Object.values(data.news);
+        
+        if (newsArray.length === 0) {
+          throw new Error('No news items available');
+        }
+
+        const shuffledNews = [...newsArray, ...newsArray].sort(() => Math.random() - 0.5);
         setApiData(shuffledNews);
         setError(null);
         
       } catch (error) {
+        console.error('Fetch error:', error);
         const backupNewsArray = [...BACKUP_NEWS.news, ...BACKUP_NEWS.news];
         setApiData(backupNewsArray);
         setError('Using backup data');
