@@ -30,7 +30,8 @@ function HomeRuns({ playerName }) {
           method: 'GET',
           headers: {
             'accept': 'application/json'
-          }
+          },
+          credentials: 'include'
         });
 
         if (!response.ok) {

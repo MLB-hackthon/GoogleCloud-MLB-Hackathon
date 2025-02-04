@@ -75,7 +75,14 @@ export default function ScrollingMasonry({ playerName }) {
         
         console.log('Fetching from URL:', apiUrl);
 
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json'
+          },
+          credentials: 'include'
+        });
+        
         console.log('Response status:', response.status);
         
         if (!response.ok) {

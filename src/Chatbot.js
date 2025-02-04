@@ -34,9 +34,10 @@ function Chatbot({ onClose }) {
         method: 'POST',
         headers: {
           'user_id': '1',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: userMessage }),
+        credentials: 'include',
+        body: JSON.stringify({ message: userMessage })
       });
 
       if (!response.ok) {
