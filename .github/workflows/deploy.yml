@@ -85,24 +85,38 @@ jobs:
           cp /home/hangzheng_17/.env .
           echo "3. After copying .env: $(pwd)"
           
-          mkdir -p ssl
-          echo "4. After mkdir ssl: $(pwd)"
-          
-          # Copy SSL certificates
-          echo "${{ secrets.SSL_PRIVATE_KEY }}" > ssl/private.key
-          echo "${{ secrets.SSL_CERTIFICATE }}" > ssl/certificate.crt
-          echo "5. After copying SSL certs: $(pwd)"
-          
           if [[ "${{ steps.check-changes.outputs.has_changes }}" == "true" ]]; then
             echo "Backend changes detected, pulling latest code..."
-            echo "6. Before git pull: $(pwd)"
+            echo "4. Before git pull: $(pwd)"
             git -C .. pull origin main
-            echo "7. After git pull: $(pwd)"
+            echo "5. After git pull: $(pwd)"
           else
             echo "No backend changes, skipping git pull..."
           fi
           
-          echo "8. Before docker-compose: $(pwd)"
+          # Create scripts directory and add renew-cert.sh
+          mkdir -p scripts
+          echo "6. Creating renew-cert.sh"
+          cat > scripts/renew-cert.sh << "EOF"
+#!/bin/bash
+if [ ! -d "/etc/letsencrypt/live/34.56.194.81.nip.io" ]; then
+    certbot certonly --standalone \
+        --non-interactive \
+        --agree-tos \
+        --email huangjiayuan33@gmail.com \
+        -d 34.56.194.81.nip.io \
+        --http-01-port=80
+fi
+(
+    while :; do
+        certbot renew --quiet
+        sleep 12h
+    done
+) &
+EOF
+          chmod +x scripts/renew-cert.sh
+          
+          echo "7. Before docker-compose: $(pwd)"
           
           # Always restart the container
           echo "Restarting Docker containers..."
