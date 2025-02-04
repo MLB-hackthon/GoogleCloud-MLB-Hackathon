@@ -14,7 +14,6 @@ jobs:
   deploy-backend:
     name: Deploy Backend
     runs-on: self-hosted
-    id: backend-deploy
 
     steps:
     - name: Checkout code
