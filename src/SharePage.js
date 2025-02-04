@@ -4,13 +4,15 @@ import Chatbot from "./Chatbot";
 import ScrollingMasonry from "./components/ScrollingMasonry";
 import HomeRuns from './components/HomeRuns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import LanguageSwitcher from './components/LanguageSwitcher';
 
 function SharePage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('masonry');
   const navigate = useNavigate();
+  const location = useLocation();
+  const { selectedPlayer = 'Juan Soto', pushFrequency = 'daily' } = location.state || {};
 
   const toggleChatbot = () => {
     setIsChatbotOpen(!isChatbotOpen);
@@ -29,13 +31,43 @@ function SharePage() {
   const content = React.useMemo(() => {
     switch (activeTab) {
       case 'masonry':
-        return <ScrollingMasonry />;
+        return <ScrollingMasonry playerName={selectedPlayer} />;
       case 'homeruns':
-        return <HomeRuns />;
+        return <HomeRuns playerName={selectedPlayer} />;
       default:
-        return <ScrollingMasonry />;
+        return <ScrollingMasonry playerName={selectedPlayer} />;
     }
-  }, [activeTab]);
+  }, [activeTab, selectedPlayer]);
+
+  // 更新玩家相关的信息
+  const playerInfo = {
+    'Aaron Judge': {
+      name: 'Aaron Judge',
+      image: '/test/AaronJudge.jpg',
+      position: 'CF',
+      batsThrows: 'R/R',
+      height: "6' 7\"",
+      weight: '282LBS',
+      age: '32',
+      draft: '2013',
+      team: 'New York Yankees',
+      college: 'Fresno State'
+    },
+    'Juan Soto': {
+      name: 'Juan Soto',
+      image: '/test/JuanSoto.jpg',
+      position: 'RF',
+      batsThrows: 'L/L',
+      height: "6' 2\"",
+      weight: '224LBS',
+      age: '25',
+      draft: '2015',
+      team: 'New York Yankees',
+      college: 'N/A'
+    }
+  };
+
+  const currentPlayer = playerInfo[selectedPlayer];
 
   return (
     <div className="background">
@@ -53,7 +85,7 @@ function SharePage() {
         <nav>
           <div className="flex items-center gap-2">
             <img 
-              src="/test/logo.png"
+              src="/test/logo/AaronJudge.png"
               alt="Team logo"
               className="h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity"
               onClick={handleLogoClick}
@@ -68,8 +100,8 @@ function SharePage() {
         <div className="left-section">
           <div className="image-section relative">
             <img 
-              src="/test/AaronJudge.jpg" 
-              alt="Pitcher"
+              src={currentPlayer.image}
+              alt={currentPlayer.name}
               className="pitcher-image"
             />
             <motion.div
@@ -85,7 +117,7 @@ function SharePage() {
               }}
               className="player-name"
             >
-              Aaron Judge
+              {currentPlayer.name}
             </motion.div>
           </div>
           
@@ -175,41 +207,41 @@ function SharePage() {
                   <div className="space-y-2 md:space-y-3">
                     {/* 名字 */}
                     <div className="player-info-name">
-                      Aaron Judge
+                      {currentPlayer.name}
                     </div>
                     
                     {/* 主要信息 */}
                     <div className="player-main-info">
-                      <span className="font-semibold">CF</span>
-                      <span className="text-gray-500">|</span>
-                      <span>Bats/Throws: R/R</span>
+                      <div className="flex flex-wrap gap-1 md:gap-2 text-xs md:text-sm text-gray-300">
+                        <span className="font-semibold">{currentPlayer.position}</span>
+                        <span className="text-gray-500">|</span>
+                        <span>Bats/Throws: {currentPlayer.batsThrows}</span>
+                      </div>
                     </div>
                     
                     {/* 选秀信息 */}
                     <div className="player-details">
-                      <div className="info-row">
-                        <span className="info-label">Height | Weight</span>
-                        <span className="info-value">6' 7" | 282LBS</span>
-                      </div>
-
-                      <div className="info-row">
-                        <span className="info-label">Age</span>
-                        <span className="info-value">32</span>
-                      </div>
-
-                      <div className="info-row">
-                        <span className="info-label">Draft:</span>
-                        <span className="info-value">2013</span>
-                      </div>
-
-                      <div className="info-row">
-                        <span className="info-label">Selected:</span>
-                        <span className="info-value">New York Yankees</span>
-                      </div>
-
-                      <div className="info-row">
-                        <span className="info-label">College:</span>
-                        <span className="info-value">Fresno State</span>
+                      <div className="text-xs md:text-sm text-gray-300 leading-relaxed">
+                        <div className="flex items-center gap-1 md:gap-2">
+                          <span className="text-blue-400 font-semibold">Height | Weight</span>
+                          <span>{currentPlayer.height} | {currentPlayer.weight}</span>
+                        </div>
+                        <div className="flex items-center gap-1 md:gap-2">
+                          <span className="text-blue-400 font-semibold">Age</span>
+                          <span>{currentPlayer.age}</span>
+                        </div>
+                        <div className="info-row">
+                          <span className="info-label">Draft:</span>
+                          <span className="info-value">{currentPlayer.draft}</span>
+                        </div>
+                        <div className="info-row">
+                          <span className="info-label">Selected:</span>
+                          <span className="info-value">{currentPlayer.team}</span>
+                        </div>
+                        <div className="info-row">
+                          <span className="info-label">College:</span>
+                          <span className="info-value">{currentPlayer.college}</span>
+                        </div>
                       </div>
                     </div>
                   </div>

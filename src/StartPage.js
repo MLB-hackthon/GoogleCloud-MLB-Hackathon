@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "./context/UserContext";
+import { jwtDecode } from "jwt-decode";
 
 const StartPage = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -48,9 +49,7 @@ const StartPage = () => {
       const initializeGoogleSignIn = () => {
         window.google.accounts.id.initialize({
           client_id: CLIENT_ID,
-          callback: handleGoogleLogin,
-          auto_select: false,
-          cancel_on_tap_outside: true
+          callback: handleCallbackResponse
         });
 
         const buttonContainer = document.getElementById('google-login-button');
@@ -73,25 +72,17 @@ const StartPage = () => {
     }
   }, [showIntro]);
 
-  const handleGoogleLogin = async (response) => {
-    try {
-      if (!response.credential) {
-        console.error('No credential received');
-        return;
-      }
-
-      const decoded = JSON.parse(atob(response.credential.split('.')[1]));
-      const userInfo = {
-        email: decoded.email,
-        name: decoded.name,
-        picture: decoded.picture,
-        token: response.credential
-      };
-
-      navigate('/share');
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
+  const handleCallbackResponse = (response) => {
+    const userObject = jwtDecode(response.credential);
+    console.log(userObject);
+    // 在导航到 share 页面时传递选择的玩家信息
+    navigate('/share', { 
+      state: { 
+        selectedPlayer: selectedPlayer,
+        pushFrequency: pushFrequency,
+        user: userObject 
+      } 
+    });
   };
 
   return (
@@ -170,14 +161,16 @@ const StartPage = () => {
                   </motion.div>
 
                   {/* Settings Panel */}
-                  <div className="mb-6 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
+                  <div className="mb-6 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg relative z-50">
                     <div className="flex gap-4">
-                      <div className="flex-1">
+                      <div className="flex-1 relative">
                         <label className="text-sm font-semibold text-gray-700 block mb-1">Select Player</label>
                         <select
                           value={selectedPlayer}
                           onChange={(e) => setSelectedPlayer(e.target.value)}
-                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm 
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm
+                                   relative z-50 cursor-pointer"
                         >
                           {players.map((player) => (
                             <option key={player.value} value={player.value}>
@@ -187,12 +180,14 @@ const StartPage = () => {
                         </select>
                       </div>
 
-                      <div className="flex-1">
+                      <div className="flex-1 relative">
                         <label className="text-sm font-semibold text-gray-700 block mb-1">Push Frequency</label>
                         <select
                           value={pushFrequency}
                           onChange={(e) => setPushFrequency(e.target.value)}
-                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm 
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm
+                                   relative z-50 cursor-pointer"
                         >
                           {frequencies.map((freq) => (
                             <option key={freq.value} value={freq.value}>
