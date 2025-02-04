@@ -13,9 +13,10 @@ def test_get_player_news(client: TestClient):
     assert response.status_code == 200
     data = response.json()
     assert "news" in data
+    assert len(data["news"]) == 2
     
     # Test first news item has all required fields
-    news_item = data["news"][0]
+    news_item = data["news"]["0"]
     assert all(key in news_item for key in [
         "url", "domain", "title", "snippet", "image_url",
         "title_en", "title_ja", "title_es",
@@ -147,6 +148,6 @@ def test_translation_length_constraints(client: TestClient):
     assert response.status_code == 200
     data = response.json()
     
-    for news_item in data["news"]:
+    for news_item in list(data["news"].values()):
         assert len(news_item["title_en"]) <= max_title_en + 2
         assert len(news_item["snippet_ja"]) <= max_summary_ja + 2

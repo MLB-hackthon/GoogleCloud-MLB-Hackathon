@@ -63,8 +63,9 @@ class PlayerContentService:
         max_chars_summary_ja: Optional[int] = 65,
         max_chars_summary_es: Optional[int] = 65
     ) -> List[Dict]:
-        """Get news about a player with optional translation"""
-        results = []
+        """Get news about a player with batch translation"""
+        results = {}
+        results_idx = 0
         try:
             API_KEY = settings.GOOGLE_API_KEY
             SEARCH_ENGINE_ID = settings.GOOGLE_SEARCH_ENGINE_ID
@@ -100,38 +101,58 @@ class PlayerContentService:
                     if not all(result.values()):
                         continue
 
-                    # Translate title
-                    translated = await self.translator.translate(
-                        result['title'],
-                        'news_title',
-                        max_chars_title_en,
-                        max_chars_title_ja,
-                        max_chars_title_es
-                    )
-                    result['title_en'] = translated['translatedEnText']
-                    result['title_ja'] = translated['translatedJaText']
-                    result['title_es'] = translated['translatedEsText']
-                        
-                    # Translate snippet
-                    translated = await self.translator.translate(
-                        result['snippet'],
-                        'news_summary',
-                        max_chars_summary_en,
-                        max_chars_summary_ja,
-                        max_chars_summary_es
-                    )
-                    result['snippet_en'] = translated['translatedEnText']
-                    result['snippet_ja'] = translated['translatedJaText']
-                    result['snippet_es'] = translated['translatedEsText']
-                    
-                    results.append(result)
-                    if len(results) >= limit:
+                    results[results_idx] = result
+                    results_idx += 1
+                    if results_idx >= limit:
                         break
+
+            # Prepare batch translation tasks
+            translation_tasks = []
+            for idx in results.keys():
+                # Add title translation task
+                translation_tasks.append({
+                    "id": f"title_{idx}",
+                    "text": results[idx].get('title'),
+                    "type": "news_title",
+                    "max_chars_en": max_chars_title_en,
+                    "max_chars_ja": max_chars_title_ja,
+                    "max_chars_es": max_chars_title_es
+                })
                 
-                if len(results) >= limit:
-                    break
+                # Add summary translation task
+                translation_tasks.append({
+                    "id": f"summary_{idx}",
+                    "text": results[idx].get('snippet'),
+                    "type": "news_summary",
+                    "max_chars_en": max_chars_summary_en,
+                    "max_chars_ja": max_chars_summary_ja,
+                    "max_chars_es": max_chars_summary_es
+                })
+
+            # Process batch translation
+            translated_results = await self.translator.translate_batch(translation_tasks)
             
-            return results[:limit]
+            # Map translations back to results
+            for idx in results.keys():
+                title_key = f"title_{idx}"
+                summary_key = f"summary_{idx}"
+                
+                if title_key in translated_results and summary_key in translated_results:
+                    results[idx]['title_en'] = translated_results[title_key]['translatedEnText']
+                    results[idx]['title_ja'] = translated_results[title_key]['translatedJaText']
+                    results[idx]['title_es'] = translated_results[title_key]['translatedEsText']
+                    results[idx]['snippet_en'] = translated_results[summary_key]['translatedEnText']
+                    results[idx]['snippet_ja'] = translated_results[summary_key]['translatedJaText']
+                    results[idx]['snippet_es'] = translated_results[summary_key]['translatedEsText']
+                else:
+                    results[idx]['title_en'] = "Not Translated"
+                    results[idx]['title_ja'] = "Not Translated"
+                    results[idx]['title_es'] = "Not Translated"
+                    results[idx]['snippet_en'] = "Not Translated"
+                    results[idx]['snippet_ja'] = "Not Translated"
+                    results[idx]['snippet_es'] = "Not Translated"
+            
+            return results
             
         except Exception as e:
             print(f"Error getting player news: {e}")
@@ -150,7 +171,7 @@ class PlayerContentService:
         max_chars_description_ja: Optional[int] = 65,
         max_chars_description_es: Optional[int] = 65
     ) -> List[Dict]:
-        """Get YouTube videos about a player with optional translation"""
+        """Get YouTube videos about a player with batch translation"""
         try:
             API_KEY = settings.GOOGLE_API_KEY
             BASE_URL = "https://www.googleapis.com/youtube/v3/search"
@@ -182,8 +203,10 @@ class PlayerContentService:
             videos_response.raise_for_status()
             videos_data = videos_response.json()
             
-            # Process and filter videos with translation if needed
+            # Process and filter videos with batch translation
             processed_videos = []
+            translation_tasks = []
+            
             for item in data.get('items', []):
                 video_id = item['id']['videoId']
                 video_details = next(
@@ -208,33 +231,52 @@ class PlayerContentService:
                         if not all(video_info.values()):
                             continue
                         
-                        # Translate title
-                        translated = await self.translator.translate(
-                            video_info['title'],
-                            'news_title',
-                            max_chars_title_en,
-                            max_chars_title_ja,
-                            max_chars_title_es
-                        )
-                        video_info['title_en'] = translated['translatedEnText']
-                        video_info['title_ja'] = translated['translatedJaText']
-                        video_info['title_es'] = translated['translatedEsText']
-
-                        # Translate description
-                        translated = await self.translator.translate(
-                            video_info['description'],
-                            'news_summary',
-                            max_chars_description_en,
-                            max_chars_description_ja,
-                            max_chars_description_es
-                        )
-                        video_info['description_en'] = translated['translatedEnText']
-                        video_info['description_ja'] = translated['translatedJaText']
-                        video_info['description_es'] = translated['translatedEsText']
+                        # Add title translation task
+                        translation_tasks.append({
+                            "id": f"title_{video_id}",
+                            "text": video_info['title'],
+                            "type": "news_title",
+                            "max_chars_en": max_chars_title_en,
+                            "max_chars_ja": max_chars_title_ja,
+                            "max_chars_es": max_chars_title_es
+                        })
+                        
+                        # Add description translation task
+                        translation_tasks.append({
+                            "id": f"desc_{video_id}",
+                            "text": video_info['description'],
+                            "type": "news_summary",
+                            "max_chars_en": max_chars_description_en,
+                            "max_chars_ja": max_chars_description_ja,
+                            "max_chars_es": max_chars_description_es
+                        })
                         
                         processed_videos.append(video_info)
                         if len(processed_videos) >= limit:
                             break
+
+            # Process batch translation
+            translated_results = await self.translator.translate_batch(translation_tasks)
+            
+            # Map translations back to videos
+            for video in processed_videos:
+                title_key = f"title_{video['video_id']}"
+                desc_key = f"desc_{video['video_id']}"
+                
+                if title_key in translated_results and desc_key in translated_results:
+                    video['title_en'] = translated_results[title_key]['translatedEnText']
+                    video['title_ja'] = translated_results[title_key]['translatedJaText']
+                    video['title_es'] = translated_results[title_key]['translatedEsText']
+                    video['description_en'] = translated_results[desc_key]['translatedEnText']
+                    video['description_ja'] = translated_results[desc_key]['translatedJaText']
+                    video['description_es'] = translated_results[desc_key]['translatedEsText']
+                else:
+                    video['title_en'] = "Not Translated"
+                    video['title_ja'] = "Not Translated"
+                    video['title_es'] = "Not Translated"
+                    video['description_en'] = "Not Translated"
+                    video['description_ja'] = "Not Translated"
+                    video['description_es'] = "Not Translated"
             
             return processed_videos[:limit]
             
@@ -253,8 +295,9 @@ class PlayerContentService:
         max_chars_summary_ja: Optional[int] = 65,
         max_chars_summary_es: Optional[int] = 65
     ) -> List[Dict]:
-        """Search news with optional translation"""
+        """Search news with batch translation"""
         results = []
+        translation_tasks = []
         try:
             API_KEY = settings.GOOGLE_API_KEY
             SEARCH_ENGINE_ID = settings.GOOGLE_SEARCH_ENGINE_ID
@@ -290,29 +333,25 @@ class PlayerContentService:
                     if not all(result.values()):
                         continue
                     
-                    # Translate title
-                    translated = await self.translator.translate(
-                        result['title'],
-                        'news_title',
-                        max_chars_title_en,
-                        max_chars_title_ja,
-                        max_chars_title_es
-                    )
-                    result['title_en'] = translated['translatedEnText']
-                    result['title_ja'] = translated['translatedJaText']
-                    result['title_es'] = translated['translatedEsText']
-                        
-                    # Translate snippet
-                    translated = await self.translator.translate(
-                        result['snippet'],
-                        'news_summary',
-                        max_chars_summary_en,
-                        max_chars_summary_ja,
-                        max_chars_summary_es
-                    )
-                    result['snippet_en'] = translated['translatedEnText']
-                    result['snippet_ja'] = translated['translatedJaText']
-                    result['snippet_es'] = translated['translatedEsText']
+                    # Add title translation task
+                    translation_tasks.append({
+                        "id": f"title_{len(results)}",
+                        "text": result['title'],
+                        "type": "news_title",
+                        "max_chars_en": max_chars_title_en,
+                        "max_chars_ja": max_chars_title_ja,
+                        "max_chars_es": max_chars_title_es
+                    })
+                    
+                    # Add snippet translation task
+                    translation_tasks.append({
+                        "id": f"snippet_{len(results)}",
+                        "text": result['snippet'],
+                        "type": "news_summary",
+                        "max_chars_en": max_chars_summary_en,
+                        "max_chars_ja": max_chars_summary_ja,
+                        "max_chars_es": max_chars_summary_es
+                    })
                     
                     results.append(result)
                     if len(results) >= limit:
@@ -320,6 +359,29 @@ class PlayerContentService:
                 
                 if len(results) >= limit:
                     break
+            
+            # Process batch translation
+            translated_results = await self.translator.translate_batch(translation_tasks)
+            
+            # Map translations back to results
+            for idx, result in enumerate(results):
+                title_key = f"title_{idx}"
+                snippet_key = f"snippet_{idx}"
+                
+                if title_key in translated_results and snippet_key in translated_results:
+                    result['title_en'] = translated_results[title_key]['translatedEnText']
+                    result['title_ja'] = translated_results[title_key]['translatedJaText']
+                    result['title_es'] = translated_results[title_key]['translatedEsText']
+                    result['snippet_en'] = translated_results[snippet_key]['translatedEnText']
+                    result['snippet_ja'] = translated_results[snippet_key]['translatedJaText']
+                    result['snippet_es'] = translated_results[snippet_key]['translatedEsText']
+                else:
+                    result['title_en'] = "Not Translated"
+                    result['title_ja'] = "Not Translated"
+                    result['title_es'] = "Not Translated"
+                    result['snippet_en'] = "Not Translated"
+                    result['snippet_ja'] = "Not Translated"
+                    result['snippet_es'] = "Not Translated"
             
             return results[:limit]
             
@@ -335,16 +397,12 @@ class PlayerContentService:
         max_chars_title_ja: Optional[int] = 30,
         max_chars_title_es: Optional[int] = 45
     ) -> List[Dict]:
-        """
-        Get home run videos for a specific player
-        Args:
-            player_name: Name of the player
-        Returns:
-            List of dictionaries containing home run video information
-        """
+        """Get home run videos for a specific player with batch translation"""
         try:
             # Filter home runs by player name
             player_hrs = []
+            translation_tasks = []
+            
             for _, row in self.all_mlb_hrs.iterrows():
                 if player_name.lower() in row['title'].lower():
                     hr_info = {
@@ -357,22 +415,35 @@ class PlayerContentService:
                         'season': row['season']
                     }
 
-                    # Translate title
-                    translated = await self.translator.translate(
-                        hr_info['title'],
-                        'news_title',
-                        max_chars_title_en,
-                        max_chars_title_ja,
-                        max_chars_title_es
-                    )
-                    hr_info['title_en'] = translated['translatedEnText']
-                    hr_info['title_ja'] = translated['translatedJaText']
-                    hr_info['title_es'] = translated['translatedEsText']
+                    # Add title translation task
+                    translation_tasks.append({
+                        "id": f"title_{row['play_id']}",
+                        "text": hr_info['title'],
+                        "type": "news_title",
+                        "max_chars_en": max_chars_title_en,
+                        "max_chars_ja": max_chars_title_ja,
+                        "max_chars_es": max_chars_title_es
+                    })
 
                     player_hrs.append(hr_info)
-
                     if len(player_hrs) >= limit:
                         break
+
+            # Process batch translation
+            translated_results = await self.translator.translate_batch(translation_tasks)
+            
+            # Map translations back to videos
+            for hr in player_hrs:
+                title_key = f"title_{hr['play_id']}"
+                
+                if title_key in translated_results:
+                    hr['title_en'] = translated_results[title_key]['translatedEnText']
+                    hr['title_ja'] = translated_results[title_key]['translatedJaText']
+                    hr['title_es'] = translated_results[title_key]['translatedEsText']
+                else:
+                    hr['title_en'] = "Not Translated"
+                    hr['title_ja'] = "Not Translated"
+                    hr['title_es'] = "Not Translated"
             
             return player_hrs[:limit]
             
@@ -393,32 +464,20 @@ class PlayerContentService:
         max_chars_description_ja: Optional[int] = 65,
         max_chars_description_es: Optional[int] = 65
     ) -> List[Dict]:
-        """
-        Search videos with custom query using YouTube API
-        Args:
-            query: Search query string
-            limit: Maximum number of results to return
-            min_duration: Minimum video duration in seconds
-            max_duration: Maximum video duration in seconds
-            target_language: Optional target language code for translation
-            max_chars_title: Optional maximum characters for translated title
-            max_chars_description: Optional maximum characters for translated description
-        Returns:
-            List of video information
-        """
-        API_KEY = settings.GOOGLE_API_KEY
-        BASE_URL = "https://www.googleapis.com/youtube/v3/search"
-        
-        params = {
-            'part': 'snippet',
-            'q': f"{query} mlb",
-            'maxResults': limit,
-            'key': API_KEY,
-            'type': 'video',
-            'order': 'relevance'
-        }
-        
+        """Search videos with batch translation"""
         try:
+            API_KEY = settings.GOOGLE_API_KEY
+            BASE_URL = "https://www.googleapis.com/youtube/v3/search"
+            
+            params = {
+                'part': 'snippet',
+                'q': f"{query} mlb",
+                'maxResults': limit,
+                'key': API_KEY,
+                'type': 'video',
+                'order': 'relevance'
+            }
+            
             response = requests.get(BASE_URL, params=params)
             response.raise_for_status()
             data = response.json()
@@ -439,6 +498,8 @@ class PlayerContentService:
             
             # Process and filter videos
             processed_videos = []
+            translation_tasks = []
+            
             for item in data.get('items', []):
                 video_id = item['id']['videoId']
                 video_details = next(
@@ -463,33 +524,52 @@ class PlayerContentService:
                         if not all(video_info.values()):
                             continue
                         
-                        # Translate title
-                        translated = await self.translator.translate(
-                            video_info['title'],
-                            'news_title',
-                            max_chars_title_en,
-                            max_chars_title_ja,
-                            max_chars_title_es
-                        )
-                        video_info['title_en'] = translated['translatedEnText']
-                        video_info['title_ja'] = translated['translatedJaText']
-                        video_info['title_es'] = translated['translatedEsText']
-                            
-                        # Translate description
-                        translated = await self.translator.translate(
-                            video_info['description'],
-                            'news_summary',
-                            max_chars_description_en,
-                            max_chars_description_ja,
-                            max_chars_description_es
-                        )
-                        video_info['description_en'] = translated['translatedEnText']
-                        video_info['description_ja'] = translated['translatedJaText']
-                        video_info['description_es'] = translated['translatedEsText']
+                        # Add title translation task
+                        translation_tasks.append({
+                            "id": f"title_{video_id}",
+                            "text": video_info['title'],
+                            "type": "news_title",
+                            "max_chars_en": max_chars_title_en,
+                            "max_chars_ja": max_chars_title_ja,
+                            "max_chars_es": max_chars_title_es
+                        })
+                        
+                        # Add description translation task
+                        translation_tasks.append({
+                            "id": f"desc_{video_id}",
+                            "text": video_info['description'],
+                            "type": "news_summary",
+                            "max_chars_en": max_chars_description_en,
+                            "max_chars_ja": max_chars_description_ja,
+                            "max_chars_es": max_chars_description_es
+                        })
                         
                         processed_videos.append(video_info)
                         if len(processed_videos) >= limit:
                             break
+
+            # Process batch translation
+            translated_results = await self.translator.translate_batch(translation_tasks)
+            
+            # Map translations back to videos
+            for video in processed_videos:
+                title_key = f"title_{video['video_id']}"
+                desc_key = f"desc_{video['video_id']}"
+                
+                if title_key in translated_results and desc_key in translated_results:
+                    video['title_en'] = translated_results[title_key]['translatedEnText']
+                    video['title_ja'] = translated_results[title_key]['translatedJaText']
+                    video['title_es'] = translated_results[title_key]['translatedEsText']
+                    video['description_en'] = translated_results[desc_key]['translatedEnText']
+                    video['description_ja'] = translated_results[desc_key]['translatedJaText']
+                    video['description_es'] = translated_results[desc_key]['translatedEsText']
+                else:
+                    video['title_en'] = "Not Translated"
+                    video['title_ja'] = "Not Translated"
+                    video['title_es'] = "Not Translated"
+                    video['description_en'] = "Not Translated"
+                    video['description_ja'] = "Not Translated"
+                    video['description_es'] = "Not Translated"
             
             return processed_videos[:limit]
             

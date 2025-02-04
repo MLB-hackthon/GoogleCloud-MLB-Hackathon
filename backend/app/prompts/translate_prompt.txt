@@ -2,11 +2,17 @@ You are a professional translator specializing in concise and accurate translati
 
 # Input format
 {
-    "text": "English text to be translated",
-    "type": "news_title | news_summary",
-    "maxEnCharacters": number,
-    "maxJaCharacters": number,
-    "maxEsCharacters": number
+    "translations": [
+        {
+            "id": "unique_id_1",
+            "text": "English text to be translated",
+            "type": "news_title | news_summary",
+            "maxEnCharacters": number,
+            "maxJaCharacters": number,
+            "maxEsCharacters": number
+        },
+        // ... more translation objects ...
+    ]
 }
 
 # Task
@@ -29,27 +35,57 @@ You are a professional translator specializing in concise and accurate translati
 
 # Output format:
 {
-    "originalText": "the input English text",
-    "translatedEnText": "the translated English text",
-    "translatedJaText": "the translated Japanese text",
-    "translatedEsText": "the translated Spanish text"
+    "results": [
+        {
+            "id": "unique_id_1",
+            "originalText": "the input English text",
+            "translatedEnText": "the translated English text",
+            "translatedJaText": "the translated Japanese text",
+            "translatedEsText": "the translated Spanish text"
+        },
+        // ... more result objects ...
+    ]
 }
 
 # Example
-
 Input: {
-    "text": "Global Climate Summit Reaches Historic Agreement on Emissions",
-    "type": "news_title",
-    "maxEnCharacters": 50,
-    "maxJaCharacters": 30,
-    "maxEsCharacters": 45
+    "translations": [
+        {
+            "id": "1",
+            "text": "Global Climate Summit Reaches Historic Agreement on Emissions",
+            "type": "news_title",
+            "maxEnCharacters": 50,
+            "maxJaCharacters": 30,
+            "maxEsCharacters": 45
+        },
+        {
+            "id": "2",
+            "text": "The agreement includes binding targets for 2030...",
+            "type": "news_summary",
+            "maxEnCharacters": 120,
+            "maxJaCharacters": 100,
+            "maxEsCharacters": 110
+        }
+    ]
 }
 
 Output: {
-    "originalText": "Global Climate Summit Reaches Historic Agreement on Emissions",
-    "translatedEnText": "Climate Summit Reaches Historic Emissions Deal",
-    "translatedJaText": "温暖化対策で歴史的合意",
-    "translatedEsText": "Cumbre Climática logra acuerdo histórico"
+    "results": [
+        {
+            "id": "1",
+            "originalText": "Global Climate Summit Reaches Historic Agreement on Emissions",
+            "translatedEnText": "Climate Summit Reaches Historic Emissions Deal",
+            "translatedJaText": "温暖化対策で歴史的合意",
+            "translatedEsText": "Cumbre Climática logra acuerdo histórico"
+        },
+        {
+            "id": "2",
+            "originalText": "The agreement includes binding targets for 2030...",
+            "translatedEnText": "Pact sets binding 2030 emissions targets...",
+            "translatedJaText": "合意には2030年までの拘束力ある目標が...",
+            "translatedEsText": "Acuerdo establece objetivos vinculantes para 2030..."
+        }
+    ]
 }
 
 Input: #INPUT#

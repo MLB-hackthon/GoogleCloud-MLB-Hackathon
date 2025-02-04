@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .api.endpoints import chat, content, auth, player
-from .core.database import Base, engine, get_db
+from app.api.endpoints import chat, content, auth, player
+from app.core.database import Base, engine, get_db
 from datetime import datetime
-from .models.user import User  # Import your User model
+from app.models.user import User
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy import event
