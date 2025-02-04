@@ -305,3 +305,92 @@ nav {
   font-family: 'Poppins', sans-serif;
   font-weight: bold;
 }
+
+.player-name {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  transform-origin: bottom-left;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+  text-shadow: 
+    2px 2px 8px rgba(0,0,0,0.8),
+    -2px -2px 8px rgba(0,0,0,0.8),
+    2px -2px 8px rgba(0,0,0,0.8),
+    -2px 2px 8px rgba(0,0,0,0.8),
+    0 0 15px rgba(0,0,0,0.7);
+  /* 响应式文字大小 */
+  font-size: clamp(2rem, 5vw, 5rem);
+}
+
+.career-homers {
+  color: #FFD700;
+  text-shadow: 
+    2px 2px 8px rgba(255, 215, 0, 0.3),
+    -2px -2px 8px rgba(255, 215, 0, 0.3),
+    2px -2px 8px rgba(255, 215, 0, 0.3),
+    -2px 2px 8px rgba(255, 215, 0, 0.3);
+  font-size: clamp(2rem, 8vw, 8rem);
+}
+
+.career-homers-label {
+  color: rgba(255, 215, 0, 0.8);
+  font-weight: 500;
+  font-size: clamp(0.75rem, 1vw, 0.875rem);
+}
+
+.player-info-name {
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: bold;
+}
+
+.player-main-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #CBD5E1;
+  font-size: clamp(0.75rem, 1.2vw, 0.875rem);
+}
+
+.player-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #CBD5E1;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: clamp(0.75rem, 1.2vw, 0.875rem);
+  white-space: nowrap;
+}
+
+.info-label {
+  color: #60A5FA;
+  font-weight: 600;
+  min-width: fit-content;
+}
+
+.info-value {
+  color: #CBD5E1;
+}
+
+/* 确保容器有合适的padding和宽度控制 */
+.chart3 {
+  width: 100%;
+  max-width: 100%;
+  padding: clamp(0.5rem, 2vw, 1rem);
+}
+
+/* 调整间距 */
+.space-y-2 > * + * {
+  margin-top: clamp(0.5rem, 1.5vw, 0.75rem);
+}

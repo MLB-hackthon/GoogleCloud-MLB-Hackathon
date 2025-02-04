@@ -29,4 +29,4 @@ HEALTHCHECK --interval=10s --timeout=8s --start-period=5s --retries=3 \
   CMD curl --fail http://localhost:8000/health || exit 1
 
 # Command to run the application with gunicorn
-CMD ["gunicorn", "app.main:app", "--workers", "5", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"] 
+CMD ["gunicorn", "app.main:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"] 

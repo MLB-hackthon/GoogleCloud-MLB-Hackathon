@@ -5,9 +5,22 @@ import { useUser } from "./context/UserContext";
 
 const StartPage = () => {
   const [showIntro, setShowIntro] = useState(true);
+  const [selectedPlayer, setSelectedPlayer] = useState('Aaron Judge');
+  const [pushFrequency, setPushFrequency] = useState('daily');
   const navigate = useNavigate();
-  const { updateUser } = useUser();
   const CLIENT_ID = "218661372917-r65cdbmtlha18e38dgkmq6baq1au3ahh.apps.googleusercontent.com";
+
+  // 定义选项数据
+  const players = [
+    { value: 'Aaron Judge', label: 'Aaron Judge' },
+    { value: 'Juan Soto', label: 'Juan Soto' }
+  ];
+
+  const frequencies = [
+    { value: 'realtime', label: 'Real-time' },
+    { value: 'daily', label: 'Daily' },
+    { value: 'weekly', label: 'Weekly' }
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -75,8 +88,6 @@ const StartPage = () => {
         token: response.credential
       };
 
-      console.log('Setting user info:', userInfo);
-      updateUser(userInfo);
       navigate('/share');
     } catch (error) {
       console.error('Login failed:', error);
@@ -157,6 +168,41 @@ const StartPage = () => {
                       className="google-login-button flex justify-center"
                     ></div>
                   </motion.div>
+
+                  {/* Settings Panel */}
+                  <div className="mb-6 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <label className="text-sm font-semibold text-gray-700 block mb-1">Select Player</label>
+                        <select
+                          value={selectedPlayer}
+                          onChange={(e) => setSelectedPlayer(e.target.value)}
+                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        >
+                          {players.map((player) => (
+                            <option key={player.value} value={player.value}>
+                              {player.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="flex-1">
+                        <label className="text-sm font-semibold text-gray-700 block mb-1">Push Frequency</label>
+                        <select
+                          value={pushFrequency}
+                          onChange={(e) => setPushFrequency(e.target.value)}
+                          className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        >
+                          {frequencies.map((freq) => (
+                            <option key={freq.value} value={freq.value}>
+                              {freq.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* 底部装饰 */}
                   <div className="absolute bottom-0 left-0 w-full h-32 opacity-10">
@@ -368,7 +414,6 @@ const BaseballAnimation = () => {
       direction: "normal",
     },
   ];
-
   return (
     <div className="min-h-screen text-black flex items-center justify-center">
       <div className="relative w-[800px] h-[800px] flex items-center justify-center font-['Cormorant',sans-serif]">
@@ -381,6 +426,7 @@ const BaseballAnimation = () => {
             transition={{ type: "spring", stiffness: 100 }}
           />
         </div>
+
         {textStyles.map((style, index) => (
           <div
             key={index}

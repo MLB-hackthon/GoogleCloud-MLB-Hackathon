@@ -39,4 +39,37 @@
 #google-login-button {
   margin: 0 auto;
   min-height: 40px;
+}
+
+/* Add these styles to your existing CSS */
+.settings-panel select {
+  transition: all 0.2s ease-in-out;
+}
+
+.settings-panel select:hover {
+  border-color: #60A5FA;
+}
+
+.settings-panel label {
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Custom scrollbar for select dropdowns */
+.settings-panel select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.settings-panel select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.settings-panel select::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.settings-panel select::-webkit-scrollbar-thumb:hover {
+  background: #555;
 } 
