@@ -8,6 +8,7 @@ const StartPage = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState('Aaron Judge');
   const [pushFrequency, setPushFrequency] = useState('daily');
+  const { updateUser } = useUser();
   const navigate = useNavigate();
   const CLIENT_ID = "218661372917-r65cdbmtlha18e38dgkmq6baq1au3ahh.apps.googleusercontent.com";
 
@@ -49,7 +50,9 @@ const StartPage = () => {
       const initializeGoogleSignIn = () => {
         window.google.accounts.id.initialize({
           client_id: CLIENT_ID,
-          callback: handleCallbackResponse
+          callback: handleGoogleLogin,
+          auto_select: false,
+          cancel_on_tap_outside: true
         });
 
         const buttonContainer = document.getElementById('google-login-button');
@@ -72,8 +75,39 @@ const StartPage = () => {
     }
   }, [showIntro]);
 
-  const handleCallbackResponse = (response) => {
-    setShowSettings(true); // 登录后显示设置面板而不是直接跳转
+  const handleGoogleLogin = async (response) => { 
+    try {
+      if (!response.credential) {
+        console.error('No credential received');
+        return;
+      }
+
+      // Send the credential to your FastAPI endpoint:
+      const res = await fetch("http://34.56.194.81:8000/api/v1/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential })
+      });
+
+      if (!res.ok) {
+        throw new Error(`Auth failed with status ${res.status}`);
+      }
+
+      // The upserted user data from the backend
+      const userRecord = await res.json();
+
+      // Optionally store user info in your local context or localStorage
+      updateUser({
+        email: userRecord.email,
+        name: userRecord.name,
+        picture: userRecord.picture,
+        token: response.credential
+      });
+
+      navigate('/share');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   const handleConfirm = () => {
@@ -525,4 +559,4 @@ const BaseballAnimation = () => {
   );
 };
 
-export default StartPage;
+export default StartPage; 

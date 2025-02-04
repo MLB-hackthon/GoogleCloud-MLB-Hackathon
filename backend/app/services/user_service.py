@@ -60,4 +60,10 @@ class UserService:
 
         result = db.execute(stmt)
         db.commit()
-        return result.scalar_one() 
+        return result.scalar_one()
+
+    @staticmethod
+    def get_all_users(db: Session):
+        """Get all users from database"""
+        logger.info("Fetching all users")
+        return db.query(User).order_by(User.id).all() 
