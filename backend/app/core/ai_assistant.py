@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 class AIAssistant:
     def __init__(self, api_key: str, model_id: str = "gemini-2.0-flash-exp"):
         """Initialize the AI Assistant with API credentials and configuration."""
-        logger.info(f"Initializing AIAssistant with model_id: {model_id}")
         self.api_key = api_key
         self.model_id = model_id
         self.client = genai.Client(api_key=self.api_key)
@@ -25,17 +24,14 @@ class AIAssistant:
                 for key, value in replacements.items():
                     self.system_instruction = self.system_instruction.replace(key, value)
             
-            logger.info(f"Loaded system prompt from {file_path}")
         except FileNotFoundError:
             logger.error(f"System prompt file not found: {file_path}")
             raise FileNotFoundError(f"System prompt file not found: {file_path}")
 
-    def initialize_chat(self, enable_google_search: bool = True, streaming: bool = False, temperature: float = 0.5, json_output: bool = False) -> None:
+    def initialize_chat(self, enable_google_search: bool = False, streaming: bool = False, temperature: float = 0.5, json_output: bool = False) -> None:
         """Initialize the chat session with specified configuration."""
         if not self.system_instruction:
             raise ValueError("System prompt not loaded. Call load_system_prompt first.")
-
-        logger.info("Initializing chat session")
 
         google_search_tool = Tool(
             google_search = GoogleSearch()
@@ -60,7 +56,6 @@ class AIAssistant:
                     model=self.model_id,
                     config=config,
                 )
-            logger.info("Chat initialized successfully")
         except Exception as e:
             logger.error(f"Error initializing chat: {str(e)}")
             raise
