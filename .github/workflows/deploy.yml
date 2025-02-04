@@ -71,7 +71,30 @@ jobs:
       run: |
         echo "Starting backend deployment..."
         ssh ${{ secrets.VM_USER }}@${{ env.VM_IP }} '
-          cd GoogleCloud-MLB-Hackathon/backend
+          # Debug: Print starting directory
+          echo "Starting directory: $(pwd)"
+          
+          # If we are already in the project directory, just cd to backend
+          if [ -d "backend" ]; then
+            cd backend
+          else
+            # Otherwise use the full path
+            cd GoogleCloud-MLB-Hackathon/backend
+          fi
+          
+          # Debug: Print current directory and contents
+          echo "Current directory: $(pwd)"
+          echo "Directory contents:"
+          ls -la
+          
+          # Debug: Check for docker-compose.yml
+          if [ -f "docker-compose.yml" ]; then
+            echo "docker-compose.yml found"
+          else
+            echo "docker-compose.yml not found"
+            exit 1
+          fi
+          
           cp /home/hangzheng_17/.env .
           
           # Create SSL directory if it doesn't exist
