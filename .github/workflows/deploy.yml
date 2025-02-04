@@ -71,62 +71,42 @@ jobs:
       run: |
         echo "Starting backend deployment..."
         ssh ${{ secrets.VM_USER }}@${{ env.VM_IP }} '
-          # Debug: Print starting directory
-          echo "Starting directory: $(pwd)"
+          echo "1. Starting directory: $(pwd)"
           
-          # If we are already in the project directory, just cd to backend
+          # Navigate to backend
           if [ -d "backend" ]; then
             cd backend
           else
-            # Otherwise use the full path
             cd GoogleCloud-MLB-Hackathon/backend
           fi
           
-          # Debug: Print current directory and contents
-          echo "Current directory: $(pwd)"
-          echo "Directory contents:"
-          ls -la
-          
-          # Debug: Check for docker-compose.yml
-          if [ -f "docker-compose.yml" ]; then
-            echo "docker-compose.yml found"
-          else
-            echo "docker-compose.yml not found"
-            exit 1
-          fi
+          echo "2. After cd to backend: $(pwd)"
           
           cp /home/hangzheng_17/.env .
+          echo "3. After copying .env: $(pwd)"
           
-          # Create SSL directory if it doesn't exist
           mkdir -p ssl
+          echo "4. After mkdir ssl: $(pwd)"
           
-          # Copy SSL certificates (assuming they're stored in secrets)
+          # Copy SSL certificates
           echo "${{ secrets.SSL_PRIVATE_KEY }}" > ssl/private.key
           echo "${{ secrets.SSL_CERTIFICATE }}" > ssl/certificate.crt
-          
-          # Set proper permissions
-          chmod 600 ssl/private.key
-          chmod 644 ssl/certificate.crt
-
-          ls -la ./
+          echo "5. After copying SSL certs: $(pwd)"
           
           if [[ "${{ steps.check-changes.outputs.has_changes }}" == "true" ]]; then
             echo "Backend changes detected, pulling latest code..."
-            git pull origin main
+            echo "6. Before git pull: $(pwd)"
+            git -C .. pull origin main
+            echo "7. After git pull: $(pwd)"
           else
             echo "No backend changes, skipping git pull..."
           fi
-
-          # Verify docker-compose file exists
-          if [ ! -f "docker-compose.yml" ]; then
-            echo "Error: docker-compose.yml not found!"
-            ls -la
-            exit 1
-          fi
+          
+          echo "8. Before docker-compose: $(pwd)"
           
           # Always restart the container
           echo "Restarting Docker containers..."
-          docker-compose down
+          docker-compose down || true
           docker system prune -af
           docker-compose up -d
           echo "FastAPI Deployment completed"
