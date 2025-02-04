@@ -51,3 +51,23 @@ async def google_auth(
         raise HTTPException(status_code=500, detail="Authentication failed")
     finally:
         db.close()  # Add explicit connection closing 
+
+@router.get("/user/email/{email}", response_model=User)
+def get_user_by_email(
+    email: str,
+    db: Session = Depends(get_db)
+):
+    user = UserService.get_user_by_email(db, email=email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@router.get("/user/id/{user_id}", response_model=User)
+def get_user_by_id(
+    user_id: int, 
+    db: Session = Depends(get_db)
+):
+    user = UserService.get_user_by_id(db, user_id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user 
