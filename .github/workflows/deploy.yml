@@ -84,12 +84,21 @@ jobs:
           # Set proper permissions
           chmod 600 ssl/private.key
           chmod 644 ssl/certificate.crt
+
+          ls -la ./
           
           if [[ "${{ steps.check-changes.outputs.has_changes }}" == "true" ]]; then
             echo "Backend changes detected, pulling latest code..."
             git pull origin main
           else
             echo "No backend changes, skipping git pull..."
+          fi
+
+          # Verify docker-compose file exists
+          if [ ! -f "docker-compose.yml" ]; then
+            echo "Error: docker-compose.yml not found!"
+            ls -la
+            exit 1
           fi
           
           # Always restart the container
