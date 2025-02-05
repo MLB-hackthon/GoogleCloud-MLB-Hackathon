@@ -71,19 +71,32 @@ jobs:
       run: |
         echo "Starting backend deployment..."
         ssh ${{ secrets.VM_USER }}@${{ env.VM_IP }} '
-          cd GoogleCloud-MLB-Hackathon/backend
+          echo "1. Starting directory: $(pwd)"
+          
+          # Navigate to backend
+          if [ -d "backend" ]; then
+            cd backend
+          else
+            cd GoogleCloud-MLB-Hackathon/backend
+          fi
+          
+          echo "2. After cd to backend: $(pwd)"
+          
           cp /home/hangzheng_17/.env .
-          # Only pull if backend files changed
+          echo "3. After copying .env: $(pwd)"
+          
           if [[ "${{ steps.check-changes.outputs.has_changes }}" == "true" ]]; then
             echo "Backend changes detected, pulling latest code..."
-            git pull origin main
-          else
-            echo "No backend changes, skipping git pull..."
+            echo "4. Before git pull: $(pwd)"
+            git -C .. pull origin main
+            echo "5. After git pull: $(pwd)"
           fi
+          
+          echo "6. Before docker-compose: $(pwd)"
           
           # Always restart the container
           echo "Restarting Docker containers..."
-          docker-compose down
+          docker-compose down || true
           docker system prune -af
           docker-compose up -d
           echo "FastAPI Deployment completed"

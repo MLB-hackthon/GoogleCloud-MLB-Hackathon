@@ -26,11 +26,12 @@ function HomeRuns({ playerName }) {
 
     const fetchVideos = async () => {
       try {
-        const response = await fetch(`http://34.56.194.81:8000/api/v1/content/videos/${playerName}/homeruns?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45`, {
+        const response = await fetch(`https://34.56.194.81.nip.io/api/v1/content/videos/${playerName}/homeruns?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45`, {
           method: 'GET',
           headers: {
             'accept': 'application/json'
-          }
+          },
+          credentials: 'include'
         });
 
         if (!response.ok) {

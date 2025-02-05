@@ -74,13 +74,24 @@ export default function ScrollingMasonry({ playerName }) {
     const fetchNews = async () => {
       setLoading(true); // 开始加载
       try {
+<<<<<<< HEAD
         // 在 URL 中添加语言参数
 
         const apiUrl = `http://34.56.194.81:8000/api/v1/content/news/${encodeURIComponent(playerName)}?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45&max_chars_summary_en=50&max_chars_summary_ja=65&max_chars_summary_es=65`;
+=======
+        const apiUrl = `https://34.56.194.81.nip.io/api/v1/content/news/${encodeURIComponent(playerName)}?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45&max_chars_summary_en=50&max_chars_summary_ja=65&max_chars_summary_es=65`;
+>>>>>>> efddf9d90e64393823cd0bdcd2f1534087059cde
         
         console.log('Fetching from URL:', apiUrl);
 
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json'
+          },
+          credentials: 'include'
+        });
+        
         console.log('Response status:', response.status);
         
         if (!response.ok) {

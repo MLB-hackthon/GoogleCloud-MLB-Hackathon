@@ -1,7 +1,7 @@
 # Use Python 3.11 slim image
 FROM python:3.11-slim
 
-# Install curl
+# Install required packages
 RUN apt-get update && \
     apt-get install -y curl gcc python3-dev libpq-dev && \
     rm -rf /var/lib/apt/lists/*
@@ -21,12 +21,19 @@ RUN pip install gunicorn
 # Copy the rest of the application
 COPY . .
 
-# Expose port
-EXPOSE 8000
+# Expose HTTPS port
+EXPOSE 443
 
 # Add health check
 HEALTHCHECK --interval=10s --timeout=8s --start-period=5s --retries=3 \
-  CMD curl --fail http://localhost:8000/health || exit 1
+  CMD curl --fail --insecure https://localhost:443/health || exit 1
 
-# Command to run the application with gunicorn
-CMD ["gunicorn", "app.main:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--access-logfile", "-", "--error-logfile", "-"] 
+# Start gunicorn with SSL
+CMD ["gunicorn", "app.main:app", \
+     "--workers", "4", \
+     "--worker-class", "uvicorn.workers.UvicornWorker", \
+     "--bind", "0.0.0.0:443", \
+     "--keyfile", "/etc/letsencrypt/live/34.56.194.81.nip.io/privkey.pem", \
+     "--certfile", "/etc/letsencrypt/live/34.56.194.81.nip.io/fullchain.pem", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-"] 

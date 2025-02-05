@@ -12,7 +12,7 @@ function SharePage() {
   const [activeTab, setActiveTab] = useState('masonry');
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedPlayer = 'Juan Soto', pushFrequency = 'daily' } = location.state || {};
+  const { selectedPlayer = 'Aaron Judge', pushFrequency = 'daily' } = location.state || {};
   const [currentPlayer, setCurrentPlayer] = useState(selectedPlayer);
 
   useEffect(() => {

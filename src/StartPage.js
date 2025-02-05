@@ -83,7 +83,7 @@ const StartPage = () => {
         return;
       }
       // Send the credential to your FastAPI endpoint:
-      const res = await fetch("http://34.56.194.81:8000/api/v1/auth/google", {
+      const res = await fetch("https://34.56.194.81.nip.io/api/v1/auth/google", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: response.credential })

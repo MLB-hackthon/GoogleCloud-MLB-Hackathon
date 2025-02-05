@@ -30,13 +30,14 @@ function Chatbot({ onClose }) {
     setIsTyping(true);  // This will show the typing indicator
 
     try {
-      const response = await fetch('http://0.0.0.0:8000/api/v1/chat/send', {
+      const response = await fetch('https://34.56.194.81.nip.io/api/v1/chat/send', {
         method: 'POST',
         headers: {
           'user_id': '1',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: userMessage }),
+        credentials: 'include',
+        body: JSON.stringify({ message: userMessage })
       });
 
       if (!response.ok) {

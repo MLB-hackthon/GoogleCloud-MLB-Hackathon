@@ -29,15 +29,20 @@ app = FastAPI(
     on_startup=[create_tables]
 )
 
-# Configure CORS
+# Configure CORS with HTTPS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:8080",
-        "http://34.56.194.81.nip.io",
-        "http://34.56.194.81.nip.io:8000",
+        # Local development
+        "https://localhost",
+        "https://localhost:3000",
+        "http://localhost:3000",  # For React development server
+        
+        # Production
+        "https://34.56.194.81.nip.io",
+        "https://34.56.194.81.nip.io:3000",
         "http://34.56.194.81.nip.io:3000",
+        "https://mlb-app-jtle3creua-uc.a.run.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -53,7 +58,7 @@ app.include_router(subscriptions.router, prefix="/api/v1/subscriptions", tags=["
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to MLB API"}
+    return {"message": "Welcome to MLB API!"}
 
 @app.get("/health")
 async def health_check(db: Session = Depends(get_db)):
