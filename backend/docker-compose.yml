@@ -16,7 +16,7 @@ services:
       - GOOGLE_SEARCH_ENGINE_ID=${GOOGLE_SEARCH_ENGINE_ID}
     volumes:
       - ./app:/app/app
-      - ./ssl:/app/ssl  # Mount SSL certificates
+      - /etc/letsencrypt:/etc/letsencrypt:ro  # Mount Let's Encrypt certificates directory
     restart: unless-stopped
 
 volumes:
