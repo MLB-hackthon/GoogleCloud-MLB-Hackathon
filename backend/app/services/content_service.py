@@ -25,6 +25,8 @@ class PlayerContentService:
         """Load MLB home run data from CSV files"""
         try:
             mlb_hr_csvs_list = [
+                'https://storage.googleapis.com/gcp-mlb-hackathon-2025/datasets/2016-mlb-homeruns.csv',
+                'https://storage.googleapis.com/gcp-mlb-hackathon-2025/datasets/2017-mlb-homeruns.csv',
                 'https://storage.googleapis.com/gcp-mlb-hackathon-2025/datasets/2024-mlb-homeruns.csv',
                 'https://storage.googleapis.com/gcp-mlb-hackathon-2025/datasets/2024-postseason-mlb-homeruns.csv'
             ]
@@ -402,9 +404,10 @@ class PlayerContentService:
             # Filter home runs by player name
             player_hrs = []
             translation_tasks = []
-            
+
             for _, row in self.all_mlb_hrs.iterrows():
-                if player_name.lower() in row['title'].lower():
+                title_idx = row['title'].lower().find("homer")
+                if player_name.lower() in row['title'].lower()[:title_idx]:
                     hr_info = {
                         'play_id': row['play_id'],
                         'title': row['title'],
