@@ -406,6 +406,8 @@ class PlayerContentService:
             translation_tasks = []
 
             for _, row in self.all_mlb_hrs.iterrows():
+                if pd.isna(row['title']):
+                    continue
                 title_idx = row['title'].lower().find("homers")
                 if player_name.lower() in row['title'].lower()[:title_idx]:
                     hr_info = {
