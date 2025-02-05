@@ -90,33 +90,9 @@ jobs:
             echo "4. Before git pull: $(pwd)"
             git -C .. pull origin main
             echo "5. After git pull: $(pwd)"
-          else
-            echo "No backend changes, skipping git pull..."
           fi
           
-          # Create scripts directory and add renew-cert.sh
-          mkdir -p scripts
-          echo "6. Creating renew-cert.sh"
-          cat > scripts/renew-cert.sh << "EOF"
-#!/bin/bash
-if [ ! -d "/etc/letsencrypt/live/34.56.194.81.nip.io" ]; then
-    certbot certonly --standalone \
-        --non-interactive \
-        --agree-tos \
-        --email huangjiayuan33@gmail.com \
-        -d 34.56.194.81.nip.io \
-        --http-01-port=80
-fi
-(
-    while :; do
-        certbot renew --quiet
-        sleep 12h
-    done
-) &
-EOF
-          chmod +x scripts/renew-cert.sh
-          
-          echo "7. Before docker-compose: $(pwd)"
+          echo "6. Before docker-compose: $(pwd)"
           
           # Always restart the container
           echo "Restarting Docker containers..."
