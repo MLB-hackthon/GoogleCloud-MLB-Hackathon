@@ -12,7 +12,7 @@ function SharePage() {
   const [activeTab, setActiveTab] = useState('masonry');
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedPlayer = 'Juan Soto', pushFrequency = 'daily' } = location.state || {};
+  const { selectedPlayer = 'Aaron Judge', pushFrequency = 'daily' } = location.state || {};
   const [currentPlayer, setCurrentPlayer] = useState(selectedPlayer);
 
   useEffect(() => {
@@ -59,6 +59,7 @@ function SharePage() {
       draft: '2013',
       team: 'New York Yankees',
       college: 'Fresno State',
+      careerHomers: 315,
       battingRunValue: 100,
       baserunningRunValue: 54,
       fieldingRunValue: 27,
@@ -75,6 +76,7 @@ function SharePage() {
       draft: '2015',
       team: 'New York Mets',
       college: 'N/A',
+      careerHomers: 201,
       battingRunValue: 79,
       baserunningRunValue: -3,
       fieldingRunValue: -1,
@@ -144,7 +146,7 @@ function SharePage() {
               <div className={`${getThemeClass(currentPlayer)} bottom-section`}>
                 <div className="chart1 h-full flex flex-col items-center justify-center">
                   <div className="career-homers">
-                    315
+                    {currentPlayerInfo.careerHomers}
                   </div>
                   <div className="career-homers-label">
                     Career Home Runs

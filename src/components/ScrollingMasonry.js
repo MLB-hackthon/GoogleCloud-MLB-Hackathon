@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Masonry from 'react-masonry-css';
 import './ScrollingMasonry.css';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const BACKUP_NEWS = {
   "news": [
@@ -31,6 +32,7 @@ const BACKUP_NEWS = {
 };
 
 export default function ScrollingMasonry({ playerName }) {
+  const { language } = useLanguage();
   const [isPaused, setIsPaused] = useState(false);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [hoveredDomain, setHoveredDomain] = useState(null);
@@ -70,8 +72,15 @@ export default function ScrollingMasonry({ playerName }) {
 
   useEffect(() => {
     const fetchNews = async () => {
+      setLoading(true); // 开始加载
       try {
+<<<<<<< HEAD
+        // 在 URL 中添加语言参数
+
+        const apiUrl = `http://34.56.194.81:8000/api/v1/content/news/${encodeURIComponent(playerName)}?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45&max_chars_summary_en=50&max_chars_summary_ja=65&max_chars_summary_es=65`;
+=======
         const apiUrl = `https://34.56.194.81.nip.io/api/v1/content/news/${encodeURIComponent(playerName)}?limit=10&max_chars_title_en=50&max_chars_title_ja=30&max_chars_title_es=45&max_chars_summary_en=50&max_chars_summary_ja=65&max_chars_summary_es=65`;
+>>>>>>> efddf9d90e64393823cd0bdcd2f1534087059cde
         
         console.log('Fetching from URL:', apiUrl);
 
@@ -96,13 +105,7 @@ export default function ScrollingMasonry({ playerName }) {
           throw new Error('No data available');
         }
 
-        // Convert object to array
         const newsArray = Object.values(data.news);
-        
-        if (newsArray.length === 0) {
-          throw new Error('No news items available');
-        }
-
         const shuffledNews = [...newsArray, ...newsArray].sort(() => Math.random() - 0.5);
         setApiData(shuffledNews);
         setError(null);
@@ -119,12 +122,13 @@ export default function ScrollingMasonry({ playerName }) {
 
     fetchNews();
 
+    // 清理函数
     return () => {
       setApiData([]);
       setLoading(true);
       setError(null);
     };
-  }, [playerName]);
+  }, [playerName, language]); // 添加 language 作为依赖项
 
   // 检查图片方向
   const checkImageOrientation = (imageUrl, index) => {
@@ -165,6 +169,26 @@ export default function ScrollingMasonry({ playerName }) {
     }, 1000);
   };
 
+  const getLocalizedContent = (item) => {
+    switch (language) {
+      case 'JP':
+        return {
+          title: item.title_ja,
+          snippet: item.snippet_ja
+        };
+      case 'ES':
+        return {
+          title: item.title_es,
+          snippet: item.snippet_es
+        };
+      default:
+        return {
+          title: item.title_en,
+          snippet: item.snippet_en
+        };
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -199,6 +223,7 @@ export default function ScrollingMasonry({ playerName }) {
         columnClassName="flex flex-col gap-4 [&:nth-child(2)]:mt-4"
       >
         {apiData.map((item, index) => {
+          const localizedContent = getLocalizedContent(item);
           const isWide = imageAspectRatios[index];
           return (
             <div
@@ -215,7 +240,7 @@ export default function ScrollingMasonry({ playerName }) {
               >
                 <img
                   src={item.image_url}
-                  alt={item.title}
+                  alt={localizedContent.title}
                 />
                 {hoveredDomain === item.domain && (
                   <div className="newImageCard-domain">
@@ -227,7 +252,7 @@ export default function ScrollingMasonry({ playerName }) {
                 className="newImageCard-title"
                 style={{ height: '25%' }}
               >
-                <p>{item.title}</p>
+                <p>{localizedContent.title}</p>
               </div>
             </div>
           );
