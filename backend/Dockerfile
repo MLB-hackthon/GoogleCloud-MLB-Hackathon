@@ -31,6 +31,7 @@ EXPOSE 443
 HEALTHCHECK --interval=10s --timeout=8s --start-period=5s --retries=3 \
   CMD curl --fail --insecure https://localhost:443/health || exit 1
 
+  
 # Copy the script and set permissions
 RUN chmod +x /app/scripts/renew-cert.sh  # Make the script executable
 RUN chown root:root /app/scripts/renew-cert.sh  # Set ownership to root
