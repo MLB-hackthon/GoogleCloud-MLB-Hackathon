@@ -42,6 +42,7 @@ app.add_middleware(
         "https://34.56.194.81.nip.io",
         "https://34.56.194.81.nip.io:3000",
         "http://34.56.194.81.nip.io:3000",
+        "https://mlb-app-jtle3creua-uc.a.run.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
